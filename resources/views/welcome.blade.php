@@ -152,7 +152,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">Teléfono *</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                    <input type="number" class="form-control" id="phone" name="phone" required>
                                 </div>
                             </div>
                             <div class="row">
@@ -209,16 +209,17 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label for="message" class="form-label">Motivo de la consulta *</label>
+                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                            </div>
+                            <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) *</label>
                                 <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px;"></div>
                                 <input type="text" class="form-control" id="appointment-location" name="appointment_location" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
                             </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Motivo de la consulta *</label>
-                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                            </div>
+                            
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
                                 <label class="form-check-label" for="terms">Acepto los términos y condiciones</label>
