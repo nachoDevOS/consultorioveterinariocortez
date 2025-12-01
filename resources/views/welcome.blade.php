@@ -365,14 +365,28 @@
 
         // --- Leaflet Map for Location Picker ---
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
-        const defaultLat = -17.7833;
-        const defaultLng = -63.1821;
+        const defaultLat = -14.82032;
+        const defaultLng = -64.89742;
         const map = L.map('map').setView([defaultLat, defaultLng], 13);
 
-        // 2. Añadir la capa de mapa de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // 2. Definir las capas de mapa (Normal y Satélite)
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        });
+
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        // Añadir la capa satelital por defecto
+        satelliteLayer.addTo(map);
+
+        // Crear el objeto con las capas base para el control
+        const baseMaps = {
+            "Satélite": satelliteLayer,
+            "Mapa": osmLayer
+        };
+        L.control.layers(baseMaps).addTo(map);
 
         // 3. Crear un marcador arrastrable
         let marker = L.marker([defaultLat, defaultLng], {
