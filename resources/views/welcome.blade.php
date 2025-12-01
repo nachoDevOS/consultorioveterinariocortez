@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
@@ -61,7 +62,7 @@
         <div class="container">
             <h2 class="section-title">Nuestros Servicios</h2>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="card service-card">
                         <div class="card-body text-center p-4">
                             <div class="service-icon">
@@ -72,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="card service-card">
                         <div class="card-body text-center p-4">
                             <div class="service-icon">
@@ -83,7 +84,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="card service-card">
                         <div class="card-body text-center p-4">
                             <div class="service-icon">
@@ -94,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="card service-card">
                         <div class="card-body text-center p-4">
                             <div class="service-icon">
@@ -105,7 +106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="card service-card">
                         <div class="card-body text-center p-4">
                             <div class="service-icon">
@@ -116,7 +117,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="card service-card">
                         <div class="card-body text-center p-4">
                             <div class="service-icon">
@@ -134,9 +135,9 @@
     <!-- Formulario de Citas -->
     <section id="cita" class="py-5">
         <div class="container">
-            <h2 class="section-title">Solicita una Cita</h2>
+            <h2 class="section-title" data-aos="fade-up">Solicita una Cita</h2>
             <div class="row justify-content-center">
-                <div class="col-lg-8">
+                <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
                     <div class="form-container">
                         @if(session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
@@ -206,9 +207,9 @@
     <!-- Testimonios -->
     <section id="testimonios" class="py-5 bg-light">
         <div class="container">
-            <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+            <h2 class="section-title" data-aos="fade-up">Lo que dicen nuestros clientes</h2>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="testimonial-card">
                         <div class="testimonial-text">
                             "Llevo a mi perro Max desde que era cachorro. El personal es muy amable y profesional. Siempre recibe la mejor atención."
@@ -216,7 +217,7 @@
                         <div class="testimonial-author">- María González</div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="testimonial-card">
                         <div class="testimonial-text">
                             "Mi gata Luna tuvo una emergencia y la atendieron inmediatamente. Estoy muy agradecida con el Dr. Cortez y su equipo."
@@ -224,7 +225,7 @@
                         <div class="testimonial-author">- Carlos Rodríguez</div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="testimonial-card">
                         <div class="testimonial-text">
                             "Excelente servicio y precios justos. Mis dos perros siempre están saludables gracias a sus cuidados preventivos."
@@ -239,9 +240,9 @@
     <!-- Contacto -->
     <section id="contacto" class="py-5">
         <div class="container">
-            <h2 class="section-title">Contáctanos</h2>
+            <h2 class="section-title" data-aos="fade-up">Contáctanos</h2>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6" data-aos="fade-right">
                     <h4>Información de contacto</h4>
                     <div class="contact-info">
                         <p><i class="fas fa-map-marker-alt"></i> {{setting('site.address')}}</p>
@@ -258,7 +259,7 @@
                         <a href="#"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" data-aos="fade-left">
                     <div class="map-container">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.952912260219!2d3.375295414770757!3d6.527631324807576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos%2C%20Nigeria!5e0!3m2!1sen!2sus!4v1647836132345!5m2!1sen!2sus" width="100%" height="300" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
@@ -309,6 +310,7 @@
     </a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -326,6 +328,11 @@
                     });
                 }
             });
+        });
+
+        // Inicializar AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800, // Duración de la animación en milisegundos
         });
     </script>
 </body>
