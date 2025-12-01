@@ -142,7 +142,7 @@
                         @if(session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
                         @endif
-                        <form id="appointment-form" action="{{ route('appointment.store') }}" method="POST">
+                        <form id="appointment-form" action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -169,6 +169,31 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="pet-gender" class="form-label">Sexo de la mascota *</label>
+                                    <select class="form-select" id="pet-gender" name="pet_gender" required>
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        <option value="Macho">Macho</option>
+                                        <option value="Hembra">Hembra</option>
+                                        {{-- <option value="Desconocido">Desconocido</option> --}}
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
+                                    <input type="file" class="form-control" id="pet-photo" name="pet_photo" accept="image/*">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="appointment-date" class="form-label">Fecha de Atención *</label>
+                                    <input type="date" class="form-control" id="appointment-date" name="appointment_date" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="appointment-time" class="form-label">Hora de Atención *</label>
+                                    <input type="time" class="form-control" id="appointment-time" name="appointment_time" required>
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label for="service" class="form-label">Servicio solicitado *</label>
                                 <select class="form-select" id="service" name="service" required>
@@ -181,6 +206,10 @@
                                     <option value="emergencia">Emergencia</option>
                                     <option value="otros">Otros</option>
                                 </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="appointment-location" class="form-label">Ubicación para la Cita *</label>
+                                <textarea class="form-control" id="appointment-location" name="appointment_location" rows="3" placeholder="Ej: Dirección completa, o nombre de la sucursal si aplica" required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="message" class="form-label">Motivo de la consulta *</label>
