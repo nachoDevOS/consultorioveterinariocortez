@@ -5,6 +5,7 @@ use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MicroServiceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WhatsappController;
@@ -20,15 +21,13 @@ use App\Http\Controllers\WhatsappController;
 |
 */
 
-
-
 Route::get('login', function () {
     return redirect('admin/login');
 })->name('login');
 
-Route::get('/', function () {
-    return redirect('admin');
-});
+Route::get('/', [HomeController::class, 'index']);
+
+
 
 Route::get('/info/{id?}', [ErrorController::class , 'error'])->name('errors');
 // Route::get('/development', [ErrorController::class , 'error503'])->name('development');

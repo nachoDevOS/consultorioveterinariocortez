@@ -11,7 +11,7 @@
                             <img src="{{ Voyager::image($admin_logo_img) }}" alt="Logo Icon">
                         @endif
                     </div>
-                    <div class="title">{{Voyager::setting('admin.title', 'VOYAGER')}}</div>
+                    <div class="title">{{ \Illuminate\Support\Str::limit(Voyager::setting('admin.title', 'VOYAGER'), 18, '') }}</div>
                 </a>
             </div><!-- .navbar-header -->
 
