@@ -210,7 +210,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) *</label>
-                                <div id="map" style="height: 300px; border-radius: 10px; margin-bottom: 15px;"></div>
+                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px;"></div>
                                 <input type="text" class="form-control" id="appointment-location" name="appointment_location" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
@@ -365,9 +365,9 @@
 
         // --- Leaflet Map for Location Picker ---
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
-        const defaultLat = -14.82032;
-        const defaultLng = -64.89742;
-        const map = L.map('map').setView([defaultLat, defaultLng], 13);
+        const defaultLat = -14.8203618;
+        const defaultLng = -64.897594;
+        const map = L.map('map').setView([defaultLat, defaultLng], 17); // Aumentamos el zoom a 17 para una vista más cercana
 
         // 2. Definir las capas de mapa (Normal y Satélite)
         const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -425,18 +425,8 @@
             updateMarkerPosition(newPos.lat, newPos.lng);
         });
 
-        // 7. Intentar obtener la ubicación del usuario
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
-            map.setView([userLat, userLng], 15);
-            marker.setLatLng([userLat, userLng]);
-            updateMarkerPosition(userLat, userLng);
-        }, function(error) {
-            console.warn("No se pudo obtener la ubicación del usuario:", error.message);
-            // Si el usuario no da permiso, se usan los valores por defecto
-            updateMarkerPosition(defaultLat, defaultLng);
-        });
+        // 7. Establecer la posición inicial por defecto y actualizar el campo de dirección.
+        updateMarkerPosition(defaultLat, defaultLng);
     </script>
 </body>
 </html>
