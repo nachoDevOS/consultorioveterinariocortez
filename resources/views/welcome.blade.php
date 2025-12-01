@@ -253,7 +253,7 @@
     <section id="inicio" class="hero">
         <div class="container">
             <h1>Cuidamos a tu mascota como si fuera nuestra</h1>
-            <p class="lead">En Consultorio Veterinario Cortez ofrecemos servicios médicos de calidad para perros, gatos y animales exóticos. Tu mascota está en las mejores manos.</p>
+            <p class="lead">En {{setting('site.title')}} ofrecemos servicios médicos de calidad para perros, gatos y animales exóticos. Tu mascota está en las mejores manos.</p>
             <a href="#cita" class="btn btn-success btn-lg me-3">Solicitar Cita</a>
             <a href="#servicios" class="btn btn-outline-light btn-lg">Nuestros Servicios</a>
         </div>
@@ -493,7 +493,7 @@
             </div>
             <hr class="my-4">
             <div class="text-center">
-                {{-- <p>&copy; 2023 Consultorio Veterinario Cortez. Todos los derechos reservados.</p> --}}
+                {{-- <p>&copy; 2023 {{setting('site.title')}}. Todos los derechos reservados.</p> --}}
                 <a style="color: rgb(255, 255, 255); font-size: 15px" href="https://www.soluciondigital.dev/" target="_blank">Copyright <small style="font-size: 15px">SolucionDigital {{date('Y')}}</small>
                     {{-- <br>Todos los derechos reservados. --}}
                 </a>
