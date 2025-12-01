@@ -127,6 +127,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2025-12-01 15:32:06',
                 'updated_at' => '2025-12-01 15:37:20',
             ),
+            6 => 
+            array (
+                'id' => 13,
+                'name' => 'services',
+                'slug' => 'services',
+                'display_name_singular' => 'Servicio',
+                'display_name_plural' => 'Servicios',
+                'icon' => 'fas fa-stethoscope',
+                'model_name' => 'App\\Models\\Service',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2025-12-01 15:48:02',
+                'updated_at' => '2025-12-01 15:50:30',
+            ),
         ));
         
         
