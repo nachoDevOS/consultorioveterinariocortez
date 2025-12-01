@@ -443,9 +443,9 @@
                 <div class="col-md-6">
                     <h4>Información de contacto</h4>
                     <div class="contact-info">
-                        <p><i class="fas fa-map-marker-alt"></i> Av. Principal #123, Ciudad</p>
-                        <p><i class="fas fa-phone"></i> (123) 456-7890</p>
-                        <p><i class="fas fa-envelope"></i> info@consultorioveterinariocortez.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{setting('site.address')}}</p>
+                        <p><i class="fas fa-phone"></i> +591 {{setting('redes-sociales.whatsapp')}}</p>
+                        <p><i class="fas fa-envelope"></i> {{setting('site.email')??'SN'}}</p>
                         <p><i class="fas fa-clock"></i> Lunes a Viernes: 8:00 am - 6:00 pm</p>
                         <p><i class="fas fa-clock"></i> Sábados: 9:00 am - 2:00 pm</p>
                     </div>
