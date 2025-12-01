@@ -12,6 +12,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
+<style>
+    /* Prevenir el desbordamiento horizontal en toda la página */
+    html, body {
+        overflow-x: hidden;
+    }
+    /* Asegurar que el botón de WhatsApp no se desborde en móviles */
+    .whatsapp-float {
+        right: 15px; /* Ajuste para que no esté tan pegado al borde */
+    }
+</style>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
