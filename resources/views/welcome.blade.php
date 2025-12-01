@@ -13,13 +13,12 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <style>
-    /* Prevenir el desbordamiento horizontal en toda la página */
-    html, body {
+    /* Prevenir el desbordamiento horizontal causado por el botón de WhatsApp */
+    body {
         overflow-x: hidden;
     }
-    /* Asegurar que el botón de WhatsApp no se desborde en móviles */
     .whatsapp-float {
-        right: 15px; /* Ajuste para que no esté tan pegado al borde */
+        max-width: 100%;
     }
 </style>
 <body>
