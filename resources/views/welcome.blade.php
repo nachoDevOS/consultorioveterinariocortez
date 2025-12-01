@@ -367,7 +367,7 @@
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
         const defaultLat = -14.8203618;
         const defaultLng = -64.897594;
-        const map = L.map('map').setView([defaultLat, defaultLng], 17); // Aumentamos el zoom a 17 para una vista más cercana
+        const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 14); // Aumentamos el zoom a 17 y limitamos el zoom máximo a 19
 
         // 2. Definir las capas de mapa (Normal y Satélite)
         const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
