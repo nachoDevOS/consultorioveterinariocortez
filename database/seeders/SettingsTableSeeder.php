@@ -22,9 +22,9 @@ class SettingsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'key' => 'site..title',
+                'key' => 'site.title',
                 'display_name' => 'Título del sitio',
-                'value' => NULL,
+                'value' => 'Consultorio Veterinario Cortez',
                 'details' => '',
                 'type' => 'text',
                 'order' => 1,
@@ -33,9 +33,9 @@ class SettingsTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'key' => 'site..description',
+                'key' => 'site.description',
                 'display_name' => 'Descripción del sitio',
-                'value' => NULL,
+                'value' => 'Cuidando a tus mascotas con amor y profesionalismo',
                 'details' => '',
                 'type' => 'text',
                 'order' => 2,
@@ -68,7 +68,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 6,
                 'key' => 'admin.title',
                 'display_name' => 'Título del administrador',
-                'value' => 'Solución Digital',
+                'value' => 'Consultorio Veterinario Cortez',
                 'details' => '',
                 'type' => 'text',
                 'order' => 1,
@@ -79,7 +79,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 7,
                 'key' => 'admin.description',
                 'display_name' => 'Descripción del administrador',
-                'value' => 'Bienvenido a example',
+                'value' => 'Cuidando a tus mascotas con amor y profesionalismo',
                 'details' => '',
                 'type' => 'text',
                 'order' => 2,
