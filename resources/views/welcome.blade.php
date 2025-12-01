@@ -152,7 +152,10 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">Teléfono *</label>
-                                    <input type="number" class="form-control" id="phone" name="phone" required>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+591</span>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Ej: 71234567" pattern="[0-9]{8}" title="Ingrese un número de 8 dígitos." required maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -181,8 +184,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
-                                    <input type="file" class="form-control" id="pet-photo" name="pet_photo" accept="image/*">
+                                    <label for="pet_age" class="form-label">Edad de la mascota *</label>
+                                    <input type="text" class="form-control" id="pet_age" name="pet_age" accept="image/*">
                                 </div>
                             </div>
                             <div class="row">
@@ -198,19 +201,20 @@
                             <div class="mb-3">
                                 <label for="service" class="form-label">Servicio solicitado *</label>
                                 <select class="form-select" id="service" name="service" required>
-                                    <option value="">Seleccione...</option>
-                                    <option value="consulta">Consulta General</option>
-                                    <option value="vacunacion">Vacunación</option>
-                                    <option value="cirugia">Cirugía</option>
-                                    <option value="odontologia">Odontología</option>
-                                    <option value="radiografia">Radiografía</option>
-                                    <option value="emergencia">Emergencia</option>
-                                    <option value="otros">Otros</option>
+                                    <option value="" selected disabled>Seleccione...</option>
+                                    @foreach ($services as $service)
+                                        <option value="{{$service->id}}">{{$service->name}}</option>
+                                    @endforeach
                                 </select>
                             </div>
+                            
                             <div class="mb-3">
                                 <label for="message" class="form-label">Motivo de la consulta *</label>
                                 <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
+                                <input type="file" class="form-control" id="pet-photo" name="pet_photo" accept="image/*">
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) *</label>

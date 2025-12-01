@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Animal;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -10,7 +11,8 @@ class HomeController extends Controller
 {
     public function index(){
         $animals = Animal::where('deleted_at', null)->get();
-        return view('welcome', compact('animals'));
+        $services = Service::where('deleted_at', null)->get();
+        return view('welcome', compact('animals', 'services'));
     }
 
     // Nuevo método para guardar la cita
@@ -19,7 +21,7 @@ class HomeController extends Controller
         // Validación de los datos del formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|digits:8',
             'email' => 'nullable|email',
             'pet_name' => 'required|string|max:255',
             'pet_type' => 'required|exists:animals,id', // Valida que el ID de la especie exista en la tabla 'animals'
