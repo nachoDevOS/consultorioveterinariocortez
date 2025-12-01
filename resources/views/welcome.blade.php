@@ -220,7 +220,9 @@
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-paw me-2"></i>{{setting('site.title')}}
+                <i class="fas fa-paw me-2"></i>
+                <span class="d-none d-lg-inline">{{setting('site.title')}}</span>
+                <span class="d-inline d-lg-none">{{\Illuminate\Support\Str::limit(setting('site.title'), 18, '')}}</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -469,8 +471,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <h4>Consultorio Veterinario Cortez</h4>
-                    <p>Cuidando a tus mascotas con amor y profesionalismo desde 2010.</p>
+                    <h4>{{setting('site.title')}}</h4>
+                    <p>{{setting('site.description')}}</p>
                 </div>
                 <div class="col-md-4 mb-4">
                     <h4>Enlaces rápidos</h4>
@@ -491,7 +493,10 @@
             </div>
             <hr class="my-4">
             <div class="text-center">
-                <p>&copy; 2023 Consultorio Veterinario Cortez. Todos los derechos reservados.</p>
+                {{-- <p>&copy; 2023 Consultorio Veterinario Cortez. Todos los derechos reservados.</p> --}}
+                <a style="color: rgb(255, 255, 255); font-size: 15px" href="https://www.soluciondigital.dev/" target="_blank">Copyright <small style="font-size: 15px">SolucionDigital {{date('Y')}}</small>
+                    {{-- <br>Todos los derechos reservados. --}}
+                </a>
             </div>
         </div>
     </footer>
