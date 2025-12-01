@@ -147,86 +147,125 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="name" class="form-label">Nombre completo *</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                                    <label for="name" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label">Teléfono *</label>
+                                    <label for="phone" class="form-label">Teléfono <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text">+591</span>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Ej: 71234567" pattern="[0-9]{8}" title="Ingrese un número de 8 dígitos." required maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                        <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Ej: 71234567" pattern="[0-9]{8}" title="Ingrese un número de 8 dígitos." required maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                     </div>
+                                    @error('phone')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="pet-name" class="form-label">Nombre de la mascota *</label>
-                                    <input type="text" class="form-control" id="pet-name" name="pet_name" required>
+                                    <label for="pet-name" class="form-label">Nombre de la mascota <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('pet_name') is-invalid @enderror" id="pet-name" name="pet_name" value="{{ old('pet_name') }}" required>
+                                    @error('pet_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="pet-type" class="form-label">Especie *</label>
-                                    <select class="form-select" id="pet-type" name="pet_type" required>
+                                    <label for="pet-type" class="form-label">Especie <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('pet_type') is-invalid @enderror" id="pet-type" name="pet_type" required>
                                         <option value="" selected disabled>Seleccione...</option>
                                         @foreach ($animals as $animal)
-                                            <option value="{{$animal->id}}">{{$animal->name}}</option>
+                                            <option value="{{$animal->id}}" {{ old('pet_type') == $animal->id ? 'selected' : '' }}>{{$animal->name}}</option>
                                         @endforeach
                                     </select>
+                                    @error('pet_type')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="pet-gender" class="form-label">Sexo de la mascota *</label>
-                                    <select class="form-select" id="pet-gender" name="pet_gender" required>
+                                    <label for="pet-gender" class="form-label">Sexo de la mascota <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('pet_gender') is-invalid @enderror" id="pet-gender" name="pet_gender" required>
                                         <option value="" selected disabled>Seleccione...</option>
-                                        <option value="Macho">Macho</option>
-                                        <option value="Hembra">Hembra</option>
+                                        <option value="Macho" {{ old('pet_gender') == 'Macho' ? 'selected' : '' }}>Macho</option>
+                                        <option value="Hembra" {{ old('pet_gender') == 'Hembra' ? 'selected' : '' }}>Hembra</option>
                                         {{-- <option value="Desconocido">Desconocido</option> --}}
                                     </select>
+                                    @error('pet_gender')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="pet_age" class="form-label">Edad de la mascota *</label>
-                                    <input type="text" class="form-control" id="pet_age" name="pet_age" accept="image/*">
+                                    <label for="pet_age" class="form-label">Edad de la mascota <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('pet_age') is-invalid @enderror" id="pet_age" name="pet_age" value="{{ old('pet_age') }}" required>
+                                    @error('pet_age')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="appointment-date" class="form-label">Fecha de Atención *</label>
-                                    <input type="date" class="form-control" id="appointment-date" name="appointment_date" required>
+                                    <label for="appointment-date" class="form-label">Fecha de Atención <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control @error('appointment_date') is-invalid @enderror" id="appointment-date" name="appointment_date" value="{{ old('appointment_date') }}" required>
+                                    @error('appointment_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="appointment-time" class="form-label">Hora de Atención *</label>
-                                    <input type="time" class="form-control" id="appointment-time" name="appointment_time" required>
+                                    <label for="appointment-time" class="form-label">Hora de Atención <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control @error('appointment_time') is-invalid @enderror" id="appointment-time" name="appointment_time" value="{{ old('appointment_time') }}" required>
+                                    @error('appointment_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="service" class="form-label">Servicio solicitado *</label>
-                                <select class="form-select" id="service" name="service" required>
+                                <label for="service" class="form-label">Servicio solicitado <span class="text-danger">*</span></label>
+                                <select class="form-select @error('service') is-invalid @enderror" id="service" name="service" required>
                                     <option value="" selected disabled>Seleccione...</option>
                                     @foreach ($services as $service)
-                                        <option value="{{$service->id}}">{{$service->name}}</option>
+                                        <option value="{{$service->id}}" {{ old('service') == $service->id ? 'selected' : '' }}>{{$service->name}}</option>
                                     @endforeach
                                 </select>
+                                @error('service')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <div class="mb-3">
-                                <label for="message" class="form-label">Motivo de la consulta *</label>
-                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                                <label for="message" class="form-label">Motivo de la consulta <span class="text-danger">*</span></label>
+                                <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="4" required>{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-12 mb-3">
                                 <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
-                                <input type="file" class="form-control" id="pet-photo" name="pet_photo" accept="image/*">
+                                <input type="file" class="form-control @error('pet_photo') is-invalid @enderror" id="pet-photo" name="pet_photo" accept="image/*">
+                                @error('pet_photo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) *</label>
+                                <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) <span class="text-danger">*</span></label>
                                 <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px;"></div>
-                                <input type="text" class="form-control" id="appointment-location" name="appointment_location" placeholder="La dirección aparecerá aquí..." readonly required>
+                                <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="appointment-location" name="appointment_location" value="{{ old('appointment_location') }}" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
+                                @error('latitude')
+                                    <div class="invalid-feedback">Por favor, selecciona una ubicación en el mapa.</div>
+                                @enderror
                             </div>
                             
                             <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-                                <label class="form-check-label" for="terms">Acepto los términos y condiciones</label>
+                                <input type="checkbox" class="form-check-input @error('terms') is-invalid @enderror" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">Acepto los términos y condiciones <span class="text-danger">*</span></label>
+                                @error('terms')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Solicitar Cita</button>
                         </form>

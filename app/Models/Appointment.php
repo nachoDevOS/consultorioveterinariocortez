@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\RegistersUserEvents;
 
-class Quote extends Model
+class Appointment extends Model
 {
     use HasFactory, RegistersUserEvents, SoftDeletes;
 
@@ -37,5 +37,4 @@ class Quote extends Model
         'deleteRole',
         'deleteObservation',
     ];
-
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Quote;
 use App\Models\Animal;
+use App\Models\Appointment;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +26,7 @@ class HomeController extends Controller
             'email' => 'nullable|email',
             'pet_name' => 'required|string|max:255',
             'pet_type' => 'required|exists:animals,id', // Valida que el ID de la especie exista en la tabla 'animals'
-            'pet_gender' => 'required|string|in:macho,hembra,desconocido',
+            'pet_gender' => 'required|string|in:Macho,Hembra,Desconocido',
             'pet_age' => 'required|string|max:100',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
@@ -38,7 +38,7 @@ class HomeController extends Controller
             'message' => 'required|string|max:1000',
             'terms' => 'accepted'
         ]);
-
+      
         // Manejo de la subida de archivos (si existe)
         $photoPath = null;
         if ($request->hasFile('pet_photo')) {
@@ -47,8 +47,9 @@ class HomeController extends Controller
             $photoPath = $request->file('pet_photo')->store('quotes', 'public');
         }
 
+        // return $request;
         // Crear y guardar la nueva cita en la base de datos
-        Quote::create([
+        Appointment::create([
             'service_id' => $request->service,
             'animal_id' => $request->pet_type,
             'nameClient' => $request->name,
@@ -65,7 +66,8 @@ class HomeController extends Controller
             // Los campos 'status' y 'view' ya tienen valores por defecto en la migración.
         ]);
 
+        // return 1;
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
-        return back()->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
+        return redirect()->url('/')->with(['message' => '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.', 'alert-type' => 'success']);
     }
 }
