@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
@@ -140,9 +141,6 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
                     <div class="form-container">
-                        @if(session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                        @endif
                         <form id="appointment-form" action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
@@ -382,8 +380,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -406,6 +406,33 @@
         AOS.init({
             duration: 800, // Duración de la animación en milisegundos
         });
+
+        // SweetAlert2 Toaster Notifications
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        @if(session('success'))
+            Toast.fire({
+                icon: 'success',
+                title: '{{ session('success') }}'
+            })
+        @endif
+
+        @if($errors->any())
+            Toast.fire({
+                icon: 'error',
+                title: 'Por favor, revisa los campos marcados en rojo.'
+            })
+        @endif
 
         // --- Leaflet Map for Location Picker ---
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
