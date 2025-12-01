@@ -167,7 +167,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 17,
                 'key' => 'redes-sociales.whatsapp',
                 'display_name' => 'Whatsapp',
-                'value' => NULL,
+                'value' => '72849954',
                 'details' => NULL,
                 'type' => 'text',
                 'order' => 8,
@@ -249,6 +249,17 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'text',
                 'order' => 15,
                 'group' => 'Servidor Imagen',
+            ),
+            21 => 
+            array (
+                'id' => 25,
+                'key' => 'site.address',
+                'display_name' => 'Dirección',
+                'value' => 'Urb. Universitartia Calle #3 Paralelo Cambodromo frente Jardin Infantil Pequeños Gigantes',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 16,
+                'group' => 'Site',
             ),
         ));
         

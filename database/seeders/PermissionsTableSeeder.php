@@ -50,11 +50,28 @@ class PermissionsTableSeeder extends Seeder
 
         Permission::generateFor('users');
 
-        Permission::generateFor('posts');
         Permission::generateFor('categories');
         Permission::generateFor('pages');
 
         
+
+        // Citas
+        $permissions = [
+            'browse_appointments' => 'Ver lista de cita',
+            'read_appointments' => 'Ver detalles de la cita',
+            // 'edit_appointments' => 'Editar información de personas',
+            // 'add_appointments' => 'Agregar nuevas personas',
+            'delete_appointments' => 'Eliminar Citas',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'appointments',
+                'tableDescription'=>'Bandeja de Solicitudes de citas'
+            ]);
+        }
 
         // Administracion
         $permissions = [

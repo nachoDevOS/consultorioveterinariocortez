@@ -5,6 +5,7 @@ use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MicroServiceController;
 use App\Http\Controllers\RoleController;
@@ -34,6 +35,11 @@ Route::get('/info/{id?}', [ErrorController::class , 'error'])->name('errors');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], function () {
     Voyager::routes();
+
+    Route::get('appointments', [AppointmentController::class, 'index'])->name('voyager.appointments.index');
+    Route::get('appointments/ajax/list', [AppointmentController::class, 'list']);
+    Route::post('appointments', [AppointmentController::class, 'store'])->name('voyager.appointments.store');
+    Route::put('appointments/{id}', [AppointmentController::class, 'update'])->name('voyager.appointments.update');
 
     Route::get('people', [PersonController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list', [PersonController::class, 'list']);
