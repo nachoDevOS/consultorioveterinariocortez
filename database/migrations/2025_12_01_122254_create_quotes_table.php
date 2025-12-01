@@ -30,6 +30,10 @@ return new class extends Migration
 
             $table->text('observation')->nullable(); //detalle de la observacion
 
+            $table->string('latitud')->nullable();
+            $table->string('longitud')->nullable();
+
+
             $table->smallInteger('view')->default(0);
             $table->string('status')->default('Pendiente');
 

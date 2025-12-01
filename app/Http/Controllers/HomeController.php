@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Quote;
 use App\Models\Animal;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -26,14 +27,15 @@ class HomeController extends Controller
             'pet_name' => 'required|string|max:255',
             'pet_type' => 'required|exists:animals,id', // Valida que el ID de la especie exista en la tabla 'animals'
             'pet_gender' => 'required|string|in:macho,hembra,desconocido',
+            'pet_age' => 'required|string|max:100',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
             'pet_photo' => 'nullable|image|max:2048', // Opcional, tipo imagen, máximo 2MB
             'appointment_location' => 'required|string|max:500', // Dirección obtenida por geocodificación
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'service' => 'required|string', // Considerar validar si este servicio existe en una tabla de servicios
-            'message' => 'required|string',
+            'service' => 'required|exists:services,id', // Validar que el ID del servicio exista
+            'message' => 'required|string|max:1000',
             'terms' => 'accepted'
         ]);
 
@@ -41,15 +43,28 @@ class HomeController extends Controller
         $photoPath = null;
         if ($request->hasFile('pet_photo')) {
             // En una aplicación real, aquí guardarías el archivo en el sistema de almacenamiento
-            // y guardarías la ruta en la base de datos.
-            // Ejemplo: $photoPath = $request->file('pet_photo')->store('pet_photos', 'public');
-            // Por ahora, solo registramos el nombre original del archivo.
-            Log::info('Foto de mascota subida:', ['filename' => $request->file('pet_photo')->getClientOriginalName()]);
-            $photoPath = 'uploads/pet_photos/' . $request->file('pet_photo')->getClientOriginalName(); // Ruta de ejemplo
+            // y guardarías la ruta en la base de datos. Lo haremos ahora.
+            $photoPath = $request->file('pet_photo')->store('quotes', 'public');
         }
 
-        // Guardamos la información en el log de Laravel
-        Log::info('Nueva solicitud de cita:', array_merge($validatedData, ['pet_photo_path' => $photoPath]));
+        // Crear y guardar la nueva cita en la base de datos
+        Quote::create([
+            'service_id' => $request->service,
+            'animal_id' => $request->pet_type,
+            'nameClient' => $request->name,
+            'phoneClient' => $request->phone,
+            'nameAnimal' => $request->pet_name,
+            'gender' => $request->pet_gender,
+            'age' => $request->pet_age,
+            'date' => $request->appointment_date,
+            'time' => $request->appointment_time,
+            'file' => $photoPath,
+            'observation' => $request->message,
+            'latitud' => $request->latitude,
+            'longitud' => $request->longitude,
+            // Los campos 'status' y 'view' ya tienen valores por defecto en la migración.
+        ]);
+
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
         return back()->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
     }
