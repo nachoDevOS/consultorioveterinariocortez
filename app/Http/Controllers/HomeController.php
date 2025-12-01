@@ -27,7 +27,9 @@ class HomeController extends Controller
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
             'pet_photo' => 'nullable|image|max:2048', // Opcional, tipo imagen, máximo 2MB
-            'appointment_location' => 'required|string|max:500',
+            'appointment_location' => 'required|string|max:500', // Dirección obtenida por geocodificación
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
             'service' => 'required|string', // Considerar validar si este servicio existe en una tabla de servicios
             'message' => 'required|string',
             'terms' => 'accepted'

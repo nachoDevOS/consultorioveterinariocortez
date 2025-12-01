@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body>
     <!-- Navbar -->
@@ -208,8 +209,11 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="appointment-location" class="form-label">Ubicación para la Cita *</label>
-                                <textarea class="form-control" id="appointment-location" name="appointment_location" rows="3" placeholder="Ej: Dirección completa, o nombre de la sucursal si aplica" required></textarea>
+                                <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) *</label>
+                                <div id="map" style="height: 300px; border-radius: 10px; margin-bottom: 15px;"></div>
+                                <input type="text" class="form-control" id="appointment-location" name="appointment_location" placeholder="La dirección aparecerá aquí..." readonly required>
+                                <input type="hidden" id="latitude" name="latitude">
+                                <input type="hidden" id="longitude" name="longitude">
                             </div>
                             <div class="mb-3">
                                 <label for="message" class="form-label">Motivo de la consulta *</label>
@@ -334,6 +338,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -356,6 +361,67 @@
         // Inicializar AOS (Animate On Scroll)
         AOS.init({
             duration: 800, // Duración de la animación en milisegundos
+        });
+
+        // --- Leaflet Map for Location Picker ---
+        // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
+        const defaultLat = -17.7833;
+        const defaultLng = -63.1821;
+        const map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+        // 2. Añadir la capa de mapa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // 3. Crear un marcador arrastrable
+        let marker = L.marker([defaultLat, defaultLng], {
+            draggable: true
+        }).addTo(map);
+
+        // 4. Obtener referencias a los campos del formulario
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
+        const locationInput = document.getElementById('appointment-location');
+
+        // 5. Función para actualizar los campos y la dirección
+        function updateMarkerPosition(lat, lng) {
+            latInput.value = lat;
+            lngInput.value = lng;
+
+            // Geocodificación inversa para obtener la dirección (usando Nominatim)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        locationInput.value = data.display_name;
+                    } else {
+                        locationInput.value = 'No se pudo obtener la dirección.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en geocodificación inversa:', error);
+                    locationInput.value = 'Error al obtener la dirección.';
+                });
+        }
+
+        // 6. Actualizar campos cuando el marcador se mueve
+        marker.on('dragend', function(e) {
+            const newPos = e.target.getLatLng();
+            updateMarkerPosition(newPos.lat, newPos.lng);
+        });
+
+        // 7. Intentar obtener la ubicación del usuario
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            map.setView([userLat, userLng], 15);
+            marker.setLatLng([userLat, userLng]);
+            updateMarkerPosition(userLat, userLng);
+        }, function(error) {
+            console.warn("No se pudo obtener la ubicación del usuario:", error.message);
+            // Si el usuario no da permiso, se usan los valores por defecto
+            updateMarkerPosition(defaultLat, defaultLng);
         });
     </script>
 </body>
