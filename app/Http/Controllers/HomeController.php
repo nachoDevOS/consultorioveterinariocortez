@@ -68,6 +68,6 @@ class HomeController extends Controller
 
         // return 1;
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
-        return redirect()->url('/')->with(['message' => '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.', 'alert-type' => 'success']);
+        return redirect('/#cita')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
     }
 }
