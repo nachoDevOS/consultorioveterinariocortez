@@ -154,24 +154,18 @@
                                     <input type="tel" class="form-control" id="phone" name="phone" required>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" name="email">
-                            </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="pet-name" class="form-label">Nombre de la mascota *</label>
                                     <input type="text" class="form-control" id="pet-name" name="pet_name" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="pet-type" class="form-label">Tipo de mascota *</label>
+                                    <label for="pet-type" class="form-label">Especie *</label>
                                     <select class="form-select" id="pet-type" name="pet_type" required>
-                                        <option value="">Seleccione...</option>
-                                        <option value="perro">Perro</option>
-                                        <option value="gato">Gato</option>
-                                        <option value="ave">Ave</option>
-                                        <option value="roedor">Roedor</option>
-                                        <option value="otro">Otro</option>
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        @foreach ($animals as $animal)
+                                            <option value="{{$animal->id}}">{{$animal->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

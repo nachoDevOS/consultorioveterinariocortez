@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Animal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
     public function index(){
-        return view('welcome');
+        $animals = Animal::where('deleted_at', null)->get();
+        return view('welcome', compact('animals'));
     }
 
     // Nuevo método para guardar la cita
