@@ -51,7 +51,6 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('users');
 
         Permission::generateFor('categories');
-        Permission::generateFor('pages');
 
         
 
@@ -88,6 +87,44 @@ class PermissionsTableSeeder extends Seeder
                 'keyDescription'=> $description,
                 'table_name' => 'people',
                 'tableDescription'=>'Personas'
+            ]);
+        }
+
+
+        // Parametros
+        // servicios
+        $permissions = [
+            'browse_services' => 'Ver lista de servicios',
+            'read_services' => 'Ver detalles de los servicios',
+            'edit_services' => 'Editar información de servicios',
+            'add_services' => 'Agregar nuevos servicios',
+            'delete_services' => 'Eliminar servicios',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'services',
+                'tableDescription'=>'Servicios'
+            ]);
+        }
+
+        // Animal
+        $permissions = [
+            'browse_animals' => 'Ver lista de animales',
+            'read_animals' => 'Ver detalles de los animales',
+            'edit_animals' => 'Editar información de animales',
+            'add_animals' => 'Agregar nuevos animales',
+            'delete_animals' => 'Eliminar animales',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'animals',
+                'tableDescription'=>'Animales o Especies'
             ]);
         }
 
