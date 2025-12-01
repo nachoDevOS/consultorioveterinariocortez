@@ -26,7 +26,7 @@ Route::get('login', function () {
 })->name('login');
 
 Route::get('/', [HomeController::class, 'index']);
-
+Route::post('/appointment', [HomeController::class, 'storeAppointment'])->name('appointment.store');
 
 
 Route::get('/info/{id?}', [ErrorController::class , 'error'])->name('errors');
