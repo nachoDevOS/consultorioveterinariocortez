@@ -276,14 +276,13 @@
                                 @enderror
                             </div>
                             
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input @error('terms') is-invalid @enderror" id="terms" name="terms" required>
-                                <label class="form-check-label" for="terms">Acepto los términos y condiciones <span class="text-danger">*</span></label>
-                                @error('terms')
+                            <div class="mb-3">
+                                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                                @error('g-recaptcha-response')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Solicitar Cita</button>
+                            <button type="submit" class="btn btn-primary w-100 mt-3">Solicitar Cita</button>
                         </form>
                     </div>
                 </div>
@@ -412,6 +411,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
 
         // Smooth scrolling for navigation links
