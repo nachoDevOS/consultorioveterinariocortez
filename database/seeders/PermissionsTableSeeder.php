@@ -145,6 +145,23 @@ class PermissionsTableSeeder extends Seeder
             ]);
         }
 
+        $permissions = [
+            'browse_races' => 'Ver lista de razas',
+            'read_races' => 'Ver detalles de las razas',
+            'edit_races' => 'Editar información de las razas',
+            'add_races' => 'Agregar nuevas razas',
+            'delete_races' => 'Eliminar razas',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'races',
+                'tableDescription'=>'Razas'
+            ]);
+        }
+
 
 
         // Parametros de Inventario

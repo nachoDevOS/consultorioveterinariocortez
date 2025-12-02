@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MicroServiceController;
+use App\Http\Controllers\RaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WhatsappController;
 
@@ -55,6 +56,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('animals', [AnimalController::class, 'index'])->name('voyager.animals.index');
     Route::get('animals/ajax/list', [AnimalController::class, 'list']);
     Route::get('animals/{id}', [AnimalController::class, 'show'])->name('voyager.animals.show');
+
+    // --- Rutas para Razas (Races) ---
+    Route::post('races', [RaceController::class, 'store'])->name('voyager.races.store');
+    Route::get('races/{id}/edit', [RaceController::class, 'edit'])->name('voyager.races.edit');
+    Route::put('races/{id}', [RaceController::class, 'update'])->name('voyager.races.update');
+    Route::delete('races/{id}', [RaceController::class, 'destroy'])->name('voyager.races.destroy');
+    // Ruta para la lista AJAX de razas por animal
+    Route::get('animals/{id}/races/ajax', [RaceController::class, 'ajaxList'])->name('animals.races.ajax');
 
 
     Route::resource('incomes', IncomeController::class);
