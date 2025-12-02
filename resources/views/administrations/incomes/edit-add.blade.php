@@ -261,8 +261,8 @@
                                                 <img src="${image}" width="60px" style="border-radius: 4px;"/>
                                             </div>
                                             <div style="flex-grow: 1;">
-                                                <div style="font-size: 14px; font-weight: bold; margin-bottom: 1px;">${product.name}</div>
-                                                <div style="margin-bottom: 0px;"><small>Cat.: ${product.category.name}</small></div>
+                                                <div style="font-size: 14px; font-weight: bold; margin-bottom: 1px;">${product.nameGeneric} ${product.nameTrade ? `| ${product.nameTrade}` : ''}</div>
+                                                <div style="margin-bottom: 0px;"><small>Cat.: ${product.laboratory.name}</small></div>
                                                 <div style="color: #666;">${product.brand.name}</div>
                                             </div>
                                         </div>
@@ -280,17 +280,14 @@
                                     <td style="vertical-align: middle; padding: 5px;">
                                         <div class="input-group input-group-item"><span class="input-group-addon">Compra</span><input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/></div>
                                         <div class="input-group input-group-item"><span class="input-group-addon">Venta</span><input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/></div>
-                                        <div class="input-group input-group-item"><span class="input-group-addon">P/Mayor</span><input type="number" name="products[${product.id}][priceWhole]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-priceWhole-${product.id}" value="${product.priceWhole || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/></div>
                                     </td>
                                     <td class="text-right" style="vertical-align: middle; padding: 5px;">
                                         <input type="hidden" name="products[${product.id}][amountPurchase]" id="subTotalPurchase-${product.id}" />
                                         <input type="hidden" name="products[${product.id}][amountSale]" id="subTotalSale-${product.id}" />
-                                        <input type="hidden" name="products[${product.id}][amountWhole]" id="subTotalWhole-${product.id}" />
                                         <div style="display: flex; justify-content: space-between; align-items: center;">
                                             <div>
                                                 <div><small>Compra:</small> <b class="label-subtotal" id="label-subtotal-purchase-${product.id}" style="font-size: 1.1em;">0.00</b></div>
                                                 <div><small>Venta:</small> <b id="label-subtotal-sale-${product.id}" style="font-size: 1.1em;">0.00</b></div>
-                                                <div><small>P/Mayor:</small> <b id="label-subtotal-whole-${product.id}" style="font-size: 1.1em;">0.00</b></div>
                                             </div>
                                             <button type="button" onclick="removeTr(${product.id})" class="btn btn-link" style="padding-right: 0px;">
                                                 <i class="voyager-trash text-danger"></i>
