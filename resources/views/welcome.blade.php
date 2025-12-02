@@ -12,15 +12,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
-<style>
-    /* Prevenir el desbordamiento horizontal causado por el botón de WhatsApp */
-    body {
-        overflow-x: hidden;
-    }
-    .whatsapp-float {
-        max-width: 100%;
-    }
-</style>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -249,12 +240,14 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-12 mb-3">
-                                <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
-                                <input type="file" class="form-control @error('pet_photo') is-invalid @enderror" id="pet-photo" name="pet_photo" accept="image/*">
-                                @error('pet_photo')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
+                                    <input type="file" class="form-control @error('pet_photo') is-invalid @enderror" id="pet-photo" name="pet_photo" accept="image/*">
+                                    @error('pet_photo')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) <span class="text-danger">*</span></label>
@@ -350,11 +343,11 @@
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 mb-6">
                     <h4>{{setting('site.title')}}</h4>
                     <p>{{setting('site.description')}}</p>
                 </div>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 mb-6 ">
                     <h4>Enlaces rápidos</h4>
                     <ul class="list-unstyled">
                         <li><a href="#inicio" class="text-light">Inicio</a></li>
@@ -363,13 +356,13 @@
                         <li><a href="#contacto" class="text-light">Contacto</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4 mb-4">
+                {{-- <div class="col-md-4 mb-4">
                     <h4>Suscríbete a nuestro boletín</h4>
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" placeholder="Tu correo electrónico">
                         <button class="btn btn-primary" type="button">Suscribirse</button>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <hr class="my-4">
             <div class="text-center">
