@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MicroServiceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WhatsappController;
@@ -47,6 +49,31 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::put('people/{id}', [PersonController::class, 'update'])->name('voyager.people.update');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
+
+
+    Route::resource('incomes', IncomeController::class);
+    Route::get('incomes/ajax/list', [IncomeController::class, 'list']);
+    Route::get('incomes/item/ajax', [AjaxController::class, 'itemList']);//Para obtener los item que esten registrado
+    // Route::post('incomes/{id}/payment', [IncomeController::class, 'storePayment'])->name('incomes-payment.store');
+    // Route::post('incomes/{id}/file', [IncomeController::class, 'fileStore'])->name('incomes-file.store');
+    // Route::get('incomes/{id}/file/download', [IncomeController::class, 'downloadFile'])->name('incomes.file.download');
+
+    // Route::post('incomes/{id}/incomeDetail/transfer', [IncomeController::class, 'transferIncomeDetail'])->name('incomes-incomeDetail.transfer');//Para transferir los item a las sucursale que pue tengan stop  los item
+    // Route::delete('incomes/{id}/incomeDetail/transfer/{transfer}', [IncomeController::class, 'destroyTransferIncomeDetail'])->name('incomes-incomeDetail-transfer.destroy');
+
+    Route::get('items', [ItemController::class, 'index'])->name('voyager.items.index');
+    Route::get('items/ajax/list', [ItemController::class, 'list']);
+    Route::post('items', [ItemController::class, 'store'])->name('voyager.items.store');
+    Route::put('items/{id}', [ItemController::class, 'update'])->name('voyager.items.update');
+    Route::get('items/{id}', [ItemController::class, 'show'])->name('voyager.items.show');
+    Route::get('items/{id}/stock/ajax/list', [ItemController::class, 'listStock']);
+    // Route::get('items/{id}/sales/ajax/list', [ItemController::class, 'listSales']);
+
+    Route::post('items/{id}/stock', [ItemController::class, 'storeStock'])->name('items-stock.store');
+    Route::delete('items/{id}/stock/{stock}', [ItemController::class, 'destroyStock'])->name('items-stock.destroy');
+
+
+
 
     // Users
     Route::get('users/ajax/list', [UserController::class, 'list']);

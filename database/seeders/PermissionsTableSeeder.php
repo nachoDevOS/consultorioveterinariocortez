@@ -90,6 +90,23 @@ class PermissionsTableSeeder extends Seeder
             ]);
         }
 
+        $permissions = [
+            'browse_incomes' => 'Ver lista de compras',
+            'read_incomes' => 'Ver detalles de compras',
+            'edit_incomes' => 'Editar información de compras',
+            'add_incomes' => 'Agregar nuevas compras',
+            'delete_incomes' => 'Eliminar compras',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'incomes',
+                'tableDescription'=>'Compras'
+            ]);
+        }
+
 
         // Parametros
         // servicios
@@ -127,6 +144,44 @@ class PermissionsTableSeeder extends Seeder
                 'tableDescription'=>'Animales o Especies'
             ]);
         }
+
+
+
+        // Parametros de Inventario
+        $permissions = [
+            'browse_laboratories' => 'Ver lista de laboratorio',
+            'read_laboratories' => 'Ver detalles de los laboratorio',
+            'edit_laboratories' => 'Editar información de laboratorio',
+            'add_laboratories' => 'Agregar nuevos laboratorio',
+            'delete_laboratories' => 'Eliminar laboratorio',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'laboratories',
+                'tableDescription'=>'Laboratorio'
+            ]);
+        }
+
+        $permissions = [
+            'browse_brands' => 'Ver lista de marcas',
+            'read_brands' => 'Ver detalles de marcas',
+            'edit_brands' => 'Editar información de marcas',
+            'add_brands' => 'Agregar nuevas marcas',
+            'delete_brands' => 'Eliminar marcas',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'brands',
+                'tableDescription'=>'Marcas'
+            ]);
+        }
+
 
      
 
