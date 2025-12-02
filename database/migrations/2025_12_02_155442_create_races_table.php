@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pets', function (Blueprint $table) {
+        Schema::create('races', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('person_id')->nullable()->constrained('people');
             $table->foreignId('animal_id')->nullable()->constrained('animals');  
 
             $table->string('name')->nullable();
-            $table->string('color')->nullable();
-            $table->date('birthdate')->nullable();
-            $table->string('gender')->nullable();
+            $table->text('observation')->nullable();
 
             $table->smallInteger('status')->default(1);
 
@@ -39,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pets');
+        Schema::dropIfExists('races');
     }
 };
