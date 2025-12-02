@@ -3,75 +3,57 @@
         <table id="dataTable" class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th style="text-align: center">ID</th>
-                    <th style="text-align: center">CI/Pasaporte</th>
-                    <th style="text-align: center">Nombre completo</th>                    
-                    <th style="text-align: center">Fecha nac.</th>
-                    <th style="text-align: center">Telefono/Celular</th>
+                    <th style="text-align: center; width: 5%;">ID</th>
+                    <th style="text-align: center">Servicios</th>
+                    <th style="text-align: center">Nombre Cliente</th>     
+                    <th style="text-align: center">Especie</th>     
+                    <th style="text-align: center">Nombre Mascota</th>
+                    <th style="text-align: center">Sexo</th>
+                    <th style="text-align: center">Edad.</th>
                     <th style="text-align: center">Estado</th>
                     <th style="text-align: center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($data as $item)
-                @php
-                    $image = asset('images/default.jpg');
-                    if($item->image){
-                        $image = asset('storage/' . str_replace('.avif', '', $item->image) . '-cropped.webp');
-                    }
-                    $now = \Carbon\Carbon::now();
-                    $birthday = new \Carbon\Carbon($item->birth_date);
-                    $age = $birthday->diffInYears($now);
-                @endphp
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->ci }}</td>
-                    <td>
-                        <div style="display: flex; align-items: center;">
-                            <img src="{{ $image }}" alt="{{ $item->first_name }}" class="image-expandable" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px; object-fit: cover;">
-                            <div>
-                                {{ strtoupper($item->first_name) }} {{ $item->middle_name ? strtoupper($item->middle_name) : '' }} {{ strtoupper($item->paternal_surname) }}  {{ strtoupper($item->maternal_surname) }}
-                            </div>
-                        </div>
-                    </td>
-                    <td style="text-align: center">
-                        @if ($item->birth_date)
-                            {{ \Carbon\Carbon::parse($item->birth_date)->format('d/m/Y') }} <br> <small>{{ $age }} años</small>
-                        @else
-                            Sin Datos                            
-                        @endif
-                    </td>
-                    <td style="text-align: center">{{ $item->phone?$item->phone:'SN' }}</td>
-                    <td style="text-align: center">
-                        @if ($item->status==1)  
-                            <label class="label label-success">Activo</label>
-                        @else
-                            <label class="label label-warning">Inactivo</label>
-                        @endif
-
-                        
-                    </td>
-                    <td style="width: 18%" class="no-sort no-click bread-actions text-right">
-                        @if (auth()->user()->hasPermission('read_people'))
-                            <a href="{{ route('voyager.people.show', ['id' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm"></span>
-                            </a>
-                        @endif
-                        @if (auth()->user()->hasPermission('edit_people'))
-                            <a href="{{ route('voyager.people.edit', ['id' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
-                                <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm"></span>
-                            </a>
-                        @endif
-                        @if (auth()->user()->hasPermission('delete_people'))
-                            <a href="#" onclick="deleteItem('{{ route('voyager.people.destroy', ['id' => $item->id]) }}')" title="Eliminar" data-toggle="modal" data-target="#modal-delete" class="btn btn-sm btn-danger delete">
-                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm"></span>
-                            </a>
-                        @endif
-                    </td>
-                </tr>
+                    <tr>
+                        <td style="text-align: center; width: 5%">{{ $item->id }}</td>
+                        <td>{{ $item->service->name }}</td>
+                        <td>{{ $item->nameClient }}</td>
+                        <td style="text-align: center">{{ $item->animal->name }}</td>
+                        <td>{{ $item->nameAnimal }}</td>
+                        <td style="text-align: center">{{ $item->gender }}</td>                      
+           
+                        <td style="text-align: center">{{ $item->phone?$item->phone:'SN' }}</td>
+                        <td style="text-align: center">
+                            @if ($item->status!="Pendiente")  
+                                <label class="label label-success">Atendido</label>
+                            @else
+                                <label class="label label-warning">Pendiemte</label> <br>
+                                @if ($item->view)
+                                    <i class="fa-solid fa-eye"></i>
+                                @else
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                @endif
+                            @endif
+                        </td>
+                        <td style="width: 10%" class="no-sort no-click bread-actions text-right">
+                            @if (auth()->user()->hasPermission('read_appointments'))
+                                <a href="{{ route('voyager.people.show', ['id' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm"></span>
+                                </a>
+                            @endif
+                
+                            @if (auth()->user()->hasPermission('delete_appointments'))
+                                <a href="#" onclick="deleteItem('{{ route('voyager.people.destroy', ['id' => $item->id]) }}')" title="Eliminar" data-toggle="modal" data-target="#modal-delete" class="btn btn-sm btn-danger delete">
+                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm"></span>
+                                </a>
+                            @endif
+                        </td>
+                    </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="9">
                             <h5 class="text-center" style="margin-top: 50px">
                                 <img src="{{ asset('images/empty.png') }}" width="120px" alt="" style="opacity: 0.8">
                                 <br><br>

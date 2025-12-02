@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{setting('site.title')}} - {{setting('site.description')}}</title>
+    
+            <!-- Favicon -->
+    <?php $admin_favicon = Voyager::setting('site.logo', ''); ?>
+    @if($admin_favicon == '')
+        <link rel="shortcut icon" href="{{ asset('images/icon.png') }}" type="image/png">
+    @else
+        <link rel="shortcut icon" href="{{ Voyager::image($admin_favicon) }}" type="image/png">
+    @endif
+
+    {{-- SEO --}}
+    <meta property="og:title"         content="{{ Voyager::setting('site.title') }}" />
+    <meta property="og:description"   content="{{ Voyager::setting('site.description') }}" />
+    <meta property="og:image"         content="{{ $admin_favicon == '' ? asset('images/icon.png') : Voyager::image($admin_favicon) }}" />
+
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -12,15 +28,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
-<style>
-    /* Prevenir el desbordamiento horizontal causado por el botón de WhatsApp */
-    body {
-        overflow-x: hidden;
-    }
-    .whatsapp-float {
-        max-width: 100%;
-    }
-</style>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -249,16 +256,18 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-12 mb-3">
-                                <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
-                                <input type="file" class="form-control @error('pet_photo') is-invalid @enderror" id="pet-photo" name="pet_photo" accept="image/*">
-                                @error('pet_photo')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="pet-photo" class="form-label">Subir Foto de la Mascota (opcional)</label>
+                                    <input type="file" class="form-control @error('pet_photo') is-invalid @enderror" id="pet-photo" name="pet_photo" accept="image/*">
+                                    @error('pet_photo')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) <span class="text-danger">*</span></label>
-                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px;"></div>
+                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
                                 <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="appointment-location" name="appointment_location" value="{{ old('appointment_location') }}" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
@@ -325,16 +334,28 @@
                     <div class="contact-info">
                         <p><i class="fas fa-map-marker-alt"></i> {{setting('site.address')}}</p>
                         <p><i class="fas fa-phone"></i> +591 {{setting('redes-sociales.whatsapp')}}</p>
-                        <p><i class="fas fa-envelope"></i> {{setting('site.email')??'SN'}}</p>
+                        {{-- <p><i class="fas fa-envelope"></i> {{setting('site.email')??'SN'}}</p> --}}
                         <p><i class="fas fa-clock"></i> Lunes a Viernes: 8:00 am - 6:00 pm</p>
                         <p><i class="fas fa-clock"></i> Sábados: 9:00 am - 2:00 pm</p>
                     </div>
                     <h4>Síguenos en redes sociales</h4>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        @if (setting('redes-sociales.facebook'))
+                            <a href="{{setting('redes-sociales.facebook')}}"><i class="fab fa-facebook-f"></i></a>
+                        @endif
+                        @if (setting('redes-sociales.instagram'))
+                            <a href="{{setting('redes-sociales.instagram')}}"><i class="fab fa-instagram"></i></a>
+                        @endif
+                        @if (setting('redes-sociales.tiktok'))
+                            <a href="{{setting('redes-sociales.tiktok')}}"><i class="fa-brands fa-tiktok"></i></a>                            
+                        @endif
+                        @if (setting('redes-sociales.twitter'))
+                            <a href="{{setting('redes-sociales.twitter')}}"><i class="fab fa-twitter"></i></a>
+                        @endif
+                        @if (setting('redes-sociales.youtube'))
+                           <a href="{{setting('redes-sociales.youtube')}}"><i class="fab fa-youtube"></i></a> 
+                        @endif
+                        
                     </div>
                 </div>
                 <div class="col-md-6" data-aos="fade-left">
@@ -350,11 +371,11 @@
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 mb-6">
                     <h4>{{setting('site.title')}}</h4>
                     <p>{{setting('site.description')}}</p>
                 </div>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 mb-6 ">
                     <h4>Enlaces rápidos</h4>
                     <ul class="list-unstyled">
                         <li><a href="#inicio" class="text-light">Inicio</a></li>
@@ -363,13 +384,13 @@
                         <li><a href="#contacto" class="text-light">Contacto</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4 mb-4">
+                {{-- <div class="col-md-4 mb-4">
                     <h4>Suscríbete a nuestro boletín</h4>
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" placeholder="Tu correo electrónico">
                         <button class="btn btn-primary" type="button">Suscribirse</button>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <hr class="my-4">
             <div class="text-center">
@@ -446,10 +467,10 @@
         // --- Leaflet Map for Location Picker ---
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
         const defaultLat = -14.8203618;
-        const defaultLng = -64.897594;
-        const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 14); // Aumentamos el zoom a 17 y limitamos el zoom máximo a 19
+        const defaultLng = -64.897594; // Coordenadas de ejemplo
+        const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 13); // Zoom máximo seguro y vista inicial con más contexto
 
-        // 2. Definir las capas de mapa (Normal y Satélite)
+        // 2. Definir las capas de mapa (Satélite y Normal)
         const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
@@ -458,25 +479,25 @@
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
 
-        // Añadir la capa satelital por defecto
+        // Añadir la capa de satélite por defecto al mapa
         satelliteLayer.addTo(map);
 
-        // Crear el objeto con las capas base para el control
+        // Crear el objeto con las capas base para el control de capas
         const baseMaps = {
             "Satélite": satelliteLayer,
             "Mapa": osmLayer
         };
+        // Añadir el control de capas al mapa
         L.control.layers(baseMaps).addTo(map);
 
         // 3. Crear un marcador arrastrable
-        let marker = L.marker([defaultLat, defaultLng], {
-            draggable: true
-        }).addTo(map);
+        let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
 
         // 4. Obtener referencias a los campos del formulario
         const latInput = document.getElementById('latitude');
         const lngInput = document.getElementById('longitude');
         const locationInput = document.getElementById('appointment-location');
+        locationInput.value = 'Arrastra el marcador o haz clic en el mapa para seleccionar.';
 
         // 5. Función para actualizar los campos y la dirección
         function updateMarkerPosition(lat, lng) {
@@ -499,14 +520,23 @@
                 });
         }
 
-        // 6. Actualizar campos cuando el marcador se mueve
+        // 6. Eventos del mapa y marcador
+        // Actualizar campos cuando el marcador se arrastra y se suelta
         marker.on('dragend', function(e) {
             const newPos = e.target.getLatLng();
             updateMarkerPosition(newPos.lat, newPos.lng);
         });
 
-        // 7. Establecer la posición inicial por defecto y actualizar el campo de dirección.
-        updateMarkerPosition(defaultLat, defaultLng);
+        // Mover el marcador al hacer clic o doble clic en el mapa
+        map.on('click dblclick', function(e) {
+            const newPos = e.latlng;
+            marker.setLatLng(newPos);
+            updateMarkerPosition(newPos.lat, newPos.lng);
+        });
+
+        // 7. Establecer la posición inicial del marcador (sin geocodificación inicial)
+        latInput.value = defaultLat;
+        lngInput.value = defaultLng;
     </script>
 </body>
 </html>

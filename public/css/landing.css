@@ -10,7 +10,11 @@ body {
     font-family: 'Roboto', sans-serif;
     color: var(--dark);
     line-height: 1.6;
-    overflow-x: hidden;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5 {
@@ -242,4 +246,97 @@ footer {
     color: var(--primary);
     margin-right: 10px;
     width: 20px;
+}
+
+
+/* =========================================
+   Responsive Design Adjustments
+   ========================================= */
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+    .hero {
+        padding: 100px 0;
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+    .hero {
+        padding: 80px 0;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+    .hero .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .hero .btn:last-child {
+        margin-bottom: 0;
+    }
+    .hero .btn-lg {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+    .service-card, .testimonial-card {
+        margin-bottom: 20px;
+    }
+    .form-container {
+        padding: 20px;
+    }
+    #contacto .col-md-6 {
+        margin-bottom: 30px;
+    }
+    footer {
+        text-align: center;
+    }
+
+    /* WhatsApp Button Mobile */
+    .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+    .whatsapp-float i {
+        font-size: 1.5rem;
+    }
+    .whatsapp-float:hover {
+        transform: scale(1.1);
+        width: 50px; /* Ensure it does not expand */
+        padding: 0;
+    }
+    .whatsapp-float:hover .whatsapp-text {
+        display: none; /* Hide text on mobile */
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+    .section-title {
+        font-size: 1.8rem;
+    }
+    .form-container {
+        padding: 15px;
+    }
+    .input-group-text {
+        font-size: 0.875rem;
+    }
 }

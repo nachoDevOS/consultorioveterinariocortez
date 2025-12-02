@@ -37,4 +37,15 @@ class Appointment extends Model
         'deleteRole',
         'deleteObservation',
     ];
+
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function animal()
+    {
+        return $this->belongsTo(Animal::class, 'animal_id');
+    }
 }

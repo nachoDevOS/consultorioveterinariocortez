@@ -46,6 +46,7 @@
                             </div>
                             <div class="col-sm-2">
                                 <select name="status" class="form-control select2" id="status">
+                                    <option value="">Todos</option>
                                     <option value="Pendiente">Pendiente</option>
                                     <option value="Atendidas">Atendidas</option>                                    
                                 </select>
