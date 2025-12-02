@@ -30,7 +30,7 @@ class PersonController extends Controller
         $paginate = request('paginate') ?? 10;
 
         // 1. Iniciar el temporizador
-        $startTime = microtime(true);
+        // $startTime = microtime(true);
 
         $data = Person::query()
             // El método when() hace lo mismo que tu "if($search)"
@@ -48,10 +48,10 @@ class PersonController extends Controller
             ->paginate($paginate);
 
         // 2. Finalizar el temporizador y calcular la duración
-        $endTime = microtime(true);
-        $duration = ($endTime - $startTime) * 1000;
+        // $endTime = microtime(true);
+        // $duration = ($endTime - $startTime) * 1000;
 
-        Log::channel('time')->info("Tiempo de consulta en PersonController@list: {$duration} ms");
+        // Log::channel('time')->info("Tiempo de consulta en PersonController@list: {$duration} ms");
 
         return view('administrations.people.list', compact('data'));
     }

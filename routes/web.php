@@ -5,6 +5,7 @@ use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncomeController;
@@ -49,6 +50,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::put('people/{id}', [PersonController::class, 'update'])->name('voyager.people.update');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
+
+
+    Route::get('animals', [AnimalController::class, 'index'])->name('voyager.animals.index');
+    Route::get('animals/ajax/list', [AnimalController::class, 'list']);
+    Route::get('animals/{id}', [AnimalController::class, 'show'])->name('voyager.animals.show');
 
 
     Route::resource('incomes', IncomeController::class);
