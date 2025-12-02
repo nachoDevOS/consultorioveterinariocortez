@@ -199,9 +199,6 @@ return [
         // Registrar el proveedor de servicios del paquete Agent
         Jenssegers\Agent\AgentServiceProvider::class,
 
-        // Proveedor de servicios para Google reCAPTCHA
-        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
-
     ],
 
     /*

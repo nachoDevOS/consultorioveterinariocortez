@@ -36,8 +36,7 @@ class HomeController extends Controller
             'longitude' => 'required|numeric',
             'service' => 'required|exists:services,id', // Validar que el ID del servicio exista
             'message' => 'required|string|max:1000',
-            // 'terms' => 'accepted' // Ya no es necesario
-            'g-recaptcha-response' => 'required|captcha',
+            'terms' => 'accepted'
         ]);
       
         // Manejo de la subida de archivos (si existe)
@@ -69,8 +68,8 @@ class HomeController extends Controller
 
         // return 1;
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
-        return back()->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
+        return redirect('/')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
 
-        // return back()->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
+        // return redirect('/#cita')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
     }
 }
