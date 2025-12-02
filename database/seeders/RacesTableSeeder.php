@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class AnimalsTableSeeder extends Seeder
+class RacesTableSeeder extends Seeder
 {
 
     /**
@@ -16,18 +16,18 @@ class AnimalsTableSeeder extends Seeder
     {
         
 
-        \DB::table('animals')->delete();
+        \DB::table('races')->delete();
         
-        \DB::table('animals')->insert(array (
+        \DB::table('races')->insert(array (
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Canino',
+                'animal_id' => 1,
+                'name' => 'Pastor Alemán',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-01 09:25:04',
-                'updated_at' => '2025-12-02 16:30:03',
+                'created_at' => '2025-12-02 17:19:12',
+                'updated_at' => '2025-12-02 17:19:12',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -38,12 +38,12 @@ class AnimalsTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Felino',
+                'animal_id' => 1,
+                'name' => 'Labrador Retriever',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-01 09:25:10',
-                'updated_at' => '2025-12-02 16:30:48',
+                'created_at' => '2025-12-02 17:22:21',
+                'updated_at' => '2025-12-02 17:22:21',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -54,12 +54,12 @@ class AnimalsTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'name' => 'Ave',
+                'animal_id' => 1,
+                'name' => 'Bulldog Francés',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-01 09:25:16',
-                'updated_at' => '2025-12-01 09:25:31',
+                'created_at' => '2025-12-02 17:22:30',
+                'updated_at' => '2025-12-02 17:22:30',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -70,12 +70,12 @@ class AnimalsTableSeeder extends Seeder
             3 => 
             array (
                 'id' => 4,
-                'name' => 'Roedores',
+                'animal_id' => 1,
+                'name' => 'Poodle',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-01 09:25:39',
-                'updated_at' => '2025-12-02 16:30:41',
+                'created_at' => '2025-12-02 17:22:46',
+                'updated_at' => '2025-12-02 17:22:46',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -86,12 +86,12 @@ class AnimalsTableSeeder extends Seeder
             4 => 
             array (
                 'id' => 5,
-                'name' => 'Equino',
+                'animal_id' => 1,
+                'name' => 'Schnauzer',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-01 09:26:03',
-                'updated_at' => '2025-12-02 16:30:59',
+                'created_at' => '2025-12-02 17:22:56',
+                'updated_at' => '2025-12-02 17:22:56',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -102,12 +102,12 @@ class AnimalsTableSeeder extends Seeder
             5 => 
             array (
                 'id' => 6,
-                'name' => 'Suinos',
+                'animal_id' => 1,
+                'name' => 'Rottweiler',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-02 16:31:10',
-                'updated_at' => '2025-12-02 16:31:17',
+                'created_at' => '2025-12-02 17:23:03',
+                'updated_at' => '2025-12-02 17:23:03',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -118,12 +118,12 @@ class AnimalsTableSeeder extends Seeder
             6 => 
             array (
                 'id' => 7,
-                'name' => 'Bovino',
+                'animal_id' => 1,
+                'name' => 'Pitbull',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-02 16:31:26',
-                'updated_at' => '2025-12-02 16:31:26',
+                'created_at' => '2025-12-02 17:23:09',
+                'updated_at' => '2025-12-02 17:23:09',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -134,12 +134,12 @@ class AnimalsTableSeeder extends Seeder
             7 => 
             array (
                 'id' => 8,
-                'name' => 'Bufalino',
+                'animal_id' => 2,
+                'name' => 'Persa',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-02 16:31:37',
-                'updated_at' => '2025-12-02 16:31:37',
+                'created_at' => '2025-12-02 17:23:28',
+                'updated_at' => '2025-12-02 17:23:28',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -150,12 +150,12 @@ class AnimalsTableSeeder extends Seeder
             8 => 
             array (
                 'id' => 9,
-                'name' => 'Ovino',
+                'animal_id' => 2,
+                'name' => 'Siames',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-02 16:31:51',
-                'updated_at' => '2025-12-02 16:31:51',
+                'created_at' => '2025-12-02 17:23:33',
+                'updated_at' => '2025-12-02 17:23:33',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -166,12 +166,12 @@ class AnimalsTableSeeder extends Seeder
             9 => 
             array (
                 'id' => 10,
-                'name' => 'Caprino',
+                'animal_id' => 2,
+                'name' => 'Angora',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-02 16:32:01',
-                'updated_at' => '2025-12-02 16:32:01',
+                'created_at' => '2025-12-02 17:23:41',
+                'updated_at' => '2025-12-02 17:23:41',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,
@@ -182,12 +182,60 @@ class AnimalsTableSeeder extends Seeder
             10 => 
             array (
                 'id' => 11,
-                'name' => 'Cuyes',
+                'animal_id' => 2,
+                'name' => 'Maine Coon',
                 'observation' => NULL,
-                'image' => NULL,
                 'status' => 1,
-                'created_at' => '2025-12-02 16:32:13',
-                'updated_at' => '2025-12-02 16:32:13',
+                'created_at' => '2025-12-02 17:23:49',
+                'updated_at' => '2025-12-02 17:23:49',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            11 => 
+            array (
+                'id' => 12,
+                'animal_id' => 5,
+                'name' => 'Percherón',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-02 17:24:36',
+                'updated_at' => '2025-12-02 17:24:36',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            12 => 
+            array (
+                'id' => 13,
+                'animal_id' => 5,
+                'name' => 'Bretón',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-02 17:24:44',
+                'updated_at' => '2025-12-02 17:24:44',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            13 => 
+            array (
+                'id' => 14,
+                'animal_id' => 5,
+                'name' => 'Poni',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-02 17:24:50',
+                'updated_at' => '2025-12-02 17:24:50',
                 'registerUser_id' => 1,
                 'registerRole' => 'admin',
                 'deleted_at' => NULL,

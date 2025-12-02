@@ -27,7 +27,7 @@
                     </td>
                     <td class="no-sort no-click bread-actions text-right">
                         @if (auth()->user()->hasPermission('delete_races'))
-                            <a href="#" title="Borrar" class="btn btn-sm btn-danger pull-right delete" data-id="{{ $item->id }}" data-toggle="modal" data-target="#delete_modal" onclick="deleteItem('{{ route('voyager.races.destroy', ['race' => $item->id]) }}')">
+                            <a href="#" title="Borrar" class="btn btn-sm btn-danger pull-right delete" data-id="{{ $item->id }}" data-toggle="modal" data-target="#delete_modal" onclick="deleteItem('{{ route('voyager.races.destroy', ['id' => $item->id]) }}')">
                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
                             </a>
                         @endif

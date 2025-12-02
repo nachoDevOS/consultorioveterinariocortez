@@ -28,5 +28,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(PermissionRoleTableSeeder::class);
         $this->call(AnimalsTableSeeder::class);
         $this->call(ServicesTableSeeder::class);
+        $this->call(RacesTableSeeder::class);
     }
 }

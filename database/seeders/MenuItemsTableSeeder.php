@@ -298,14 +298,14 @@ class MenuItemsTableSeeder extends Seeder
                 'title' => 'Especies',
                 'url' => '',
                 'target' => '_self',
-                'icon_class' => 'fa-solid fa-dog',
-                'color' => NULL,
+                'icon_class' => 'voyager-paw',
+                'color' => '#000000',
                 'parent_id' => 24,
                 'order' => 1,
                 'created_at' => '2025-12-01 15:32:06',
-                'updated_at' => '2025-12-01 15:33:27',
+                'updated_at' => '2025-12-02 16:33:29',
                 'route' => 'voyager.animals.index',
-                'parameters' => NULL,
+                'parameters' => 'null',
             ),
             18 => 
             array (

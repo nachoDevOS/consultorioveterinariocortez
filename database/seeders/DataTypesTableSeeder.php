@@ -116,7 +116,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'animals',
                 'display_name_singular' => 'Especie',
                 'display_name_plural' => 'Especies',
-                'icon' => 'fa-solid fa-dog',
+                'icon' => 'voyager-paw',
                 'model_name' => 'App\\Models\\Animal',
                 'policy_name' => NULL,
                 'controller' => NULL,
@@ -125,7 +125,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2025-12-01 15:32:06',
-                'updated_at' => '2025-12-01 15:37:20',
+                'updated_at' => '2025-12-02 16:34:09',
             ),
             6 => 
             array (
@@ -215,7 +215,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2025-12-02 11:13:15',
-                'updated_at' => '2025-12-02 11:55:22',
+                'updated_at' => '2025-12-02 12:20:17',
             ),
         ));
         
