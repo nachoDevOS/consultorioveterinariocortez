@@ -267,7 +267,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) <span class="text-danger">*</span></label>
-                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px;"></div>
+                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
                                 <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="appointment-location" name="appointment_location" value="{{ old('appointment_location') }}" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
@@ -467,10 +467,10 @@
         // --- Leaflet Map for Location Picker ---
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
         const defaultLat = -14.8203618;
-        const defaultLng = -64.897594;
-        const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 14); // Aumentamos el zoom a 17 y limitamos el zoom máximo a 19
+        const defaultLng = -64.897594; // Coordenadas de ejemplo
+        const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 17); // Zoom inicial más cercano y zoom máximo aumentado
 
-        // 2. Definir las capas de mapa (Normal y Satélite)
+        // 2. Definir las capas de mapa (Satélite y Normal)
         const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
@@ -479,25 +479,25 @@
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
 
-        // Añadir la capa satelital por defecto
+        // Añadir la capa de satélite por defecto al mapa
         satelliteLayer.addTo(map);
 
-        // Crear el objeto con las capas base para el control
+        // Crear el objeto con las capas base para el control de capas
         const baseMaps = {
             "Satélite": satelliteLayer,
             "Mapa": osmLayer
         };
+        // Añadir el control de capas al mapa
         L.control.layers(baseMaps).addTo(map);
 
         // 3. Crear un marcador arrastrable
-        let marker = L.marker([defaultLat, defaultLng], {
-            draggable: true
-        }).addTo(map);
+        let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
 
         // 4. Obtener referencias a los campos del formulario
         const latInput = document.getElementById('latitude');
         const lngInput = document.getElementById('longitude');
         const locationInput = document.getElementById('appointment-location');
+        locationInput.value = 'Arrastra el marcador o haz clic en el mapa para seleccionar.';
 
         // 5. Función para actualizar los campos y la dirección
         function updateMarkerPosition(lat, lng) {
@@ -520,14 +520,23 @@
                 });
         }
 
-        // 6. Actualizar campos cuando el marcador se mueve
+        // 6. Eventos del mapa y marcador
+        // Actualizar campos cuando el marcador se arrastra y se suelta
         marker.on('dragend', function(e) {
             const newPos = e.target.getLatLng();
             updateMarkerPosition(newPos.lat, newPos.lng);
         });
 
-        // 7. Establecer la posición inicial por defecto y actualizar el campo de dirección.
-        updateMarkerPosition(defaultLat, defaultLng);
+        // Mover el marcador al hacer clic o doble clic en el mapa
+        map.on('click dblclick', function(e) {
+            const newPos = e.latlng;
+            marker.setLatLng(newPos);
+            updateMarkerPosition(newPos.lat, newPos.lng);
+        });
+
+        // 7. Establecer la posición inicial del marcador (sin geocodificación inicial)
+        latInput.value = defaultLat;
+        lngInput.value = defaultLng;
     </script>
 </body>
 </html>
