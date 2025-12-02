@@ -334,16 +334,28 @@
                     <div class="contact-info">
                         <p><i class="fas fa-map-marker-alt"></i> {{setting('site.address')}}</p>
                         <p><i class="fas fa-phone"></i> +591 {{setting('redes-sociales.whatsapp')}}</p>
-                        <p><i class="fas fa-envelope"></i> {{setting('site.email')??'SN'}}</p>
+                        {{-- <p><i class="fas fa-envelope"></i> {{setting('site.email')??'SN'}}</p> --}}
                         <p><i class="fas fa-clock"></i> Lunes a Viernes: 8:00 am - 6:00 pm</p>
                         <p><i class="fas fa-clock"></i> Sábados: 9:00 am - 2:00 pm</p>
                     </div>
                     <h4>Síguenos en redes sociales</h4>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        @if (setting('redes-sociales.facebook'))
+                            <a href="{{setting('redes-sociales.facebook')}}"><i class="fab fa-facebook-f"></i></a>
+                        @endif
+                        @if (setting('redes-sociales.instagram'))
+                            <a href="{{setting('redes-sociales.instagram')}}"><i class="fab fa-instagram"></i></a>
+                        @endif
+                        @if (setting('redes-sociales.tiktok'))
+                            <a href="{{setting('redes-sociales.tiktok')}}"><i class="fa-brands fa-tiktok"></i></a>                            
+                        @endif
+                        @if (setting('redes-sociales.twitter'))
+                            <a href="{{setting('redes-sociales.twitter')}}"><i class="fab fa-twitter"></i></a>
+                        @endif
+                        @if (setting('redes-sociales.youtube'))
+                           <a href="{{setting('redes-sociales.youtube')}}"><i class="fab fa-youtube"></i></a> 
+                        @endif
+                        
                     </div>
                 </div>
                 <div class="col-md-6" data-aos="fade-left">
