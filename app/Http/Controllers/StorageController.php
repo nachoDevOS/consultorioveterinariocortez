@@ -124,6 +124,22 @@ class StorageController extends Controller
         return $paths;
     }
 
+
+
+    public function file($file, $url)
+    {
+        $newFileName = Str::random(20).time().'.'.$file->getClientOriginalExtension();
+                            
+        $dir = $url.'/'.date('F').date('Y');
+                            
+        Storage::makeDirectory($dir);
+
+        Storage::disk('public')->put($dir.'/'.$newFileName, file_get_contents($file));                    
+                    $url = $dir.'/'.$newFileName;
+                    // $ok->update(['video' => $video]);
+        return $url;
+    }
+
     
 
     

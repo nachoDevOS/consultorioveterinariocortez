@@ -11,20 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('income_transactions', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->nullable()->constrained('transactions');
-            $table->foreignId('income_id')->nullable()->constrained('incomes');  
-            // $table->foreignId('cashier_id')->nullable()->constrained('cashiers');
+            // $table->string('type')->nullable();
+            $table->string('status'); // Ej: pending, completado, failed, refunded
 
-            $table->string('paymentType')->nullable();
-            $table->decimal('amount', 10, 2)->nullable();
+            $table->timestamps();     
 
-            $table->text('observation')->nullable();
-
-            $table->smallInteger('status')->default(1);
-
-            $table->timestamps();            
             $table->foreignId('registerUser_id')->nullable()->constrained('users');
             $table->string('registerRole')->nullable();
 
@@ -40,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('income_transactions');
+        Schema::dropIfExists('transactions');
     }
 };

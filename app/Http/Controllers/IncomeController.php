@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Income;
+use App\Models\IncomeDetail;
+use App\Models\IncomeTransaction;
 use App\Models\Supplier;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class IncomeController extends Controller
 {
@@ -58,6 +62,302 @@ class IncomeController extends Controller
         $this->custom_authorize('browse_incomes');
         $suppliers = Supplier::where('deleted_at', null)->get();
         return view('administrations.incomes.edit-add', compact('suppliers'));
+    }
+
+    public function store(Request $request)
+    { 
+        // return $request;
+        $this->custom_authorize('add_incomes');
+        $amount  =  $request->amount_cash + $request->amount_qr;
+
+
+        if($request->typeIncome == 'Compra al Contado')
+        {
+            if($amount < $request->amountTotalSale)
+            {
+                return redirect()->route('incomes.create')->with(['message' => 'Monto Incorrecto.', 'alert-type' => 'error']);
+            }
+        }
+
+        $imageObj = new StorageController;
+
+        $file = $request->file('file');
+        
+        if($file)
+        {
+            $file = $imageObj->file($file, "income/file");
+        }
+
+        DB::beginTransaction();
+        try {         
+            $income = Income::create([
+                    'supplier_id'=>$request->supplier_id,
+                    'typeIncome'=>$request->typeIncome, 
+                    'amount'=>$request->amountTotalSale,
+
+                    'observation'=>$request->observation,
+                    'date'=>$request->date,
+                    'file'=>$file,
+                    'status'=>$request->typeIncome == 'Compra al Contado'?'Pagado':($amount > $request->amountTotalSale?'Pagado':'Pendiente'),
+            ]);
+  
+            $transaction = Transaction::create([
+                'status'=>'Completado'
+            ]);
+
+            $cash = $request->amountPayment - $request->amountTotalSale;
+        
+            if ($request->payment_type == 'Efectivo' || $request->payment_type == 'Efectivo y Qr') {
+                IncomeTransaction::create([
+                    'income_id' => $income->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $request->typeIncome == 'Compra al Contado' && $request->payment_type == 'Efectivo' ? $request->amount_cash-$cash: $request->amount_cash,
+                    'paymentType' => 'Efectivo',
+                ]);
+            }
+            if ($request->payment_type == 'Qr' || $request->payment_type == 'Efectivo y Qr') {
+                IncomeTransaction::create([
+                    'income_id' => $income->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' =>  $request->typeIncome == 'Compra al Contado'? $request->amount_qr:$request->amount_qr-$cash,
+                    'paymentType' => 'Qr',
+                ]);
+            }
+            // return $request;
+
+            foreach ($request->products as $key => $value) {      
+                IncomeDetail::create([
+                    'income_id'=>$income->id,
+                    'item_id'=>$value['id'],
+                    'lote'=>$value['lote'],
+                    'quantity'=>$value['quantity'],
+
+                    'pricePurchase'=>$value['pricePurchase'],
+                    'priceSale'=>$value['priceSale'],
+
+                    'amountPurchase'=>$value['amountPurchase'],
+                    'amountSale'=>$value['amountSale'],
+
+                    'stock'=>$value['quantity'],
+                    // 'amount'=>$value['subtotal'],
+                    // 'name'=>$item->name
+                ]);
+            }            
+
+            DB::commit();
+            return redirect()->route('incomes.index')->with(['message' => 'Registrado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $e) {
+            DB::rollBack(); 
+            return redirect()->route('incomes.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function show($id)
+    {
+        $user = Auth::user();
+        $branches = Branch::where('deleted_at', null)
+            ->whereRaw($user->branch_id? "id = $user->branch_id" : 1)
+            ->get();
+        $income = Income::with(['register', 'supplier', 'incomeDetails'=>function($q){
+                            $q->where('deleted_at', null)
+                            ->with(['item.category', 'item.brand']);
+                        }, 'incomeTransactions'=>function($q){
+                            $q->where('deleted_at', null)
+                            ->orderBy('id', 'DESC');
+                        }])
+                        ->withSum(['incomeTransactions as amortization' => function($query) {
+                            $query->where('deleted_at', null);
+                        }], 'amount')
+                        ->where('deleted_at', NULL)
+                        ->where('id', $id)
+                        ->first();
+        $history = ItemStock::with(['item', 'branch', 'incomeDetail'=>function($q){
+                            $q->where('deleted_at', null);
+                        }, 'incomeDetail.income'])
+
+                        ->whereHas('incomeDetail.income', function ($query) use ($income) {
+                            $query->where('id', $income->id);
+                        })
+                        // ->where('deleted_at', null)
+                        ->orderBy('id', 'DESC')
+                        ->get();
+
+        return view('administrations.incomes.read', compact('income', 'branches', 'history'));
+    }
+
+    public function destroy($id)
+    {
+        $income = Income::with(['incomeDetails' => function($q){
+                $q->where('deleted_at', null);
+            }])
+            ->where('deleted_at', null)
+            ->where('id',$id)
+            ->first();
+        foreach ($income->incomeDetails as $item) {
+            if($item->stock != $item->quantity)
+            {
+                return redirect()->route('incomes.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            }
+        }
+     
+        DB::beginTransaction();
+        try {        
+           
+            $income->delete();
+            DB::commit();
+            return redirect()->route('incomes.index')->with(['message' => 'Eliminado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->route('incomes.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+    public function downloadFile($id)
+    {
+        $filePath = Income::where('id', $id)->first();
+        return Storage::download($filePath->file);
+    }
+    public function fileStore(Request $request, $id)
+    {
+        $income = Income::where('id', $id)->first();
+        $imageObj = new FileController;
+
+        $file = $request->file('file');
+        
+        if($file)
+        {
+            $file = $imageObj->file($file, "income/file");            
+        }
+        else
+        {
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+        DB::beginTransaction();
+        try {
+            $income->update([
+                'file'=>$file
+            ]);
+            DB::commit();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Registrado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+        
+
+    }
+    public function storePayment(Request $request, $id)
+    { 
+        $this->custom_authorize('add_incomes');
+        $income = Income::where('id', $id)->where('deleted_at', null)->first();
+        $incomeTransaction = IncomeTransaction::where('income_id', $income->id)->where('deleted_at', null)->get();
+        $totalPayment = $incomeTransaction->sum('amount');
+        $debt = $income->amount-$totalPayment;
+        if($request->amount > $debt)
+        {
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Error.', 'alert-type' => 'error']);
+        }
+        DB::beginTransaction();
+        try {                
+                $transaction = Transaction::create([
+                    'type'=>$request->payment_type,
+                    'status'=>'Aceptada'
+                ]);
+                IncomeTransaction::create([
+                    'transaction_id'=>$transaction->id,
+                    'income_id'=>$income->id,
+                    // 'cashier_id'=>$cashier->id,
+                    // 'branch_id'=>$user->branch_id,
+                    'amount'=>$request->amount,
+                    'observation'=>$request->observation
+                ]);  
+
+                if($totalPayment+$request->amount == $income->amount)
+                {
+                    $income->update(['status'=>'Pagado']);
+                }
+            DB::commit();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Registrado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function transferIncomeDetail(Request $request, $id)
+    {
+        $this->custom_authorize('add_incomes');
+        $income = Income::with(['incomeDetails'])
+                    ->where('id', $id)
+                    ->where('deleted_at', null)
+                    ->first();
+        foreach ($request->products as $item) {
+            if($item['quantity']>0 && $item['quantity'] != NULL)
+            {
+                $stock = $income->incomeDetails->where('id', $item['id'])->first();
+                if($item['quantity'] > $stock->stock )
+                {
+                    return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+                }
+            }
+        }
+        DB::beginTransaction();
+        try {        
+            foreach ($request->products as $item) {
+                if($item['quantity']>0)
+                {
+                    ItemStock::create([
+                        'item_id'=>$item['item'],
+                        
+                        'branch_id'=>$request->branch_id,
+                        'incomeDetail_id'=>$item['id'],
+
+                        'quantity'=>$item['quantity'],
+                        'stock'=>$item['quantity'],
+                        'lote'=>$item['lote'],
+
+                        'pricePurchase'=>$item['pricePurchase'],
+                        'priceSale'=>$item['priceSale'],
+                        'priceWhole'=>$item['priceWhole'],
+
+
+                        'type'=>'Ingreso',
+                        'observation'=>'Ingresados mediante compras'
+                    ]);
+                    $income->incomeDetails->where('id', $item['id'])->first()->decrement('stock', $item['quantity']);
+                }
+            }
+            DB::commit();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Registrado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return 0;
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function destroyTransferIncomeDetail($id, $transfer)
+    {
+        // return $transfer;
+        $item = ItemStock::with(['item'])
+                ->where('id', $transfer)
+                ->where('deleted_at', null)
+                ->first();
+        if($item->stock != $item->quantity)
+        {
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+        DB::beginTransaction();
+        try {            
+            $incomeDetail = IncomeDetail::where('deleted_at', null)->where('id', $item->incomeDetail_id)->first();
+            $incomeDetail->increment('stock', $item->quantity);
+            $item->delete();
+
+            DB::commit();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Eliminado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
     }
 
 
