@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Income;
 use App\Models\IncomeDetail;
 use App\Models\IncomeTransaction;
+use App\Models\ItemStock;
 use App\Models\Supplier;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class IncomeController extends Controller
 {
@@ -155,12 +158,10 @@ class IncomeController extends Controller
     public function show($id)
     {
         $user = Auth::user();
-        $branches = Branch::where('deleted_at', null)
-            ->whereRaw($user->branch_id? "id = $user->branch_id" : 1)
-            ->get();
+        
         $income = Income::with(['register', 'supplier', 'incomeDetails'=>function($q){
                             $q->where('deleted_at', null)
-                            ->with(['item.category', 'item.brand']);
+                            ->with(['item.laboratory', 'item.brand']);
                         }, 'incomeTransactions'=>function($q){
                             $q->where('deleted_at', null)
                             ->orderBy('id', 'DESC');
@@ -171,7 +172,7 @@ class IncomeController extends Controller
                         ->where('deleted_at', NULL)
                         ->where('id', $id)
                         ->first();
-        $history = ItemStock::with(['item', 'branch', 'incomeDetail'=>function($q){
+        $history = ItemStock::with(['item', 'incomeDetail'=>function($q){
                             $q->where('deleted_at', null);
                         }, 'incomeDetail.income'])
 
@@ -182,7 +183,7 @@ class IncomeController extends Controller
                         ->orderBy('id', 'DESC')
                         ->get();
 
-        return view('administrations.incomes.read', compact('income', 'branches', 'history'));
+        return view('administrations.incomes.read', compact('income', 'history'));
     }
 
     public function destroy($id)
@@ -219,7 +220,7 @@ class IncomeController extends Controller
     public function fileStore(Request $request, $id)
     {
         $income = Income::where('id', $id)->first();
-        $imageObj = new FileController;
+        $imageObj = new StorageController;
 
         $file = $request->file('file');
         
@@ -308,7 +309,7 @@ class IncomeController extends Controller
                     ItemStock::create([
                         'item_id'=>$item['item'],
                         
-                        'branch_id'=>$request->branch_id,
+                        // 'branch_id'=>$request->branch_id,
                         'incomeDetail_id'=>$item['id'],
 
                         'quantity'=>$item['quantity'],
@@ -317,7 +318,6 @@ class IncomeController extends Controller
 
                         'pricePurchase'=>$item['pricePurchase'],
                         'priceSale'=>$item['priceSale'],
-                        'priceWhole'=>$item['priceWhole'],
 
 
                         'type'=>'Ingreso',
@@ -330,7 +330,6 @@ class IncomeController extends Controller
             return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Registrado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $e) {
             DB::rollBack();
-            return 0;
             return redirect()->route('incomes.show', ['income' => $id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }

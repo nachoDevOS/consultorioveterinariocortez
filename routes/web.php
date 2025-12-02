@@ -54,12 +54,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::resource('incomes', IncomeController::class);
     Route::get('incomes/ajax/list', [IncomeController::class, 'list']);
     Route::get('incomes/item/ajax', [AjaxController::class, 'itemList']);//Para obtener los item que esten registrado
-    // Route::post('incomes/{id}/payment', [IncomeController::class, 'storePayment'])->name('incomes-payment.store');
-    // Route::post('incomes/{id}/file', [IncomeController::class, 'fileStore'])->name('incomes-file.store');
+    Route::post('incomes/{id}/payment', [IncomeController::class, 'storePayment'])->name('incomes-payment.store');
+    Route::post('incomes/{id}/file', [IncomeController::class, 'fileStore'])->name('incomes-file.store');
     // Route::get('incomes/{id}/file/download', [IncomeController::class, 'downloadFile'])->name('incomes.file.download');
 
-    // Route::post('incomes/{id}/incomeDetail/transfer', [IncomeController::class, 'transferIncomeDetail'])->name('incomes-incomeDetail.transfer');//Para transferir los item a las sucursale que pue tengan stop  los item
-    // Route::delete('incomes/{id}/incomeDetail/transfer/{transfer}', [IncomeController::class, 'destroyTransferIncomeDetail'])->name('incomes-incomeDetail-transfer.destroy');
+    Route::post('incomes/{id}/incomeDetail/transfer', [IncomeController::class, 'transferIncomeDetail'])->name('incomes-incomeDetail.transfer');//Para transferir los item a las sucursale que pue tengan stop  los item
+    Route::delete('incomes/{id}/incomeDetail/transfer/{transfer}', [IncomeController::class, 'destroyTransferIncomeDetail'])->name('incomes-incomeDetail-transfer.destroy');
 
     Route::get('items', [ItemController::class, 'index'])->name('voyager.items.index');
     Route::get('items/ajax/list', [ItemController::class, 'list']);
