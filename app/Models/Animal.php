@@ -27,4 +27,9 @@ class Animal extends Model
         'deleteObservation',
     ];
 
+    public function races()
+    {
+        return $this->hasMany(Race::class);
+    }
+
 }

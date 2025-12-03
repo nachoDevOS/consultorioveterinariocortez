@@ -198,6 +198,15 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="pet_race" class="form-label">Raza <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('pet_race') is-invalid @enderror" id="pet_race" name="pet_race" required disabled>
+                                        <option value="" selected disabled>Primero seleccione una especie</option>
+                                    </select>
+                                    @error('pet_race')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -219,6 +228,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -543,6 +553,47 @@
         // 7. Establecer la posición inicial del marcador (sin geocodificación inicial)
         latInput.value = defaultLat;
         lngInput.value = defaultLng;
+
+        // --- Lógica para cargar Razas dinámicamente ---
+        document.getElementById('pet-type').addEventListener('change', function() {
+            const animalId = this.value;
+            const raceSelect = document.getElementById('pet_race');
+
+            // Limpiar y deshabilitar el select de razas mientras se carga
+            raceSelect.innerHTML = '<option value="" selected disabled>Cargando razas...</option>';
+            raceSelect.disabled = true;
+
+            if (animalId) {
+                // Hacer la petición AJAX para obtener las razas
+                fetch(`{{ url('/api/races') }}/${animalId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('La respuesta de la red no fue exitosa');
+                        }
+                        return response.json();
+                    })
+                    .then(races => {
+                        raceSelect.innerHTML = '<option value="" selected disabled>Seleccione una raza</option>';
+                        if (races.length > 0) {
+                            races.forEach(race => {
+                                const option = document.createElement('option');
+                                option.value = race.id;
+                                option.textContent = race.name;
+                                raceSelect.appendChild(option);
+                            });
+                            raceSelect.disabled = false; // Habilitar el select
+                        } else {
+                            raceSelect.innerHTML = '<option value="" selected disabled>No hay razas para esta especie</option>';
+                            // Lo dejamos deshabilitado si no hay razas
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar las razas:', error);
+                        raceSelect.innerHTML = '<option value="" selected disabled>Error al cargar razas</option>';
+                    });
+            }
+        });
+
     </script>
 </body>
 </html>

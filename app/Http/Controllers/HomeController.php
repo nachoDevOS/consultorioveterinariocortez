@@ -24,6 +24,7 @@ class HomeController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|digits:8',
             'email' => 'nullable|email',
+            'pet_race' => 'required|exists:races,id',
             'pet_name' => 'required|string|max:255',
             'pet_type' => 'required|exists:animals,id', // Valida que el ID de la especie exista en la tabla 'animals'
             'pet_gender' => 'required|string|in:Macho,Hembra,Desconocido',
@@ -52,6 +53,7 @@ class HomeController extends Controller
         Appointment::create([
             'service_id' => $request->service,
             'animal_id' => $request->pet_type,
+            'race_id' => $request->pet_race,
             'nameClient' => $request->name,
             'phoneClient' => $request->phone,
             'nameAnimal' => $request->pet_name,
@@ -71,5 +73,17 @@ class HomeController extends Controller
         return redirect('/')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
 
         // return redirect('/#cita')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
+    }
+
+    /**
+     * Obtiene las razas para una especie de animal y las devuelve como JSON.
+     *
+     * @param  \App\Models\Animal  $animal
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getRaces(Animal $animal)
+    {
+        $races = $animal->races()->where('status', 1)->orderBy('name')->get();
+        return response()->json($races);
     }
 }

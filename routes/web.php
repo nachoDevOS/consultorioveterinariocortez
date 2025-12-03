@@ -32,6 +32,8 @@ Route::get('login', function () {
 
 Route::get('/', [HomeController::class, 'index']);
 Route::post('/appointment', [HomeController::class, 'storeAppointment'])->name('appointment.store');
+// Ruta para obtener las razas de un animal vía AJAX
+Route::get('/api/races/{animal}', [HomeController::class, 'getRaces'])->name('api.races');
 
 
 Route::get('/info/{id?}', [ErrorController::class , 'error'])->name('errors');
