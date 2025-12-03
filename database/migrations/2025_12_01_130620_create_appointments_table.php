@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();    
             $table->foreignId('service_id')->nullable()->constrained('services');
             $table->foreignId('animal_id')->nullable()->constrained('animals');
+            $table->foreignId('race_id')->nullable()->constrained('races');
 
             $table->string('nameClient')->nullable();
             $table->string('phoneClient')->nullable(); 

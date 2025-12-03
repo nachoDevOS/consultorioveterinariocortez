@@ -468,24 +468,30 @@
         // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
         const defaultLat = -14.8203618;
         const defaultLng = -64.897594; // Coordenadas de ejemplo
-        const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 13); // Zoom máximo seguro y vista inicial con más contexto
+        // Mapbox permite un zoom mucho mayor, lo que da más nitidez.
+        const map = L.map('map', { maxZoom: 20 }).setView([defaultLat, defaultLng], 17); 
 
-        // 2. Definir las capas de mapa (Satélite y Normal)
-        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // 2. Definir las capas de mapa usando Mapbox
+        const mapboxAccessToken = '{{ config('maps.mapbox.access_token') }}';
+
+        const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: mapboxAccessToken
         });
 
-        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        });
-
-        // Añadir la capa de satélite por defecto al mapa
-        satelliteLayer.addTo(map);
+        const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: mapboxAccessToken
+        }).addTo(map); // Añadimos la capa de calles por defecto
 
         // Crear el objeto con las capas base para el control de capas
         const baseMaps = {
-            "Satélite": satelliteLayer,
-            "Mapa": osmLayer
+            "Satélite": mapboxSatellite,
+            "Calles": mapboxStreets
         };
         // Añadir el control de capas al mapa
         L.control.layers(baseMaps).addTo(map);
