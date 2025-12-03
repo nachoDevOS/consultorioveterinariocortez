@@ -27,7 +27,7 @@ class AppointmentController extends Controller
         $status = request('status') ?? null;
         $paginate = request('paginate') ?? 10;
 
-        $data = Appointment::with(['service', 'animal'])
+        $data = Appointment::with(['service', 'animal', 'race'])
             ->where(function ($query) use ($search) {
                 if($search){
                     $query->whereHas('service', function($query) use($search){

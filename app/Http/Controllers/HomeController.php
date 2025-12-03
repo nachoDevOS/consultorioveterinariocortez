@@ -24,7 +24,7 @@ class HomeController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|digits:8',
             'email' => 'nullable|email',
-            'pet_race' => 'required|exists:races,id',
+            'pet_race' => 'nullable|exists:races,id',
             'pet_name' => 'required|string|max:255',
             'pet_type' => 'required|exists:animals,id', // Valida que el ID de la especie exista en la tabla 'animals'
             'pet_gender' => 'required|string|in:Macho,Hembra,Desconocido',

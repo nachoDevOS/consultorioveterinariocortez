@@ -20,7 +20,12 @@
                         <td style="text-align: center; width: 5%">{{ $item->id }}</td>
                         <td>{{ $item->service->name }}</td>
                         <td>{{ $item->nameClient }}</td>
-                        <td style="text-align: center">{{ $item->animal->name }}</td>
+                        <td style="text-align: center">
+                            {{ $item->animal->name }} <br>
+                            @if ($item->race)
+                                {{ $item->race->name }}
+                            @endif
+                        </td>
                         <td>{{ $item->nameAnimal }}</td>
                         <td style="text-align: center">{{ $item->gender }}</td>                      
            

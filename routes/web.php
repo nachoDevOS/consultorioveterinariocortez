@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MicroServiceController;
+use App\Http\Controllers\PetController;
 use App\Http\Controllers\RaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WhatsappController;
@@ -51,6 +52,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('people/ajax/list', [PersonController::class, 'list']);
     Route::post('people', [PersonController::class, 'store'])->name('voyager.people.store');
     Route::put('people/{id}', [PersonController::class, 'update'])->name('voyager.people.update');
+
+    Route::get('pets', [PetController::class, 'index'])->name('voyager.pets.index');
+    Route::get('pets/ajax/list', [PetController::class, 'list']);
+    Route::get('pets/create', [PetController::class, 'create'])->name('voyager.pets.create');
+    Route::get('pets/{id}', [PetController::class, 'show'])->name('voyager.pets.show');
+    // Route::post('pets', [PersonController::class, 'store'])->name('voyager.pets.store');
+    // Route::put('pets/{id}', [PersonController::class, 'update'])->name('voyager.pets.update');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 

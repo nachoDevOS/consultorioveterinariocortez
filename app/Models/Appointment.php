@@ -49,4 +49,10 @@ class Appointment extends Model
     {
         return $this->belongsTo(Animal::class, 'animal_id');
     }
+
+    public function race()
+    {
+        return $this->belongsTo(Race::class, 'race_id');
+    }
+
 }

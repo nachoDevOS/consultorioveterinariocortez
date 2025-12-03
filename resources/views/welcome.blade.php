@@ -581,10 +581,22 @@
                                 option.textContent = race.name;
                                 raceSelect.appendChild(option);
                             });
+
+                            // Añadir la opción "Otras" al final
+                            const otherOption = document.createElement('option');
+                            otherOption.value = ""; // Valor vacío para no enviar ID
+                            otherOption.textContent = "Otras";
+                            raceSelect.appendChild(otherOption);
+
                             raceSelect.disabled = false; // Habilitar el select
                         } else {
-                            raceSelect.innerHTML = '<option value="" selected disabled>No hay razas para esta especie</option>';
-                            // Lo dejamos deshabilitado si no hay razas
+                            // Si no hay razas, mostrar "Seleccione..." y "Otras"
+                            raceSelect.innerHTML = '<option value="" selected disabled>Seleccione una opción</option>';
+                            const otherOption = document.createElement('option');
+                            otherOption.value = ""; // Valor vacío
+                            otherOption.textContent = "Otras";
+                            raceSelect.appendChild(otherOption);
+                            raceSelect.disabled = false; // Habilitar para que se pueda enviar
                         }
                     })
                     .catch(error => {

@@ -74,6 +74,23 @@ class PermissionsTableSeeder extends Seeder
 
         // Administracion
         $permissions = [
+            'browse_pets' => 'Ver lista de las mascotas',
+            'read_pets' => 'Ver detalles de las mascotas',
+            'edit_pets' => 'Editar información de las mascotas',
+            'add_pets' => 'Agregar nuevas mascotas',
+            'delete_pets' => 'Eliminar mascotas',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'pets',
+                'tableDescription'=>'Mascotas'
+            ]);
+        }
+
+        $permissions = [
             'browse_people' => 'Ver lista de personas',
             'read_people' => 'Ver detalles de una persona',
             'edit_people' => 'Editar información de personas',

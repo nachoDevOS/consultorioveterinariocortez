@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('person_id')->nullable()->constrained('people');
             $table->foreignId('animal_id')->nullable()->constrained('animals');  
+            $table->foreignId('race_id')->nullable()->constrained('races'); 
 
             $table->string('name')->nullable();
             $table->string('color')->nullable();
             $table->date('birthdate')->nullable();
             $table->string('gender')->nullable();
+
+            $table->string('image')->nullable();
 
             $table->smallInteger('status')->default(1);
 
