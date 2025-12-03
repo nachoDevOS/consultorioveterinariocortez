@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Animal;
 use Illuminate\Http\Request;
 use App\Models\Pet;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +59,8 @@ class PetController extends Controller
     public function create()
     {
         $this->custom_authorize('add_pets');
-        return view('administrations.pets.edit-add');
+        $animals = Animal::where('deleted_at', null)->get();
+        return view('administrations.pets.edit-add', compact('animals'));
     }
 
     public function store(Request $request)

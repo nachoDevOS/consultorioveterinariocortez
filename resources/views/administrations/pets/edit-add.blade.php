@@ -40,7 +40,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="name">Nombre de la mascota</label>
+                                    <label for="name">Nombre</label>
                                     <input type="text" class="form-control" name="name" placeholder="Nombre de la mascota" value="{{ old('name', $pet->name ?? '') }}" required>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -58,15 +58,18 @@
 
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="animal_id">Tipo de Animal</label>
+                                    <label for="animal_id">Especie</label>
                                     <select name="animal_id" id="select-animal_id" class="form-control select2" required>
-                                        {{-- Las opciones se cargarán con AJAX --}}
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        @foreach ($animals as $animal)
+                                            <option value="{{$animal->id}}" >{{$animal->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="race_id">Raza</label>
                                     <select name="race_id" id="select-race_id" class="form-control select2" required>
-                                        {{-- Las opciones se cargarán con AJAX basado en el animal --}}
+                                        <option value="">-- Seleccione una especie primero --</option>
                                     </select>
                                 </div>
                             </div>
@@ -126,29 +129,48 @@
     <script src="{{ asset('js/btn-submit.js') }}"></script>
     <script>
         $(document).ready(function () {
+            // Deshabilitar el select de razas inicialmente
+            $('#select-race_id').prop('disabled', true);
+
             // Cargar tipos de animales
             $.get('{{ route('voyager.animals.index') }}/ajax/list?paginate=1000', function(data) {
-                let options = '<option value="">Seleccione el tipo de animal</option>';
+                let options = '<option value="">Seleccione la especie</option>';
                 data.data.forEach(animal => {
                     options += `<option value="${animal.id}">${animal.name}</option>`;
                 });
                 $('#select-animal_id').html(options);
+                // Es importante reinicializar select2 después de cambiar las opciones dinámicamente
+                $('#select-animal_id').select2();
             });
 
             // Cargar razas al cambiar el tipo de animal
             $('#select-animal_id').change(function(){
                 let animal_id = $(this).val();
-                $('#select-race_id').empty().append('<option value="">Cargando...</option>');
+                let raceSelect = $('#select-race_id');
+                
+                raceSelect.empty().append('<option value="">Cargando razas...</option>').prop('disabled', true);
+                
                 if(animal_id){
                     $.get(`/api/races/${animal_id}`, function(data){
-                        let options = '<option value="">Seleccione la raza</option>';
-                        data.forEach(race => {
-                            options += `<option value="${race.id}">${race.name}</option>`;
-                        });
-                        $('#select-race_id').html(options);
+                        let options = '<option value="" selected disabled>Seleccione una raza</option>';
+                        if (data.length > 0) {
+                            data.forEach(race => {
+                                options += `<option value="${race.id}">${race.name}</option>`;
+                            });
+                        }
+                        // Añadir la opción "Otra" como en welcome.blade.php
+                        options += '<option value="">Otra</option>';
+
+                        raceSelect.html(options).prop('disabled', false);
+                        // Reinicializar select2 para el selector de razas
+                        raceSelect.select2();
+                    }).fail(function() {
+                        raceSelect.html('<option value="">Error al cargar razas</option>').prop('disabled', true);
+                        raceSelect.select2();
                     });
                 } else {
-                    $('#select-race_id').empty().append('<option value="">Seleccione primero un tipo de animal</option>');
+                    raceSelect.empty().append('<option value="">-- Seleccione una especie primero --</option>').prop('disabled', true);
+                    raceSelect.select2();
                 }
             });
         });
