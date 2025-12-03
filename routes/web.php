@@ -57,8 +57,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('pets/ajax/list', [PetController::class, 'list']);
     Route::get('pets/create', [PetController::class, 'create'])->name('voyager.pets.create');
     Route::get('pets/{id}', [PetController::class, 'show'])->name('voyager.pets.show');
-    // Route::post('pets', [PersonController::class, 'store'])->name('voyager.pets.store');
-    // Route::put('pets/{id}', [PersonController::class, 'update'])->name('voyager.pets.update');
+    Route::post('pets', [PetController::class, 'store'])->name('voyager.pets.store');
+    // Route::put('pets/{id}', [PetController::class, 'update'])->name('voyager.pets.update');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 
