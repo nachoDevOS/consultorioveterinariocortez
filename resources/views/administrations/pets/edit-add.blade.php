@@ -40,7 +40,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="name">Nombre</label>
+                                    <label for="name">Nombre de la Mascota</label>
                                     <input type="text" class="form-control" name="name" placeholder="Nombre de la mascota" value="{{ old('name', $pet->name ?? '') }}" required>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -130,21 +130,12 @@
     <script>
         $(document).ready(function () {
             // Deshabilitar el select de razas inicialmente
+            $('#select-animal_id').select2();
             $('#select-race_id').prop('disabled', true);
 
-            // Cargar tipos de animales
-            $.get('{{ route('voyager.animals.index') }}/ajax/list?paginate=1000', function(data) {
-                let options = '<option value="">Seleccione la especie</option>';
-                data.data.forEach(animal => {
-                    options += `<option value="${animal.id}">${animal.name}</option>`;
-                });
-                $('#select-animal_id').html(options);
-                // Es importante reinicializar select2 después de cambiar las opciones dinámicamente
-                $('#select-animal_id').select2();
-            });
-
             // Cargar razas al cambiar el tipo de animal
-            $('#select-animal_id').change(function(){
+            // He cambiado el ID aquí para que coincida con el select
+            $('#select-animal_id').change(function(){ 
                 let animal_id = $(this).val();
                 let raceSelect = $('#select-race_id');
                 
