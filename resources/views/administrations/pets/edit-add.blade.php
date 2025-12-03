@@ -40,7 +40,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="name">Nombre de la Mascota</label>
+                                    <label for="name">Nombre</label>
                                     <input type="text" class="form-control" name="name" placeholder="Nombre de la mascota" value="{{ old('name', $pet->name ?? '') }}" required>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -61,15 +61,23 @@
                                     <label for="animal_id">Especie</label>
                                     <select name="animal_id" id="select-animal_id" class="form-control select2" required>
                                         <option value="" selected disabled>Seleccione...</option>
-                                        @foreach ($animals as $animal)
-                                            <option value="{{$animal->id}}" >{{$animal->name}}</option>
-                                        @endforeach
+                                        @isset($animals)
+                                            @foreach ($animals as $animal)
+                                                <option value="{{$animal->id}}" @if(isset($pet) && $pet->animal_id == $animal->id) selected @endif>{{$animal->name}}</option>
+                                            @endforeach
+                                        @endisset
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="race_id">Raza</label>
                                     <select name="race_id" id="select-race_id" class="form-control select2" required>
-                                        <option value="">-- Seleccione una especie primero --</option>
+                                        @if(isset($pet))
+                                            @foreach ($races as $item)
+                                            <option value="{{$item->id}}" @if(isset($pet) && $pet->race_id == $item->id) selected @endif>{{$item->name}}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="">-- Seleccione una especie primero --</option>
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -132,6 +140,17 @@
             // Deshabilitar el select de razas inicialmente
             $('#select-animal_id').select2();
             $('#select-race_id').prop('disabled', true);
+
+            // Si estamos editando, inicializamos los selects con los datos existentes
+            @if(isset($pet))
+                // Pre-seleccionar dueño
+                let person_option = new Option("{{ $pet->person->first_name }} {{ $pet->person->paternal_surname }}", "{{ $pet->person->id }}", true, true);
+                $('#select-person_id').append(person_option).trigger('change');
+
+                // Habilitar el select de razas ya que hay una especie seleccionada
+                $('#select-race_id').prop('disabled', false);
+                $('#select-race_id').select2();
+            @endif
 
             // Cargar razas al cambiar el tipo de animal
             // He cambiado el ID aquí para que coincida con el select

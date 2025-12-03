@@ -640,7 +640,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 0,
-                'details' => '{"options":{"masculino":"Masculino","femenino":"Femenino"},"display":{"width":4},"validation":{"rule":"required"}}',
+                'details' => '{"options":{"Masculino":"Masculino","Femenino":"Femenino"},"display":{"width":4},"validation":{"rule":"required"}}',
                 'order' => 4,
             ),
             39 => 
