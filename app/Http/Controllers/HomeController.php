@@ -71,7 +71,7 @@ class HomeController extends Controller
         $servidor = setting('solucion-digital.servidorWhatsapp');
         $id = setting('solucion-digital.sessionWhatsapp');
         Http::post($servidor.'/send?id='.$id.'&token='.null, [
-                    'phone' => '59167285914',
+                    'phone' => '+591'.setting('redes-sociales.whatsapp'),
                     'text' => 'Hola, se ha recibido una nueva solicitud de cita. Por favor, revisa el panel de administración para más detalles.',
                 ]);
         return 1;
