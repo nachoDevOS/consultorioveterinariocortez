@@ -264,8 +264,8 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="message" class="form-label">Motivo de la consulta <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="4" required>{{ old('message') }}</textarea>
+                                <label for="message" class="form-label">Motivo de la consulta (opcional)</label>
+                                <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="3">{{ old('message') }}</textarea>
                                 @error('message')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
