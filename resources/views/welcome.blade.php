@@ -281,7 +281,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) <span class="text-danger">*</span></label>
-                                <div id="map" style="height: 500px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
+                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
                                 <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="appointment-location" name="appointment_location" value="{{ old('appointment_location') }}" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
