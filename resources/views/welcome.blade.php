@@ -518,7 +518,7 @@
 
             function initializeMap(lat, lng) {
                 // 1. Inicializar el mapa
-                const map = L.map('map', { maxZoom: 18 }).setView([lat, lng], 16);
+                const map = L.map('map', { maxZoom: 18 }).setView([lat, lng], 15);
 
                 // 2. Definir las capas de mapa usando Mapbox
                 const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
