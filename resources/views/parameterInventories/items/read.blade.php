@@ -4,7 +4,7 @@
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="fa-brands fa-steam-symbol"></i> Productos / Items &nbsp;
+        <i class="fa-solid fa-cart-shopping"></i> Productos / Items &nbsp;
         <a href="{{ route('voyager.items.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp;
             Volver a la lista

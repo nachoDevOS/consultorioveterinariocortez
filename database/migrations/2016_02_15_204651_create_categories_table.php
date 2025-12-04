@@ -14,13 +14,22 @@ class CreateCategoriesTable extends Migration
     {
         // Create table for storing categories
         Schema::create('categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('parent_id')->unsigned()->nullable()->default(null);
-            $table->foreign('parent_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('set null');
-            $table->integer('order')->default(1);
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->timestamps();
+            $table->id('id');
+            
+            $table->string('name')->nullable();
+            $table->string('observation')->nullable();
+
+
+            $table->smallInteger('status')->default(1);
+
+            $table->timestamps();            
+            $table->foreignId('registerUser_id')->nullable()->constrained('users');
+            $table->string('registerRole')->nullable();
+
+            $table->softDeletes();
+            $table->foreignId('deleteUser_id')->nullable()->constrained('users');
+            $table->string('deleteRole')->nullable();
+            $table->text('deleteObservation')->nullable();
         });
     }
 

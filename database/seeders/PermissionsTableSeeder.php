@@ -183,6 +183,40 @@ class PermissionsTableSeeder extends Seeder
 
         // Parametros de Inventario
         $permissions = [
+            'browse_categories' => 'Ver lista de categorias',
+            'read_categories' => 'Ver detalles de categorias',
+            'edit_categories' => 'Editar información de categorias',
+            'add_categories' => 'Agregar nuevas categorias',
+            'delete_categories' => 'Eliminar categorias',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'categories',
+                'tableDescription'=>'Categorias'
+            ]);
+        }
+
+        $permissions = [
+            'browse_presentations' => 'Ver lista de presentaciones',
+            'read_presentations' => 'Ver detalles de presentaciones',
+            'edit_presentations' => 'Editar información de presentaciones',
+            'add_presentations' => 'Agregar nuevas presentaciones',
+            'delete_presentations' => 'Eliminar presentaciones',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'presentations',
+                'tableDescription'=>'Presentaciones'
+            ]);
+        }
+
+        $permissions = [
             'browse_laboratories' => 'Ver lista de laboratorio',
             'read_laboratories' => 'Ver detalles de los laboratorio',
             'edit_laboratories' => 'Editar información de laboratorio',
@@ -213,6 +247,23 @@ class PermissionsTableSeeder extends Seeder
                 'keyDescription'=> $description,
                 'table_name' => 'brands',
                 'tableDescription'=>'Marcas'
+            ]);
+        }
+
+        $permissions = [
+            'browse_items' => 'Ver lista de productos o items',
+            'read_items' => 'Ver detalles de productos o items',
+            'edit_items' => 'Editar información de productos o items',
+            'add_items' => 'Agregar nuevos productos o items',
+            'delete_items' => 'Eliminar productos o items',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'items',
+                'tableDescription'=>'Productos o Items'
             ]);
         }
 

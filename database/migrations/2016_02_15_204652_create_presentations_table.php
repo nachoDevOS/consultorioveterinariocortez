@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('category_id')->nullable()->constrained('categories');
-            $table->foreignId('presentation_id')->nullable()->constrained('presentations');
-            $table->foreignId('laboratory_id')->nullable()->constrained('laboratories');
-            $table->foreignId('brand_id')->nullable()->constrained('brands');
-            $table->string('image')->nullable();
-            $table->string('nameGeneric')->nullable();
-            $table->string('nameTrade')->nullable();
+        Schema::create('presentations', function (Blueprint $table) {
+            $table->id('id');
+            
+            $table->string('name')->nullable();
+            $table->string('observation')->nullable();
 
-            $table->text('observation')->nullable();
 
             $table->smallInteger('status')->default(1);
 
@@ -41,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('presentations');
     }
 };

@@ -3,229 +3,234 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use TCG\Voyager\Models\Category;
-use TCG\Voyager\Models\DataRow;
-use TCG\Voyager\Models\DataType;
-use TCG\Voyager\Models\Menu;
-use TCG\Voyager\Models\MenuItem;
-use TCG\Voyager\Models\Permission;
 
 class CategoriesTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seed file.
+     * Auto generated seed file
      *
      * @return void
      */
     public function run()
     {
-        //Data Type
-        $dataType = $this->dataType('name', 'categories');
-        if (!$dataType->exists) {
-            $dataType->fill([
-                'slug'                  => 'categories',
-                'display_name_singular' => __('voyager::seeders.data_types.category.singular'),
-                'display_name_plural'   => __('voyager::seeders.data_types.category.plural'),
-                'icon'                  => 'voyager-categories',
-                'model_name'            => 'TCG\\Voyager\\Models\\Category',
-                'controller'            => '',
-                'generate_permissions'  => 1,
-                'description'           => '',
-            ])->save();
-        }
-        //Data Rows
-        $categoryDataType = DataType::where('slug', 'categories')->firstOrFail();
-        $dataRow = $this->dataRow($categoryDataType, 'id');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'number',
-                'display_name' => __('voyager::seeders.data_rows.id'),
-                'required'     => 1,
-                'browse'       => 0,
-                'read'         => 0,
-                'edit'         => 0,
-                'add'          => 0,
-                'delete'       => 0,
-                'order'        => 1,
-            ])->save();
-        }
+        
 
-        $dataRow = $this->dataRow($categoryDataType, 'parent_id');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'select_dropdown',
-                'display_name' => __('voyager::seeders.data_rows.parent'),
-                'required'     => 0,
-                'browse'       => 0,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
-                'delete'       => 1,
-                'details'      => [
-                    'default' => '',
-                    'null'    => '',
-                    'options' => [
-                        '' => '-- None --',
-                    ],
-                    'relationship' => [
-                        'key'   => 'id',
-                        'label' => 'name',
-                    ],
-                ],
-                'order' => 2,
-            ])->save();
-        }
-
-        $dataRow = $this->dataRow($categoryDataType, 'order');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'text',
-                'display_name' => __('voyager::seeders.data_rows.order'),
-                'required'     => 1,
-                'browse'       => 1,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
-                'delete'       => 1,
-                'details'      => [
-                    'default' => 1,
-                ],
-                'order' => 3,
-            ])->save();
-        }
-
-        $dataRow = $this->dataRow($categoryDataType, 'name');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'text',
-                'display_name' => __('voyager::seeders.data_rows.name'),
-                'required'     => 1,
-                'browse'       => 1,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
-                'delete'       => 1,
-                'order'        => 4,
-            ])->save();
-        }
-
-        $dataRow = $this->dataRow($categoryDataType, 'slug');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'text',
-                'display_name' => __('voyager::seeders.data_rows.slug'),
-                'required'     => 1,
-                'browse'       => 1,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
-                'delete'       => 1,
-                'details'      => [
-                    'slugify' => [
-                        'origin' => 'name',
-                    ],
-                ],
-                'order' => 5,
-            ])->save();
-        }
-
-        $dataRow = $this->dataRow($categoryDataType, 'created_at');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'timestamp',
-                'display_name' => __('voyager::seeders.data_rows.created_at'),
-                'required'     => 0,
-                'browse'       => 0,
-                'read'         => 1,
-                'edit'         => 0,
-                'add'          => 0,
-                'delete'       => 0,
-                'order'        => 6,
-            ])->save();
-        }
-
-        $dataRow = $this->dataRow($categoryDataType, 'updated_at');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'timestamp',
-                'display_name' => __('voyager::seeders.data_rows.updated_at'),
-                'required'     => 0,
-                'browse'       => 0,
-                'read'         => 0,
-                'edit'         => 0,
-                'add'          => 0,
-                'delete'       => 0,
-                'order'        => 7,
-            ])->save();
-        }
-
-        //Menu Item
-        $menu = Menu::where('name', 'admin')->firstOrFail();
-        $menuItem = MenuItem::firstOrNew([
-            'menu_id' => $menu->id,
-            'title'   => __('voyager::seeders.menu_items.categories'),
-            'url'     => '',
-            'route'   => 'voyager.categories.index',
-        ]);
-        if (!$menuItem->exists) {
-            $menuItem->fill([
-                'target'     => '_self',
-                'icon_class' => 'voyager-categories',
-                'color'      => null,
-                'parent_id'  => null,
-                'order'      => 8,
-            ])->save();
-        }
-
-        //Permissions
-        Permission::generateFor('categories');
-
-        //Content
-        $category = Category::firstOrNew([
-            'slug' => 'category-1',
-        ]);
-        if (!$category->exists) {
-            $category->fill([
-                'name' => 'Category 1',
-            ])->save();
-        }
-
-        $category = Category::firstOrNew([
-            'slug' => 'category-2',
-        ]);
-        if (!$category->exists) {
-            $category->fill([
-                'name' => 'Category 2',
-            ])->save();
-        }
-    }
-
-    /**
-     * [dataRow description].
-     *
-     * @param [type] $type  [description]
-     * @param [type] $field [description]
-     *
-     * @return [type] [description]
-     */
-    protected function dataRow($type, $field)
-    {
-        return DataRow::firstOrNew([
-            'data_type_id' => $type->id,
-            'field'        => $field,
-        ]);
-    }
-
-    /**
-     * [dataType description].
-     *
-     * @param [type] $field [description]
-     * @param [type] $for   [description]
-     *
-     * @return [type] [description]
-     */
-    protected function dataType($field, $for)
-    {
-        return DataType::firstOrNew([$field => $for]);
+        \DB::table('categories')->delete();
+        
+        \DB::table('categories')->insert(array (
+            0 => 
+            array (
+                'id' => 1,
+                'name' => 'Accesorios',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:02:40',
+                'updated_at' => '2025-12-04 11:02:40',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            1 => 
+            array (
+                'id' => 2,
+                'name' => 'Aminoacidos',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:02:51',
+                'updated_at' => '2025-12-04 11:02:51',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            2 => 
+            array (
+                'id' => 3,
+                'name' => 'Antiparasitario',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:03:02',
+                'updated_at' => '2025-12-04 11:03:02',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            3 => 
+            array (
+                'id' => 4,
+                'name' => 'Talco',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:03:15',
+                'updated_at' => '2025-12-04 11:03:15',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            4 => 
+            array (
+                'id' => 5,
+                'name' => 'Jabon canino',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:03:28',
+                'updated_at' => '2025-12-04 11:03:28',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            5 => 
+            array (
+                'id' => 6,
+                'name' => 'Anestesia local',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:03:36',
+                'updated_at' => '2025-12-04 11:03:36',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            6 => 
+            array (
+                'id' => 7,
+                'name' => 'Antiflamatorio',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:03:43',
+                'updated_at' => '2025-12-04 11:03:43',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            7 => 
+            array (
+                'id' => 8,
+                'name' => 'Antibiotico',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:03:50',
+                'updated_at' => '2025-12-04 11:03:50',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            8 => 
+            array (
+                'id' => 9,
+                'name' => 'Anestesia gral',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:04:01',
+                'updated_at' => '2025-12-04 11:04:01',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'name' => 'Anticonceptivo',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:04:09',
+                'updated_at' => '2025-12-04 11:04:09',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            10 => 
+            array (
+                'id' => 11,
+                'name' => 'Shampoo',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:04:17',
+                'updated_at' => '2025-12-04 11:04:17',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            11 => 
+            array (
+                'id' => 12,
+                'name' => 'Prueba rapida parvovirus',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:04:27',
+                'updated_at' => '2025-12-04 11:04:27',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            12 => 
+            array (
+                'id' => 13,
+                'name' => 'Prueba rapida moquillo',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:04:38',
+                'updated_at' => '2025-12-04 11:04:38',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+            13 => 
+            array (
+                'id' => 14,
+                'name' => 'Alimentos',
+                'observation' => NULL,
+                'status' => 1,
+                'created_at' => '2025-12-04 11:04:46',
+                'updated_at' => '2025-12-04 11:04:46',
+                'registerUser_id' => 1,
+                'registerRole' => 'admin',
+                'deleted_at' => NULL,
+                'deleteUser_id' => NULL,
+                'deleteRole' => NULL,
+                'deleteObservation' => NULL,
+            ),
+        ));
+        
+        
     }
 }

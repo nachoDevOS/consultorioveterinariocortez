@@ -77,6 +77,8 @@ class ItemController extends Controller
         );
         try {
             Item::create([
+                'category_id' => $request->category_id,
+                'presentation_id' => $request->presentation_id,
                 'brand_id' => $request->brand_id,
                 'laboratory_id' => $request->laboratory_id,
                 'nameGeneric' => $request->nameGeneric,
@@ -110,6 +112,8 @@ class ItemController extends Controller
         try {
             
             $item = Item::find($id);
+            $item->category_id = $request->category_id;
+            $item->presentation_id = $request->presentation_id;
             $item->brand_id = $request->brand_id;
             $item->laboratory_id = $request->laboratory_id;
             $item->nameGeneric = $request->nameGeneric;

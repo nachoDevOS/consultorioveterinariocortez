@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="fa-brands fa-steam-symbol"></i> Productos / Items
+                                <i class="fa-solid fa-cart-shopping"></i> Productos / Items
                             </h1>
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">

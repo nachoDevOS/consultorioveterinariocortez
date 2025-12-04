@@ -34,8 +34,8 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"desc","default_search_key":null,"scope":null}',
-                'created_at' => '2024-10-18 14:28:26',
-                'updated_at' => '2025-04-07 16:18:35',
+                'created_at' => '2024-10-18 10:28:26',
+                'updated_at' => '2025-04-07 12:18:35',
             ),
             1 => 
             array (
@@ -52,8 +52,8 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => NULL,
-                'created_at' => '2024-10-18 14:28:26',
-                'updated_at' => '2024-10-18 14:28:26',
+                'created_at' => '2024-10-18 10:28:26',
+                'updated_at' => '2024-10-18 10:28:26',
             ),
             2 => 
             array (
@@ -70,28 +70,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => NULL,
-                'created_at' => '2024-10-18 14:28:26',
-                'updated_at' => '2024-10-18 14:28:26',
+                'created_at' => '2024-10-18 10:28:26',
+                'updated_at' => '2024-10-18 10:28:26',
             ),
             3 => 
-            array (
-                'id' => 4,
-                'name' => 'categories',
-                'slug' => 'categories',
-                'display_name_singular' => 'Category',
-                'display_name_plural' => 'Categories',
-                'icon' => 'voyager-categories',
-                'model_name' => 'TCG\\Voyager\\Models\\Category',
-                'policy_name' => NULL,
-                'controller' => '',
-                'description' => '',
-                'generate_permissions' => 1,
-                'server_side' => 0,
-                'details' => NULL,
-                'created_at' => '2024-10-18 14:28:45',
-                'updated_at' => '2024-10-18 14:28:45',
-            ),
-            4 => 
             array (
                 'id' => 8,
                 'name' => 'people',
@@ -106,10 +88,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2025-04-07 09:43:00',
-                'updated_at' => '2025-12-02 22:09:47',
+                'created_at' => '2025-04-07 05:43:00',
+                'updated_at' => '2025-12-02 18:09:47',
             ),
-            5 => 
+            4 => 
             array (
                 'id' => 11,
                 'name' => 'animals',
@@ -124,10 +106,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2025-12-01 15:32:06',
-                'updated_at' => '2025-12-02 16:34:09',
+                'created_at' => '2025-12-01 11:32:06',
+                'updated_at' => '2025-12-02 12:34:09',
             ),
-            6 => 
+            5 => 
             array (
                 'id' => 13,
                 'name' => 'services',
@@ -142,10 +124,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2025-12-01 15:48:02',
-                'updated_at' => '2025-12-01 15:50:30',
+                'created_at' => '2025-12-01 11:48:02',
+                'updated_at' => '2025-12-04 08:29:34',
             ),
-            7 => 
+            6 => 
             array (
                 'id' => 14,
                 'name' => 'laboratories',
@@ -160,10 +142,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2025-12-02 10:15:33',
-                'updated_at' => '2025-12-02 10:16:22',
+                'created_at' => '2025-12-02 06:15:33',
+                'updated_at' => '2025-12-02 06:16:22',
             ),
-            8 => 
+            7 => 
             array (
                 'id' => 15,
                 'name' => 'brands',
@@ -178,10 +160,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
-                'created_at' => '2025-12-02 10:34:42',
-                'updated_at' => '2025-12-02 10:34:42',
+                'created_at' => '2025-12-02 06:34:42',
+                'updated_at' => '2025-12-02 06:34:42',
             ),
-            9 => 
+            8 => 
             array (
                 'id' => 16,
                 'name' => 'suppliers',
@@ -196,10 +178,10 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2025-12-02 10:51:18',
-                'updated_at' => '2025-12-02 10:55:12',
+                'created_at' => '2025-12-02 06:51:18',
+                'updated_at' => '2025-12-02 06:55:12',
             ),
-            10 => 
+            9 => 
             array (
                 'id' => 17,
                 'name' => 'items',
@@ -214,8 +196,44 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2025-12-02 11:13:15',
-                'updated_at' => '2025-12-02 12:20:17',
+                'created_at' => '2025-12-02 07:13:15',
+                'updated_at' => '2025-12-04 11:23:11',
+            ),
+            10 => 
+            array (
+                'id' => 18,
+                'name' => 'categories',
+                'slug' => 'categories',
+                'display_name_singular' => 'Categoría',
+                'display_name_plural' => 'Categorías',
+                'icon' => 'fa-solid fa-layer-group',
+                'model_name' => 'App\\Models\\Category',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2025-12-04 10:57:21',
+                'updated_at' => '2025-12-04 10:58:06',
+            ),
+            11 => 
+            array (
+                'id' => 19,
+                'name' => 'presentations',
+                'slug' => 'presentations',
+                'display_name_singular' => 'Presentación / Unidad de Medida',
+                'display_name_plural' => 'Presentaciones / Unidad Medidas',
+                'icon' => 'voyager-ticket',
+                'model_name' => 'App\\Models\\Presentation',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
+                'created_at' => '2025-12-04 11:01:29',
+                'updated_at' => '2025-12-04 11:01:29',
             ),
         ));
         
