@@ -32,7 +32,7 @@ class HomeController extends Controller
             'pet_age' => 'required|string|max:100',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
-            'pet_photo' => 'nullable|image|max:2048', // Opcional, tipo imagen, máximo 2MB
+            'pet_photo' => 'nullable|image|max:3072', // Opcional, tipo imagen, máximo 3MB
             'appointment_location' => 'required|string|max:500', // Dirección obtenida por geocodificación
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
@@ -87,9 +87,7 @@ class HomeController extends Controller
             "   - {$serviceName}\n\n" .
             "🗓️ *Fecha y Hora:*\n" .
             "   - {$request->appointment_date} a las {$request->appointment_time}\n\n" .
-            "📍 *Ubicación:*\n" .
-            "   - {$request->appointment_location}\n\n" .
-            "📝 *Observaciones:*\n" .
+            "📝 *Detalle de la Cita:*\n" .
             "_{$request->message}_\n\n" .
             "Por favor, revisa el panel de administración para gestionar la cita.";
 
@@ -99,7 +97,7 @@ class HomeController extends Controller
                     'phone' => '+591'.setting('redes-sociales.whatsapp'),
                     'text' => $notificationMessage,
                 ]);
-        // return 1;
+      
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
