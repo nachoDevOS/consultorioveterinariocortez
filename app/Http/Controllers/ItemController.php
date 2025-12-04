@@ -38,7 +38,7 @@ class ItemController extends Controller
         $laboratory_id = request('laboratory') ?? null;
         $user = Auth::user();
 
-        $data = Item::with(['laboratory', 'brand', 'itemStocks'=>function($q)use($user){
+        $data = Item::with(['laboratory', 'presentation', 'category', 'brand', 'itemStocks'=>function($q)use($user){
                             $q->where('deleted_at', null);
                             // ->whereRaw($user->branch_id? "branch_id = $user->branch_id" : 1);
                         }])

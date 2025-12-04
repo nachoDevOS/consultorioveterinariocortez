@@ -4,9 +4,8 @@
             <thead>
                 <tr>
                     <th style="text-align: center; width: 3%">ID</th>
-                    <th style="text-align: center; width: 30%">Item</th>
+                    <th style="text-align: center; width: 50%">Item</th>
                     <th style="text-align: center">Descripción</th>
-                    <th style="text-align: center; width: 10%">Stock</th>
                     <th style="text-align: center; width: 5%">Estado</th>
                     <th style="text-align: center; width: 10%">Acciones</th>
                 </tr>
@@ -28,21 +27,24 @@
                                     class="image-expandable"
                                     style="width: 70px; height: 70px; border-radius: 8px; margin-right: 10px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                 <div>
-                                    <small>N. GENERICO:</small><strong>{{ strtoupper($item->nameGeneric) }}</strong> <br>
-                                    <small>N. COMERCIAL:</small><strong>{{ strtoupper($item->nameTrade) }}</strong> <br>
-                                    <small>LABORATORIO:</small> {{ $item->laboratory?strtoupper($item->laboratory->name):'SN' }} <br>
-                                    <small>MARCA:</small> {{ $item->brand?strtoupper($item->brand->name):'SN' }} 
+                                    <strong style="font-size: 12px">{{ strtoupper($item->nameGeneric) }} {{ $item->nameTrade? '  |  '.strtoupper($item->nameTrade):null }}</strong> <br>
+                                    <div style="font-size: 10px; color: #555; margin-top: 5px;">
+                                        <span>CATEGORÍA:</span> {{ $item->category?strtoupper($item->category->name):'SN' }} <br>
+                                        <span>PRESENTACIÓN:</span> {{ $item->presentation?strtoupper($item->presentation->name):'SN' }} <br>
+                                        <span>LABORATORIO:</span> {{ $item->laboratory?strtoupper($item->laboratory->name):'SN' }} <br>
+                                        <span>MARCA:</span> {{ $item->brand?strtoupper($item->brand->name):'SN' }} 
+                                    </div>
                                 </div>
                             </div>
                         </td>
                         <td> 
-                            <p>{{ $item->observation }}</p>
+                            <strong style="font-size: 12px">{{$item->observation}}</strong>
                             <table class="table table-bordered table-condensed">
                                 <thead>
                                     <tr>
-                                        <th style="font-size: 10px;">Lote</th>
-                                        <th style="font-size: 10px;">Stock</th>
-                                        <th style="font-size: 10px;">Precio</th>
+                                        <th style="font-size: 10px; padding: 2px 5px;">Lote</th>
+                                        <th style="font-size: 10px; padding: 2px 5px;">Stock</th>
+                                        <th style="font-size: 10px; padding: 2px 5px;">Precio</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,21 +58,21 @@
                                 </tbody>
                             </table>
                         </td>
+                
                         <td style="text-align: center">
+                            @if ($item->status==1)  
+                                <label class="label label-success">Activo</label>
+                            @else
+                                <label class="label label-warning">Inactivo</label>
+                            @endif    
+                            <br>
                             @if ($stock == 0)
                                 <label class="label label-danger">Agotado</label>
                             @elseif ($stock <= 5)
                                 <label class="label label-warning">{{ $stock }}</label>
                             @else
                                 <label class="label label-success">{{ $stock }}</label>
-                            @endif
-                        </td>
-                        <td style="text-align: center">
-                            @if ($item->status==1)  
-                                <label class="label label-success">Activo</label>
-                            @else
-                                <label class="label label-warning">Inactivo</label>
-                            @endif                        
+                            @endif                    
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
                             @if (auth()->user()->hasPermission('read_items'))

@@ -40,6 +40,14 @@ class Item extends Model
     {
         return $this->belongsTo(Brand::class, 'brand_id')->withTrashed();
     }
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id')->withTrashed();
+    }
+    public function presentation()
+    {
+        return $this->belongsTo(Presentation::class, 'presentation_id')->withTrashed();
+    }
 
 
 
