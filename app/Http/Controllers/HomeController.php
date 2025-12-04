@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
@@ -45,7 +46,7 @@ class HomeController extends Controller
         if ($request->hasFile('pet_photo')) {
             // En una aplicación real, aquí guardarías el archivo en el sistema de almacenamiento
             // y guardarías la ruta en la base de datos. Lo haremos ahora.
-            $photoPath = $request->file('pet_photo')->store('quotes', 'public');
+            $photoPath = $request->file('pet_photo')->store('appointment', 'public');
         }
 
         // return $request;
@@ -67,8 +68,15 @@ class HomeController extends Controller
             'longitud' => $request->longitude,
             // Los campos 'status' y 'view' ya tienen valores por defecto en la migración.
         ]);
+        $servidor = setting('solucion-digital.servidorWhatsapp');
+        $id = setting('solucion-digital.sessionWhatsapp');
+        Http::post($servidor.'/send?id='.$id.'&token='.null, [
+                    'phone' => '59167285914',
+                    'text' => 'Hola, se ha recibido una nueva solicitud de cita. Por favor, revisa el panel de administración para más detalles.',
+                ]);
+        return 1;
 
-        // return 1;
+
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
         return redirect('/')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
 

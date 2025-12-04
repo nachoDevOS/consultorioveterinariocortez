@@ -35,10 +35,12 @@ class MicroServiceController extends Controller
     public function message()
     {        
 
-        $token = $this->tokenGenerator();
-        $servidor = 'http://127.0.0.1:3002';
+        // $token = $this->tokenGenerator();
+        // $servidor = 'http://127.0.0.1:3002';
+        $token = 1;
 
-        $id = 'dev';
+        $servidor = setting('solucion-digital.servidorWhatsapp');
+        $id = setting('solucion-digital.sessionWhatsapp');
         Http::post($servidor.'/send?id='.$id.'&token='.$token, [
                     'phone' => '59167285914',
                     'text' => 'Gracias por su preferencia!',

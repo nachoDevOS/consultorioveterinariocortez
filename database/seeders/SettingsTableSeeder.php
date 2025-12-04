@@ -261,6 +261,28 @@ class SettingsTableSeeder extends Seeder
                 'order' => 16,
                 'group' => 'Site',
             ),
+            22 => 
+            array (
+                'id' => 26,
+                'key' => 'solucion-digital.servidorWhatsapp',
+                'display_name' => 'Whatsapp Servidor',
+                'value' => 'https://whatsapp-serve.soluciondigital.dev',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 17,
+                'group' => 'Solucion Digital',
+            ),
+            23 => 
+            array (
+                'id' => 27,
+                'key' => 'solucion-digital.sessionWhatsapp',
+                'display_name' => 'Whatsapp Session',
+                'value' => 'soluciondigital-dev',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 18,
+                'group' => 'Solucion Digital',
+            ),
         ));
         
         
