@@ -49,7 +49,7 @@
                                                 <th >Detalles</th>
                                                 <th style="text-align: center; width: 10%;">Lote</th>
                                                 <th style="text-align: center; width: 8%;">Cantidad</th>
-                                                <th style="text-align: center; width: 20%;">Precios</th>
+                                                <th style="text-align: center; width: 15%;">Precios</th>
                                                 <th style="text-align: center; width: 18%;">Subtotales</th>
                                             </tr>
                                         </thead>
@@ -281,8 +281,14 @@
                                         </div>
                                     </td>
                                     <td style="vertical-align: middle; padding: 5px;">
-                                        <div class="input-group input-group-item" style="margin-bottom: 5px;"><span class="input-group-addon" style="min-width:60px">Compra</span><input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/></div>
-                                        <div class="input-group input-group-item"><span class="input-group-addon" style="min-width:60px">Venta</span><input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/></div>
+                                        <div style="margin-bottom: 5px;">
+                                            <small>Compra:</small>
+                                            <input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                        </div>
+                                        <div>
+                                            <small>Venta:</small>
+                                            <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                        </div>
                                     </td>
                                     <td class="text-right" style="vertical-align: middle; padding: 5px;">
                                         <input type="hidden" name="products[${product.id}][amountPurchase]" id="subTotalPurchase-${product.id}" />
