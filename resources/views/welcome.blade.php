@@ -489,38 +489,6 @@
                 return;
             }
 
-            // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
-            const defaultLat = -14.8203618;
-            const defaultLng = -64.897594; // Coordenadas de ejemplo
-            // Mapbox permite un zoom mucho mayor, lo que da más nitidez.
-            const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 17); 
-
-            // 2. Definir las capas de mapa usando Mapbox
-            const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
-                tileSize: 512,
-                zoomOffset: -1,
-                accessToken: mapboxAccessToken
-            }).addTo(map); // Añadimos la capa de satélite por defecto
-
-            const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
-                tileSize: 512,
-                zoomOffset: -1,
-                accessToken: mapboxAccessToken
-            });
-
-            // Crear el objeto con las capas base para el control de capas
-            const baseMaps = {
-                "Satélite": mapboxSatellite,
-                "Calles": mapboxStreets
-            };
-            // Añadir el control de capas al mapa
-            L.control.layers(baseMaps).addTo(map);
-
-            // 3. Crear un marcador arrastrable
-            let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
-
             // 4. Obtener referencias a los campos del formulario
             const latInput = document.getElementById('latitude');
             const lngInput = document.getElementById('longitude');
@@ -548,23 +516,76 @@
                     });
             }
 
-            // 6. Eventos del mapa y marcador
-            // Actualizar campos cuando el marcador se arrastra y se suelta
-            marker.on('dragend', function(e) {
-                const newPos = e.target.getLatLng();
-                updateMarkerPosition(newPos.lat, newPos.lng);
-            });
+            function initializeMap(lat, lng) {
+                // 1. Inicializar el mapa
+                const map = L.map('map', { maxZoom: 18 }).setView([lat, lng], 16);
 
-            // Mover el marcador al hacer clic o doble clic en el mapa
-            map.on('click dblclick', function(e) {
-                const newPos = e.latlng;
-                marker.setLatLng(newPos);
-                updateMarkerPosition(newPos.lat, newPos.lng);
-            });
+                // 2. Definir las capas de mapa usando Mapbox
+                const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                    attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+                    tileSize: 512,
+                    zoomOffset: -1,
+                    accessToken: mapboxAccessToken
+                }).addTo(map);
 
-            // 7. Establecer la posición inicial del marcador (sin geocodificación inicial)
-            latInput.value = defaultLat;
-            lngInput.value = defaultLng;
+                const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                    attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+                    tileSize: 512,
+                    zoomOffset: -1,
+                    accessToken: mapboxAccessToken
+                });
+
+                const baseMaps = { "Satélite": mapboxSatellite, "Calles": mapboxStreets };
+                L.control.layers(baseMaps).addTo(map);
+
+                // 3. Crear un marcador arrastrable en la posición inicial
+                let marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+                // 4. Actualizar la posición inicial
+                updateMarkerPosition(lat, lng);
+
+                // 5. Eventos del mapa y marcador
+                marker.on('dragend', function(e) {
+                    const newPos = e.target.getLatLng();
+                    updateMarkerPosition(newPos.lat, newPos.lng);
+                });
+
+                map.on('click dblclick', function(e) {
+                    const newPos = e.latlng;
+                    marker.setLatLng(newPos);
+                    updateMarkerPosition(newPos.lat, newPos.lng);
+                });
+            }
+
+            // --- Lógica de Geolocalización ---
+            const defaultLat = -14.8203618;
+            const defaultLng = -64.897594;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // Éxito: El usuario compartió su ubicación
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+                        initializeMap(userLat, userLng);
+                        Toast.fire({ icon: 'info', title: 'Mapa centrado en tu ubicación actual.' });
+                    },
+                    () => {
+                        // Error o denegado: Usar ubicación por defecto
+                        initializeMap(defaultLat, defaultLng);
+                        Toast.fire({ icon: 'warning', title: 'No se pudo obtener tu ubicación. Mostrando ubicación por defecto.' });
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                // El navegador no soporta geolocalización
+                initializeMap(defaultLat, defaultLng);
+                Toast.fire({ icon: 'error', title: 'Tu navegador no soporta geolocalización.' });
+            }
         });
 
         // --- Lógica para cargar Razas dinámicamente ---

@@ -46,7 +46,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 3,
                 'key' => 'site.logo',
                 'display_name' => 'Logo del sitio',
-                'value' => '',
+                'value' => 'settings/December2025/u0f2GCd6WIEm0PyOG5zY.png',
                 'details' => '',
                 'type' => 'image',
                 'order' => 3,
@@ -101,7 +101,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 9,
                 'key' => 'admin.icon_image',
                 'display_name' => 'Ícono del administrador',
-                'value' => '',
+                'value' => 'settings/December2025/QK3tevomsXRMLRGTI8w0.png',
                 'details' => '',
                 'type' => 'image',
                 'order' => 4,
@@ -282,6 +282,17 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'text',
                 'order' => 18,
                 'group' => 'Solucion Digital',
+            ),
+            24 => 
+            array (
+                'id' => 28,
+                'key' => 'system.mapsToken',
+                'display_name' => 'Token Maps',
+                'value' => 'pk.eyJ1IjoibmFjaG9kZXZvcyIsImEiOiJjbWlxd3g4bHAwbHZ1M2Rwd2Q4cTd1dzZkIn0.3IMokfY8ZTFfoBJQO35yLw',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 19,
+                'group' => 'System',
             ),
         ));
         
