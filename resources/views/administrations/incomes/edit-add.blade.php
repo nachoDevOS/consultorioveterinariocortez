@@ -521,18 +521,21 @@
                     image = `${window.storagePath}${baseName}-cropped.webp`;
                 }
 
-                // Mostrar las opciones encontradas
-                return $(`  <div style="display: flex">
-                                <div style="margin: 0px 10px">
-                                    <img src="${image}" width="60px" />
+                // Mostrar las opciones encontradas con diseño mejorado
+                return $(`<div style="display: flex; align-items: center; padding: 10px 5px;">
+                                <div style="flex-shrink: 0; margin-right: 15px;">
+                                    <img src="${image}" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
                                 </div>
-                                <div>
-                                    <b style="font-size: 15px">${option.nameGeneric} ${option.nameTrade ? `| ${option.nameTrade}` : ''} </b><br>
-                                    <span style="font-size: 13px"><b>Detalle</b>: ${option.observation}</span><br>
-                                    <span style="font-size: 13px"><b>Categoría</b>: ${option.category.name} | ${option.presentation.name}</span><br>
-
-                                    <span style="font-size: 13px"><b>Laboratorio</b>: ${option.laboratory?option.laboratory.name:'Sin laboratorio'}</span><br>
-                                    <span style="font-size: 13px"><b>Marca</b>: ${option.brand?option.brand.name:'Sin marca'}</span><br>
+                                <div style="flex-grow: 1; line-height: 1.5;">
+                                    <div style="font-size: 16px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                        <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> ${option.nameGeneric} ${option.nameTrade ? `<span style="color: #444; font-weight: normal;">| ${option.nameTrade}</span>` : ''}
+                                    </div>
+                                    <div style="font-size: 12px; color: #555;">
+                                        ${option.observation ? `<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">${option.observation}</span></div>` : ''}
+                                        <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> ${option.category.name} | ${option.presentation.name}</div>
+                                        <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> ${option.laboratory ? option.laboratory.name : 'SN'}</div>
+                                        <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> ${option.brand ? option.brand.name : 'SN'}</div>
+                                    </div>
                                 </div>
                             </div>`);
             }
