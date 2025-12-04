@@ -47,10 +47,10 @@
                                             <tr>
                                                 <th style="width: 2%">N&deg;</th>
                                                 <th >Detalles</th>
-                                                <th style="text-align: center; width: 10%;">Lote</th>
-                                                <th style="text-align: center; width: 8%;">Cantidad</th>
-                                                <th style="text-align: center; width: 15%;">Precios</th>
-                                                <th style="text-align: center; width: 18%;">Subtotales</th>
+                                                <th style="text-align: center; width: 12%;">Lote</th>
+                                                <th style="text-align: center; width: 12%;">Cantidad</th>
+                                                <th style="text-align: center; width: 14%;">Precios</th>
+                                                <th style="text-align: center; width: 14%;">Subtotales</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table-body">
@@ -293,16 +293,16 @@
                                     <td class="text-right" style="vertical-align: middle; padding: 5px;">
                                         <input type="hidden" name="products[${product.id}][amountPurchase]" id="subTotalPurchase-${product.id}" />
                                         <input type="hidden" name="products[${product.id}][amountSale]" id="subTotalSale-${product.id}" />
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                            <div style="flex-grow: 1;">
-                                                <div style="margin-bottom: 5px;"><small>Compra:</small> <b class="label-subtotal" id="label-subtotal-purchase-${product.id}" style="font-size: 1.1em;">0.00</b></div>
-                                                <div><small>Venta:</small> <b id="label-subtotal-sale-${product.id}" style="font-size: 1.1em;">0.00</b></div>
+                                        <div style="text-align: right;">
+                                            <div style="margin-bottom: 5px;">
+                                                <small>Compra:</small><br>
+                                                <b class="label-subtotal" id="label-subtotal-purchase-${product.id}" style="font-size: 1.2em;">0.00</b>
                                             </div>
-                                            <div style="flex-shrink: 0; margin-left: 5px;">
-                                                <button type="button" onclick="removeTr(${product.id})" class="btn btn-link" style="padding: 0px 5px; margin-top: -5px;">
-                                                    <i class="voyager-trash text-danger" style="font-size: 1.2em;"></i>
-                                                </button>
+                                            <div>
+                                                <small>Venta:</small><br>
+                                                <b id="label-subtotal-sale-${product.id}" style="font-size: 1.2em;">0.00</b>
                                             </div>
+                                            <button type="button" onclick="removeTr(${product.id})" class="btn btn-link" style="padding: 5px 0px 0px 0px; margin-top: 5px;"><i class="voyager-trash text-danger" style="font-size: 1.2em;"></i></button>
                                         </div>
                                     </td>
                                 </tr>
