@@ -478,85 +478,94 @@
             })
         @endif
 
-        // --- Leaflet Map for Location Picker ---
-        // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
-        const defaultLat = -14.8203618;
-        const defaultLng = -64.897594; // Coordenadas de ejemplo
-        // Mapbox permite un zoom mucho mayor, lo que da más nitidez.
-        const map = L.map('map', { maxZoom: 20 }).setView([defaultLat, defaultLng], 17); 
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Leaflet Map for Location Picker ---
+            const mapboxAccessToken = '{{ setting('system.mapsToken') }}';
+            // PRUEBA TEMPORAL: Token puesto directamente para diagnosticar.
+            // const mapboxAccessToken = 'pk.eyJ1IjoibmFjaG9kZXZvcyIsImEiOiJjbWlxd3g4bHAwbHZ1M2Rwd2Q4cTd1dzZkIn0.3IMokfY8ZTFfoBJQO35yLw';
+            if (!mapboxAccessToken) {
+                console.error('Mapbox Access Token no está configurado. El mapa no se puede inicializar.');
+                document.getElementById('map').innerHTML = '<div class="alert alert-danger">Error: El mapa no se puede cargar. Contacta al administrador.</div>';
+                return;
+            }
 
-        // 2. Definir las capas de mapa usando Mapbox
-        const mapboxAccessToken = '{{ config('maps.mapbox.access_token') }}';
+            // 1. Inicializar el mapa con una ubicación por defecto (Santa Cruz, Bolivia)
+            const defaultLat = -14.8203618;
+            const defaultLng = -64.897594; // Coordenadas de ejemplo
+            // Mapbox permite un zoom mucho mayor, lo que da más nitidez.
+            const map = L.map('map', { maxZoom: 20 }).setView([defaultLat, defaultLng], 17); 
 
-        const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: mapboxAccessToken
+            // 2. Definir las capas de mapa usando Mapbox
+            const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: mapboxAccessToken
+            });
+
+            const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: mapboxAccessToken
+            }).addTo(map); // Añadimos la capa de calles por defecto
+
+            // Crear el objeto con las capas base para el control de capas
+            const baseMaps = {
+                "Satélite": mapboxSatellite,
+                "Calles": mapboxStreets
+            };
+            // Añadir el control de capas al mapa
+            L.control.layers(baseMaps).addTo(map);
+
+            // 3. Crear un marcador arrastrable
+            let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+            // 4. Obtener referencias a los campos del formulario
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            const locationInput = document.getElementById('appointment-location');
+            locationInput.value = 'Arrastra el marcador o haz clic en el mapa para seleccionar.';
+
+            // 5. Función para actualizar los campos y la dirección
+            function updateMarkerPosition(lat, lng) {
+                latInput.value = lat;
+                lngInput.value = lng;
+
+                // Geocodificación inversa para obtener la dirección (usando Nominatim)
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.display_name) {
+                            locationInput.value = data.display_name;
+                        } else {
+                            locationInput.value = 'No se pudo obtener la dirección.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error en geocodificación inversa:', error);
+                        locationInput.value = 'Error al obtener la dirección.';
+                    });
+            }
+
+            // 6. Eventos del mapa y marcador
+            // Actualizar campos cuando el marcador se arrastra y se suelta
+            marker.on('dragend', function(e) {
+                const newPos = e.target.getLatLng();
+                updateMarkerPosition(newPos.lat, newPos.lng);
+            });
+
+            // Mover el marcador al hacer clic o doble clic en el mapa
+            map.on('click dblclick', function(e) {
+                const newPos = e.latlng;
+                marker.setLatLng(newPos);
+                updateMarkerPosition(newPos.lat, newPos.lng);
+            });
+
+            // 7. Establecer la posición inicial del marcador (sin geocodificación inicial)
+            latInput.value = defaultLat;
+            lngInput.value = defaultLng;
         });
-
-        const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: mapboxAccessToken
-        }).addTo(map); // Añadimos la capa de calles por defecto
-
-        // Crear el objeto con las capas base para el control de capas
-        const baseMaps = {
-            "Satélite": mapboxSatellite,
-            "Calles": mapboxStreets
-        };
-        // Añadir el control de capas al mapa
-        L.control.layers(baseMaps).addTo(map);
-
-        // 3. Crear un marcador arrastrable
-        let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
-
-        // 4. Obtener referencias a los campos del formulario
-        const latInput = document.getElementById('latitude');
-        const lngInput = document.getElementById('longitude');
-        const locationInput = document.getElementById('appointment-location');
-        locationInput.value = 'Arrastra el marcador o haz clic en el mapa para seleccionar.';
-
-        // 5. Función para actualizar los campos y la dirección
-        function updateMarkerPosition(lat, lng) {
-            latInput.value = lat;
-            lngInput.value = lng;
-
-            // Geocodificación inversa para obtener la dirección (usando Nominatim)
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.display_name) {
-                        locationInput.value = data.display_name;
-                    } else {
-                        locationInput.value = 'No se pudo obtener la dirección.';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error en geocodificación inversa:', error);
-                    locationInput.value = 'Error al obtener la dirección.';
-                });
-        }
-
-        // 6. Eventos del mapa y marcador
-        // Actualizar campos cuando el marcador se arrastra y se suelta
-        marker.on('dragend', function(e) {
-            const newPos = e.target.getLatLng();
-            updateMarkerPosition(newPos.lat, newPos.lng);
-        });
-
-        // Mover el marcador al hacer clic o doble clic en el mapa
-        map.on('click dblclick', function(e) {
-            const newPos = e.latlng;
-            marker.setLatLng(newPos);
-            updateMarkerPosition(newPos.lat, newPos.lng);
-        });
-
-        // 7. Establecer la posición inicial del marcador (sin geocodificación inicial)
-        latInput.value = defaultLat;
-        lngInput.value = defaultLng;
 
         // --- Lógica para cargar Razas dinámicamente ---
         document.getElementById('pet-type').addEventListener('change', function() {
