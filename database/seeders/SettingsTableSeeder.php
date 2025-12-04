@@ -167,7 +167,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 17,
                 'key' => 'redes-sociales.whatsapp',
                 'display_name' => 'Whatsapp',
-                'value' => '72849954',
+                'value' => '67285914',
                 'details' => NULL,
                 'type' => 'text',
                 'order' => 8,
