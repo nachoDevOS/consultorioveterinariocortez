@@ -78,10 +78,13 @@ class AjaxController extends Controller
     public function itemList(){
         $search = request('q');
         $user = Auth::user();
-        $data = Item::with(['brand', 'laboratory'])
+        $data = Item::with(['brand', 'laboratory', 'category', 'presentation'])
             ->Where(function($query) use ($search){
                 if($search){
                     $query->OrwhereHas('brand', function($query) use($search){
+                        $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                    })
+                    ->OrwhereHas('category', function($query) use($search){
                         $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
                     })
                     ->OrwhereHas('laboratory', function($query) use($search){

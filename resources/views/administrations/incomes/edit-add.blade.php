@@ -34,7 +34,7 @@
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h3 class="panel-title">Detalle de la Orden</h3></div>
                         <div class="panel-body">
-                            <div class="col-md-12">
+                            <div class="col-md-12" style="height: 80px; max-height: 600px; overflow-y: auto; padding: 0px;">
                                 <div class="form-group">
                                     <label for="product_id">Buscar producto</label> <br>
                                     <select class="form-control" id="select-product_id"></select>
@@ -528,8 +528,11 @@
                                 </div>
                                 <div>
                                     <b style="font-size: 15px">${option.nameGeneric} ${option.nameTrade ? `| ${option.nameTrade}` : ''} </b><br>
-                                    <span style="font-size: 13px"><b>Laboratorio</b>: ${option.laboratory.name}</span><br>
-                                    <span style="font-size: 13px"><b>Marca</b>: ${option.brand.name}</span><br>
+                                    <span style="font-size: 13px"><b>Detalle</b>: ${option.observation}</span><br>
+                                    <span style="font-size: 13px"><b>Categoría</b>: ${option.category.name} | ${option.presentation.name}</span><br>
+
+                                    <span style="font-size: 13px"><b>Laboratorio</b>: ${option.laboratory?option.laboratory.name:'Sin laboratorio'}</span><br>
+                                    <span style="font-size: 13px"><b>Marca</b>: ${option.brand?option.brand.name:'Sin marca'}</span><br>
                                 </div>
                             </div>`);
             }
