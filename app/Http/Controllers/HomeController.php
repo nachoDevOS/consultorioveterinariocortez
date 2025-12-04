@@ -90,7 +90,11 @@ class HomeController extends Controller
             "📝 *Detalle de la Cita:*\n" .
             "_{$request->message}_\n\n" .
             "Por favor, revisa el panel de administración para gestionar la cita.";
-
+        
+        $notificationMessage .= "\n\n*Contacto Directo:*\n" .
+            "Haz clic para contactar al cliente: https://wa.me/591{$request->phone}\n\n" .
+            "*Gestionar Cita:*\n" .
+            "https://veterinaria.soluciondigital.dev/admin/appointments";
         $servidor = setting('solucion-digital.servidorWhatsapp');
         $id = setting('solucion-digital.sessionWhatsapp');
         Http::post($servidor.'/send?id='.$id.'&token='.null, [
@@ -98,6 +102,8 @@ class HomeController extends Controller
                     'text' => $notificationMessage,
                 ]);
       
+
+        return 1;
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito

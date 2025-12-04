@@ -101,6 +101,7 @@ class PersonController extends Controller
 
 
     public function update(Request $request, $id){
+        return 1;
         $this->custom_authorize('edit_people');
         $ci_validation_rule = 'required|string|max:255|unique:people,ci,' . $id;
 
