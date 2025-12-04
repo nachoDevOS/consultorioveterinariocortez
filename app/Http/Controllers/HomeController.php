@@ -103,7 +103,7 @@ class HomeController extends Controller
                 ]);
       
 
-        return 1;
+        // return 1;
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
