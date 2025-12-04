@@ -108,9 +108,6 @@ class HomeController extends Controller
                     'phone' => '+591'.setting('redes-sociales.whatsapp'),
                     'text' => $notificationMessage,
                 ]);
-      
-
-        return 1;
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
