@@ -64,7 +64,8 @@ class ItemController extends Controller
                             })
                             ->OrWhereRaw($search ? "id = '$search'" : 1)
                             ->OrWhereRaw($search ? "observation like '%$search%'" : 1)
-                            ->OrWhereRaw($search ? "name like '%$search%'" : 1);
+                            ->OrWhereRaw($search ? "nameGeneric like '%$search%'" : 1)
+                            ->OrWhereRaw($search ? "nameTrade like '%$search%'" : 1);
                         })
                         ->where('deleted_at', NULL)
                         ->whereRaw($laboratory_id? "laboratory_id = '$laboratory_id'" : 1)

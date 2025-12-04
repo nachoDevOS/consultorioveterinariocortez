@@ -6,6 +6,8 @@
                     <th style="width:5px">N&deg;</th>
                     <th style="text-align: center; width:12%">Lote</th>
                     <th style="text-align: center; width:8%">Cant. Ingresada</th>
+                    <th style="text-align: center; width:8%">Precio Compra</th>
+
                     <th style="text-align: center; width:8%">Stock Disponible</th>
                     <th style="text-align: center; width:8%">Precio Unitario</th>
                     <th style="text-align: center">Detalles</th>                     
@@ -30,6 +32,9 @@
                         </td>
                         <td style="text-align: right">     
                             {{number_format($value->quantity, 2, ',', '.')}}
+                        </td>
+                        <td style="text-align: right">    
+                            Bs. {{number_format($value->pricePurchase, 2, ',', '.')}}
                         </td>
                         <td style="text-align: right">    
                             {{number_format($value->stock, 2, ',', '.')}}
@@ -66,7 +71,7 @@
                     @endphp
                 @empty
                     <tr>
-                        <td colspan="8">
+                        <td colspan="9">
                             <h5 class="text-center" style="margin-top: 50px">
                                 <img src="{{ asset('images/empty.png') }}" width="120px" alt="" style="opacity: 0.8">
                                 <br><br>
