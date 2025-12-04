@@ -47,4 +47,9 @@ class Income extends Model
     {
         return $this->hasMany(IncomeTransaction::class, 'income_id');
     }
+
+    public function getTotalStockAttribute()
+    {
+        return $this->incomeDetails->sum('stock');
+    }
 }

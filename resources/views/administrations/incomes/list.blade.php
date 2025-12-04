@@ -39,6 +39,16 @@
                                     </td>
                                 </tr>
                             @endif
+                            <tr>
+                                <td>Stock:</td>
+                                <td style="text-align: right">
+                                    @if ($item->total_stock > 0)
+                                        <label class="label label-success">Disponible</label>
+                                    @else
+                                        <label class="label label-danger">Agotado</label>
+                                    @endif
+                                </td>
+                            </tr>
                         </table>
                     </td>
                     <td style="text-align: center">
