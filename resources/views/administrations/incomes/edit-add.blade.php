@@ -257,13 +257,16 @@
                                     <td>
                                         <input type="hidden" name="products[${product.id}][id]" value="${product.id}"/>
                                         <div style="display: flex; align-items: center;">
-                                            <div style="margin-right: 15px; flex-shrink: 0;">
-                                                <img src="${image}" width="60px" style="border-radius: 4px;"/>
-                                            </div>
-                                            <div style="flex-grow: 1;">
-                                                <div style="font-size: 14px; font-weight: bold; margin-bottom: 1px;">${product.nameGeneric} ${product.nameTrade ? `| ${product.nameTrade}` : ''}</div>
-                                                <div style="margin-bottom: 0px;"><small>Cat.: ${product.laboratory.name}</small></div>
-                                                <div style="color: #666;">${product.brand.name}</div>
+                                            <div style="flex-grow: 1; line-height: 1.5;">
+                                                <div style="font-size: 15px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                                    <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> ${product.nameGeneric} ${product.nameTrade ? `<span style="color: #444; font-weight: normal;">| ${product.nameTrade}</span>` : ''}
+                                                </div>
+                                                <div style="font-size: 12px; color: #555;">
+                                                    ${product.observation ? `<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">${product.observation}</span></div>` : ''}
+                                                    <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> ${product.category.name} | ${product.presentation.name}</div>
+                                                    <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> ${product.laboratory ? product.laboratory.name : 'SN'}</div>
+                                                    <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> ${product.brand ? product.brand.name : 'SN'}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
