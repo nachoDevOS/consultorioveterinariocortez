@@ -373,9 +373,9 @@
                     </div>
                 </div>
                 <div class="col-md-6" data-aos="fade-left">
-                    <div class="map-container">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.952912260219!2d3.375295414770757!3d6.527631324807576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos%2C%20Nigeria!5e0!3m2!1sen!2sus!4v1647836132345!5m2!1sen!2sus" width="100%" height="300" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"></iframe>
-                    </div>
+                     <div class="map-container" style="border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <div id="contact-map" style="height: 300px;"></div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -586,6 +586,30 @@
                 initializeMap(defaultLat, defaultLng);
                 Toast.fire({ icon: 'error', title: 'Tu navegador no soporta geolocalización.' });
             }
+
+            // --- Leaflet Map for Contact Section ---
+            const contactLat = -14.8203618;
+            const contactLng = -64.897594;
+
+            const contactMap = L.map('contact-map', {
+                center: [contactLat, contactLng],
+                zoom: 17,
+                scrollWheelZoom: false, // Desactiva el zoom con la rueda del ratón
+                dragging: !L.Browser.mobile, // Activa el arrastre solo en escritorio
+                tap: L.Browser.mobile, // Activa el tap en móviles
+                zoomControl: true // Muestra los controles de zoom
+            });
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: '© Mapbox',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: mapboxAccessToken
+            }).addTo(contactMap);
+
+            L.marker([contactLat, contactLng]).addTo(contactMap)
+                .bindPopup('<b>{{setting("site.title")}}</b><br>{{setting("site.address")}}')
+                .openPopup();
         });
 
         // --- Lógica para cargar Razas dinámicamente ---
