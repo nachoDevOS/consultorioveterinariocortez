@@ -68,13 +68,38 @@ class HomeController extends Controller
             'longitud' => $request->longitude,
             // Los campos 'status' y 'view' ya tienen valores por defecto en la migración.
         ]);
+
+        // Obtener detalles para la notificación
+        $serviceName = Service::find($request->service)->name;
+        $animalType = Animal::find($request->pet_type)->name;
+
+        // Construir el mensaje detallado para WhatsApp
+        $notificationMessage = "🗓️ *¡Nueva Solicitud de Cita!* 🗓️\n\n" .
+            "Se ha recibido una nueva solicitud con los siguientes detalles:\n\n" .
+            "👤 *Cliente:* {$request->name}\n" .
+            "📞 *Teléfono:* {$request->phone}\n\n" .
+            "🐾 *Mascota:*\n" .
+            "   - *Nombre:* {$request->pet_name}\n" .
+            "   - *Tipo:* {$animalType}\n" .
+            "   - *Género:* {$request->pet_gender}\n" .
+            "   - *Edad:* {$request->pet_age}\n\n" .
+            "🩺 *Servicio Solicitado:*\n" .
+            "   - {$serviceName}\n\n" .
+            "🗓️ *Fecha y Hora:*\n" .
+            "   - {$request->appointment_date} a las {$request->appointment_time}\n\n" .
+            "📍 *Ubicación:*\n" .
+            "   - {$request->appointment_location}\n\n" .
+            "📝 *Observaciones:*\n" .
+            "_{$request->message}_\n\n" .
+            "Por favor, revisa el panel de administración para gestionar la cita.";
+
         $servidor = setting('solucion-digital.servidorWhatsapp');
         $id = setting('solucion-digital.sessionWhatsapp');
         Http::post($servidor.'/send?id='.$id.'&token='.null, [
                     'phone' => '+591'.setting('redes-sociales.whatsapp'),
-                    'text' => 'Hola, se ha recibido una nueva solicitud de cita. Por favor, revisa el panel de administración para más detalles.',
+                    'text' => $notificationMessage,
                 ]);
-        return 1;
+        // return 1;
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
