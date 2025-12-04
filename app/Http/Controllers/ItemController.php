@@ -20,6 +20,15 @@ class ItemController extends Controller
     public function index()
     {
         $this->custom_authorize('browse_items');
+        $categories = Item::with(['category'])
+            ->whereHas('category', function($q){
+                $q->where('deleted_at', null);
+            })
+            ->where('deleted_at', null)
+            ->select('category_id')
+            ->groupBy('category_id')
+            ->get();
+        
         $laboratories = Item::with(['laboratory'])
             ->whereHas('laboratory', function($q){
                 $q->where('deleted_at', null);
@@ -29,13 +38,14 @@ class ItemController extends Controller
             ->groupBy('laboratory_id')
             ->get();
 
-        return view('parameterInventories.items.browse', compact('laboratories'));
+        return view('parameterInventories.items.browse', compact('laboratories', 'categories'));
     }
 
     public function list(){
         $search = request('search') ?? null;
         $paginate = request('paginate') ?? 10;
         $laboratory_id = request('laboratory') ?? null;
+        $category_id = request('category') ?? null;
         $user = Auth::user();
 
         $data = Item::with(['laboratory', 'presentation', 'category', 'brand', 'itemStocks'=>function($q)use($user){
@@ -44,6 +54,9 @@ class ItemController extends Controller
                         }])
                         ->where(function($query) use ($search){
                             $query->OrwhereHas('laboratory', function($query) use($search){
+                                $query->whereRaw($search ? "name like '%$search%'" : 1);
+                            })
+                            ->OrwhereHas('category', function($query) use($search){
                                 $query->whereRaw($search ? "name like '%$search%'" : 1);
                             })
                             ->OrwhereHas('brand', function($query) use($search){
@@ -55,6 +68,7 @@ class ItemController extends Controller
                         })
                         ->where('deleted_at', NULL)
                         ->whereRaw($laboratory_id? "laboratory_id = '$laboratory_id'" : 1)
+                        ->whereRaw($category_id? "category_id = '$category_id'" : 1)
                         ->orderBy('id', 'DESC')
                         ->paginate($paginate);
 

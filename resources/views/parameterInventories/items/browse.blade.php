@@ -34,7 +34,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-3">
                                 <div class="dataTables_length" id="dataTable_length">
                                     <label>Mostrar <select id="select-paginate" class="form-control input-sm">
                                         <option value="10">10</option>
@@ -43,6 +43,14 @@
                                         <option value="100">100</option>
                                     </select> registros</label>
                                 </div>
+                            </div>
+                            <div class="col-sm-3" style="margin-bottom: 10px">
+                                <select id="category" name="category" class="form-control select2">
+                                    <option value="" selected>Todos</option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{$item->category_id}}">{{$item->category->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="col-sm-3" style="margin-bottom: 10px">
@@ -92,6 +100,9 @@
         var timeout = null;
         $(document).ready(() => {
             list();
+            $('#category').change(function(){
+                list();
+            });
             $('#laboratory').change(function(){
                 list();
             });
@@ -122,11 +133,12 @@
             let url = '{{ url("admin/items/ajax/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             let laboratory =$("#laboratory").val();
+            let category =$("#category").val();
             
 
             $.ajax({
                 // url: `${url}/${search}?paginate=${countPage}&page=${page}`,
-                url: `${url}?search=${search}&paginate=${countPage}&page=${page}&laboratory=${laboratory}`,
+                url: `${url}?search=${search}&paginate=${countPage}&page=${page}&laboratory=${laboratory}&category=${category}`,
 
                 type: 'get',
                 
