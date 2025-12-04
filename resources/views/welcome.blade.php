@@ -281,7 +281,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="appointment-location" class="form-label">Ubicación para la Cita (Selecciona en el mapa) <span class="text-danger">*</span></label>
-                                <div id="map" style="height: 400px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
+                                <div id="map" style="height: 500px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
                                 <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="appointment-location" name="appointment_location" value="{{ old('appointment_location') }}" placeholder="La dirección aparecerá aquí..." readonly required>
                                 <input type="hidden" id="latitude" name="latitude">
                                 <input type="hidden" id="longitude" name="longitude">
@@ -501,14 +501,14 @@
                 tileSize: 512,
                 zoomOffset: -1,
                 accessToken: mapboxAccessToken
-            });
+            }).addTo(map); // Añadimos la capa de satélite por defecto
 
             const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                 attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
                 tileSize: 512,
                 zoomOffset: -1,
                 accessToken: mapboxAccessToken
-            }).addTo(map); // Añadimos la capa de calles por defecto
+            });
 
             // Crear el objeto con las capas base para el control de capas
             const baseMaps = {
