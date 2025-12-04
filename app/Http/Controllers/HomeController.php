@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Animal;
 use App\Models\Appointment;
+use App\Models\Race;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -72,6 +73,8 @@ class HomeController extends Controller
         // Obtener detalles para la notificación
         $serviceName = Service::find($request->service)->name;
         $animalType = Animal::find($request->pet_type)->name;
+        $race = Race::find($request->pet_race)->name ?? 'No especificada';
+
 
         // Construir el mensaje detallado para WhatsApp
         $notificationMessage = "🗓️ *¡Nueva Solicitud de Cita!* 🗓️\n\n" .
@@ -81,6 +84,7 @@ class HomeController extends Controller
             "🐾 *Mascota:*\n" .
             "   - *Nombre:* {$request->pet_name}\n" .
             "   - *Tipo:* {$animalType}\n" .
+            "   - *Raza:* {$race}\n" .
             "   - *Género:* {$request->pet_gender}\n" .
             "   - *Edad:* {$request->pet_age}\n\n" .
             "🩺 *Servicio Solicitado:*\n" .
@@ -89,6 +93,9 @@ class HomeController extends Controller
             "   - {$request->appointment_date} a las {$request->appointment_time}\n\n" .
             "📝 *Detalle de la Cita:*\n" .
             "_{$request->message}_\n\n" .
+
+            "📍 *Ubicación de la Cita:*\n" .
+            "   - {$request->appointment_location}\n\n" .
             "Por favor, revisa el panel de administración para gestionar la cita.";
         
         $notificationMessage .= "\n\n*Contacto Directo:*\n" .
@@ -103,7 +110,7 @@ class HomeController extends Controller
                 ]);
       
 
-        // return 1;
+        return 1;
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
