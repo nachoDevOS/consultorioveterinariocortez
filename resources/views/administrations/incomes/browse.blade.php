@@ -34,7 +34,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-sm-7">
+                            <div class="col-sm-5">
                                 <div class="dataTables_length" id="dataTable_length">
                                     <label>Mostrar <select id="select-paginate" class="form-control input-sm">
                                         <option value="10">10</option>
@@ -43,6 +43,13 @@
                                         <option value="100">100</option>
                                     </select> registros</label>
                                 </div>
+                            </div>
+                            <div class="col-sm-2" style="margin-bottom: 10px">
+                                <select id="status" name="status" class="form-control select2">
+                                    <option value="" selected>Todos</option>
+                                    <option value="si">Con Stock</option>
+                                    <option value="no">Sin Stock</option>
+                                </select>
                             </div>
                             <div class="col-sm-2" style="margin-bottom: 10px">
                                 <select id="typeIncome" name="typeIncome" class="form-control select2">
@@ -90,6 +97,9 @@
         var timeout = null;
         $(document).ready(() => {
             list();
+            $('#status').change(function(){
+                list();
+            });
             $('#input-search').on('keyup', function(e){
                 if(e.keyCode == 13) {
                     // Cancelar el timeout del evento input si existe
@@ -117,10 +127,12 @@
             let url = '{{ url("admin/incomes/ajax/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             let typeIncome =$("#typeIncome").val();
+            let status = $("#status").val();
+            
 
             $.ajax({
                 // url: `${url}/${search}?paginate=${countPage}&page=${page}`,
-                url: `${url}?search=${search}&paginate=${countPage}&page=${page}&typeIncome=${typeIncome}`,
+                url: `${url}?search=${search}&paginate=${countPage}&page=${page}&typeIncome=${typeIncome}&status=${status}`,
 
 
                 type: 'get',

@@ -34,6 +34,7 @@ class IncomeController extends Controller
         $search = request('search') ?? null;
         $paginate = request('paginate') ?? 10;
         $typeIncome = request('typeIncome') ?? null;
+        $stock = request('status') ?? null;
 
         $data = Income::with(['register', 'supplier', 'incomeDetails'=>function($q){
                             $q->where('deleted_at', null);
