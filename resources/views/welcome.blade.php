@@ -33,13 +33,13 @@
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                @if($admin_favicon != '')
-                    <img src="{{ Voyager::image($admin_favicon) }}" alt="{{setting('site.title')}}" style="height: 80px; margin-right: 10px;">
-                @else
-                    <i class="fas fa-paw me-2"></i>
-                @endif
-                <span class="d-none d-lg-inline">{{ setting('site.title') }}</span>
-                <span class="d-inline d-lg-none">{{\Illuminate\Support\Str::limit(setting('site.title'), 18, '')}}</span>
+                 @if($admin_favicon != '')
+                    <img src="{{ Voyager::image($admin_favicon) }}" alt="{{setting('site.title')}}" style="height: 80px; position: absolute; top: 0; margin-right: 100px;">
+                 @else
+                     <i class="fas fa-paw me-2"></i>
+                 @endif
+                <span class="d-none d-lg-inline" style="margin-left: 170px;">{{ setting('site.title') }}</span><br>
+                {{-- <span class="d-inline d-lg-none" style="margin-left: 180px;">{{\Illuminate\Support\Str::limit(setting('site.title'), 18, '')}}</span> --}}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
