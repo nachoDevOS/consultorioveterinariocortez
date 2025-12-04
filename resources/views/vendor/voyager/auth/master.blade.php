@@ -66,9 +66,9 @@
                     <div class="logo-title-container">
                         <?php $admin_logo_img = Voyager::setting('admin.icon_image', ''); ?>
                         @if($admin_logo_img == '')
-                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn" src="{{ asset('images/icon.png') }}" alt="Logo Icon">
+                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn" src="{{ asset('images/icon.png') }}" alt="Logo Icon" style="width: 120px; height: auto;">
                         @else
-                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn" src="{{ Voyager::image($admin_logo_img) }}" alt="Logo Icon">
+                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn" src="{{ Voyager::image($admin_logo_img) }}"  alt="Logo Icon" style="width: 120px; height: auto;">
                         @endif
                         <div class="copy animated fadeIn">
                             <h1>{{ Voyager::setting('admin.title', 'Voyager') }}</h1>
