@@ -84,72 +84,19 @@
         <div class="container">
             <h2 class="section-title">Nuestros Servicios</h2>
             <div class="row">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card service-card">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon">
-                                <i class="fas fa-stethoscope"></i>
+                @foreach ($services as $item)
+                    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 3 + 1) * 100 }}">
+                        <div class="card service-card h-100">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon">
+                                    {!! $item->icon !!}
+                                </div>
+                                <h4>{{ $item->name }}</h4>
+                                <p>{{ $item->observation }}</p>
                             </div>
-                            <h4>Consulta General</h4>
-                            <p>Exámenes de salud completos, diagnóstico y tratamiento para mantener a tu mascota saludable.</p>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card service-card">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon">
-                                <i class="fas fa-syringe"></i>
-                            </div>
-                            <h4>Vacunación</h4>
-                            <p>Programas de vacunación personalizados para proteger a tu mascota de enfermedades comunes.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="card service-card">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon">
-                                <i class="fas fa-cut"></i>
-                            </div>
-                            <h4>Cirugías</h4>
-                            <p>Procedimientos quirúrgicos con equipos de última generación y anestesia segura.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card service-card">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon">
-                                <i class="fas fa-teeth"></i>
-                            </div>
-                            <h4>Odontología</h4>
-                            <p>Cuidado dental profesional, limpiezas y tratamientos para la salud bucal de tu mascota.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card service-card">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon">
-                                <i class="fas fa-x-ray"></i>
-                            </div>
-                            <h4>Radiografías</h4>
-                            <p>Servicio de diagnóstico por imágenes para detectar problemas óseos y de órganos internos.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="card service-card">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon">
-                                <i class="fas fa-home"></i>
-                            </div>
-                            <h4>Hospitalización</h4>
-                            <p>Área de recuperación y hospitalización con monitoreo constante para casos que lo requieran.</p>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
