@@ -100,6 +100,9 @@
             $('#status').change(function(){
                 list();
             });
+            $('#typeIncome').change(function(){
+                list();
+            });
             $('#input-search').on('keyup', function(e){
                 if(e.keyCode == 13) {
                     // Cancelar el timeout del evento input si existe

@@ -34,7 +34,7 @@ class IncomeController extends Controller
         $search = request('search') ?? null;
         $paginate = request('paginate') ?? 10;
         $typeIncome = request('typeIncome') ?? null;
-        $stock = request('status') ?? null;
+        $status = request('status') ?? null;
 
         $data = Income::with(['register', 'supplier', 'incomeDetails'=>function($q){
                             $q->where('deleted_at', null);
@@ -53,10 +53,16 @@ class IncomeController extends Controller
                             ->OrWhereRaw($search ? "observation like '%$search%'" : 1);
                         })
                         ->where('deleted_at', NULL)
-                        // ->whereRaw($typeIncome? "typeIncome = '$typeIncome'" : 1)
-                        // ->orderBy('status', 'DESC')
+                        ->when($typeIncome, function ($query, $typeIncome) {
+                            return $query->where('typeIncome', $typeIncome);
+                        })
+                        ->when($status, function ($query, $status) {
+                            if ($status == 'si') {
+                                return $query->whereHas('incomeDetails', fn($q) => $q->where('stock', '>', 0));
+                            }
+                            return $query->whereDoesntHave('incomeDetails', fn($q) => $q->where('stock', '>', 0));
+                        })
                         ->orderBy('id', 'DESC')
-
                         ->paginate($paginate);
         return view('administrations.incomes.list', compact('data'));
     }
