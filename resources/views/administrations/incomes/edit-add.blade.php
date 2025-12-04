@@ -283,11 +283,11 @@
                                     <td style="vertical-align: middle; padding: 5px;">
                                         <div style="margin-bottom: 5px;">
                                             <small>Compra:</small>
-                                            <input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                            <input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
                                         </div>
                                         <div>
                                             <small>Venta:</small>
-                                            <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.01" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                            <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
                                         </div>
                                     </td>
                                     <td class="text-right" style="vertical-align: middle; padding: 5px;">

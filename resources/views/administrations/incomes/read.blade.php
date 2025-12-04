@@ -11,8 +11,10 @@
                 </h1>
             </div>
             <div class="col-md-4 text-right">
-                <a href="{{ route('incomes.index') }}" class="btn btn-warning"><i class="voyager-list"></i> Volver a la lista</a>
-                <button class="btn btn-primary btn-transfer" data-target="#modal-register-transfer" data-toggle="modal"><i class="voyager-forward"></i> Transferir</button>
+                <a href="{{ route('incomes.index') }}" class="btn btn-warning"><i class="voyager-list"></i> Volver a la
+                    lista</a>
+                <button class="btn btn-primary btn-transfer" data-target="#modal-register-transfer" data-toggle="modal"><i
+                        class="voyager-forward"></i> Transferir</button>
             </div>
         </div>
     </div>
@@ -51,7 +53,9 @@
                             </div>
                             <div class="col-sm-3 text-right">
                                 <small>Estado</small>
-                                <p><span class="badge badge-{{ $income->status == 'Pendiente' ? 'danger' : 'success' }}">{{ $income->status }}</span></p>
+                                <p><span
+                                        class="badge badge-{{ $income->status == 'Pendiente' ? 'danger' : 'success' }}">{{ $income->status }}</span>
+                                </p>
                                 <small>Atendido por</small>
                                 <p>{{ $income->register->name }}</p>
                             </div>
@@ -67,8 +71,8 @@
                     <div class="card-header">
                         <h5 class="card-title">Detalles de Adquisición</h5>
                         @if ($income->file)
-                            <a href="{{ route('incomes.file.download', ['id' => $income->id]) }}" download
-                                target="_blank" class="btn btn-sm btn-info">
+                            <a href="{{ route('incomes.file.download', ['id' => $income->id]) }}" download target="_blank"
+                                class="btn btn-sm btn-info">
                                 <i class="voyager-download"></i> Descargar Archivo
                             </a>
                         @endif
@@ -85,7 +89,6 @@
                                         <th style="text-align: center; width:10%">Cant.</th>
                                         <th style="text-align: center; width:10%">P/Compra</th>
                                         <th style="text-align: center; width:10%">P/Venta</th>
-                                        <th style="text-align: center; width:10%">P/Mayor</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -96,12 +99,25 @@
                                     @forelse ($income->incomeDetails as $item)
                                         <tr>
                                             <td>{{ $i }}</td>
+
                                             <td>
-                                                {{ $item->item->nameGeneric }} {{ $item->item->nameTrade?' | '.$item->item->nameTrade :'' }} <br>
-                                                <small><b>Laboratorio</b>: {{ $item->item->laboratory->name }}</small><br>
-                                                <small><b>Marca</b>: {{ $item->item->brand->name }}</small>
+                                                <strong style="font-size: 12px">{{ $item->item->nameGeneric }}
+                                                    {{ $item->item->nameTrade ? ' | ' . $item->item->nameTrade : '' }}</strong>
+                                                <br>
+                                                <div style="font-size: 10px; color: #555; margin-top: 5px;">
+                                                    <span>CATEGORÍA:</span>
+                                                    {{ $item->item->category ? strtoupper($item->item->category->name) : 'SN' }} <br>
+                                                    <span>PRESENTACIÓN:</span>
+                                                    {{ $item->item->presentation ? strtoupper($item->item->presentation->name) : 'SN' }}
+                                                    <br>
+                                                    <span>LABORATORIO:</span>
+                                                    {{ $item->item->laboratory ? strtoupper($item->item->laboratory->name) : 'SN' }}
+                                                    <br>
+                                                    <span>MARCA:</span>
+                                                    {{ $item->item->brand ? strtoupper($item->item->brand->name) : 'SN' }}
+                                                </div>
                                             </td>
-                                            
+
                                             <td>{{ $item->lote ? $item->lote : 'SN' }}</td>
                                             <td style="text-align: right">
                                                 @if ($item->stock > 1)
@@ -119,9 +135,6 @@
                                             <td style="text-align: right">
                                                 {{ number_format($item->priceSale, 2, ',', '.') }}
                                             </td>
-                                            <td style="text-align: right">
-                                                {{ number_format($item->priceWhole, 2, ',', '.') }}
-                                            </td>
                                         </tr>
                                         @php
                                             $i++;
@@ -129,8 +142,9 @@
                                         @endphp
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center">
-                                                <img src="{{ asset('images/empty.png') }}" width="120px" alt="vacio" style="opacity: 0.8; margin-top: 20px">
+                                            <td colspan="7" class="text-center">
+                                                <img src="{{ asset('images/empty.png') }}" width="120px" alt="vacio"
+                                                    style="opacity: 0.8; margin-top: 20px">
                                                 <p style="margin: 20px 0px">No hay detalles de adquisición</p>
                                             </td>
                                         </tr>
@@ -145,12 +159,15 @@
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-md-6">
-                                <form id="form-file" action="{{ route('incomes-file.store', ['id' => $income->id]) }}" method="post" enctype="multipart/form-data" class="form-upload">
+                                <form id="form-file" action="{{ route('incomes-file.store', ['id' => $income->id]) }}"
+                                    method="post" enctype="multipart/form-data" class="form-upload">
                                     @csrf
                                     <div class="input-group">
-                                        <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp,.pdf" class="form-control" />
+                                        <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp,.pdf"
+                                            class="form-control" />
                                         <span class="input-group-btn">
-                                            <button type="submit" id="btn-submit" class="btn btn-primary" data-toggle="modal" data-target="#modal-confirm">
+                                            <button type="submit" id="btn-submit" class="btn btn-primary"
+                                                data-toggle="modal" data-target="#modal-confirm">
                                                 <i class="voyager-upload"></i> Subir
                                             </button>
                                         </span>
@@ -160,9 +177,12 @@
                             </div>
                             <div class="col-md-6 summary-container">
                                 <div>
-                                    <div class="summary-item"><span>Total a Pagar:</span> <span>Bs. {{ number_format($totalPurchase, 2, ',', '.') }}</span></div>
-                                    <div class="summary-item"><span>Total Pagado:</span> <span>Bs. {{ number_format($totalPayment, 2, ',', '.') }}</span></div>
-                                    <div class="summary-item total"><span>Deuda Total:</span> <span>Bs. {{ number_format($totalPurchase - $totalPayment, 2, ',', '.') }}</span></div>
+                                    <div class="summary-item"><span>Total a Pagar:</span> <span>Bs.
+                                            {{ number_format($totalPurchase, 2, ',', '.') }}</span></div>
+                                    <div class="summary-item"><span>Total Pagado:</span> <span>Bs.
+                                            {{ number_format($totalPayment, 2, ',', '.') }}</span></div>
+                                    <div class="summary-item total"><span>Deuda Total:</span> <span>Bs.
+                                            {{ number_format($totalPurchase - $totalPayment, 2, ',', '.') }}</span></div>
                                 </div>
                             </div>
                         </div>
@@ -225,7 +245,8 @@
                                             @empty
                                                 <tr>
                                                     <td colspan="4">
-                                                        <p class="text-center" style="margin: 20px 0px">No hay pagos registrados.</p>
+                                                        <p class="text-center" style="margin: 20px 0px">No hay pagos
+                                                            registrados.</p>
                                                     </td>
                                                 </tr>
                                             @endforelse
@@ -278,9 +299,22 @@
                                                 <tr>
                                                     <td>{{ $i }}</td>
                                                     <td>
-                                                        {{ $item->item->nameGeneric }} {{ $item->item->nameTrade?' | '.$item->item->nameTrade :'' }}<br>
-                                                        <small><b>Laboratorio</b>: {{ $item->item->laboratory->name }}</small><br>
-                                                        <small><b>Marca</b>: {{ $item->item->brand->name }}</small>
+                                                        <strong style="font-size: 12px">{{ $item->item->nameGeneric }}
+                                                            {{ $item->item->nameTrade ? ' | ' . $item->item->nameTrade : '' }}</strong>
+                                                        <br>
+                                                        <div style="font-size: 10px; color: #555; margin-top: 5px;">
+                                                            <span>CATEGORÍA:</span>
+                                                            {{ $item->item->category ? strtoupper($item->item->category->name) : 'SN' }}
+                                                            <br>
+                                                            <span>PRESENTACIÓN:</span>
+                                                            {{ $item->item->presentation ? strtoupper($item->item->presentation->name) : 'SN' }}
+                                                            <br>
+                                                            <span>LABORATORIO:</span>
+                                                            {{ $item->item->laboratory ? strtoupper($item->item->laboratory->name) : 'SN' }}
+                                                            <br>
+                                                            <span>MARCA:</span>
+                                                            {{ $item->item->brand ? strtoupper($item->item->brand->name) : 'SN' }}
+                                                        </div>
                                                     </td>
                                                     <td>{{ $item->lote }}</td>
 
@@ -288,7 +322,7 @@
                                                         {{ number_format($item->quantity, 2, ',', '.') }}
                                                     </td>
                                                     <td style="text-align: right">
-                                                        @if ($item->stock>0)
+                                                        @if ($item->stock > 0)
                                                             {{ number_format($item->stock, 2, ',', '.') }}
                                                         @else
                                                             <label class="label label-danger">Agotado</label>
@@ -297,8 +331,9 @@
 
                                                     <td style="text-align: center">
                                                         {{ date('d/m/Y h:i:s a', strtotime($item->created_at)) }}<br>
-                                                        <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }} <br>
-                                                        {{ $item->register->name }}
+                                                        <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}
+                                                            <br>
+                                                            {{ $item->register->name }}
                                                     </td>
                                                     <td style="text-align: center">
                                                         @if ($item->quantity == $item->stock)
@@ -309,7 +344,7 @@
                                                                 class="btn btn-sm btn-danger delete">
                                                                 <i class="voyager-trash"></i>
                                                             </a>
-                                                        @endif                                                        
+                                                        @endif
                                                     </td>
 
 
@@ -347,7 +382,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span
-                                aria-hidden="true">&times;</span></button> 
+                                aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" style="color: #ffffff !important"><i class="voyager-plus"></i> Registrar
                             Pagos</h4>
                     </div>
@@ -394,7 +429,8 @@
     </form>
     <form action="{{ route('incomes-incomeDetail.transfer', ['id' => $income->id]) }}" class="form-edit-add"
         method="POST">
-        <div class="modal fade" data-backdrop="static" id="modal-register-transfer" role="dialog" style="padding-top: 0px;">
+        <div class="modal fade" data-backdrop="static" id="modal-register-transfer" role="dialog"
+            style="padding-top: 0px;">
             <div class="modal-dialog modal-primary modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -441,22 +477,42 @@
                                                             value="{{ $item->id }}">
                                                         <input type="hidden" name="products[{{ $item->id }}][item]"
                                                             value="{{ $item->item_id }}">
-                                                        <input type="hidden" name="products[{{ $item->id }}][lote]" value="{{ $item->lote }}">
+                                                        <input type="hidden" name="products[{{ $item->id }}][lote]"
+                                                            value="{{ $item->lote }}">
                                                     </td>
-                                                    <td style="vertical-align: middle;">
-                                                        {{ $item->item->nameGeneric }} {{ $item->item->nameTrade?' | '.$item->item->nameTrade :'' }} <br>
-                                                        <small><b>Categoría</b>: {{ $item->item->laboratory->name }}</small><br>
-                                                        <small><b>Marca</b>: {{ $item->item->brand->name }}</small>
+                                             
+                                                    <td>
+                                                        <strong style="font-size: 12px">{{ $item->item->nameGeneric }}
+                                                            {{ $item->item->nameTrade ? ' | ' . $item->item->nameTrade : '' }}</strong>
+                                                        <br>
+                                                        <div style="font-size: 10px; color: #555; margin-top: 5px;">
+                                                            <span>CATEGORÍA:</span>
+                                                            {{ $item->item->category ? strtoupper($item->item->category->name) : 'SN' }}
+                                                            <br>
+                                                            <span>PRESENTACIÓN:</span>
+                                                            {{ $item->item->presentation ? strtoupper($item->item->presentation->name) : 'SN' }}
+                                                            <br>
+                                                            <span>LABORATORIO:</span>
+                                                            {{ $item->item->laboratory ? strtoupper($item->item->laboratory->name) : 'SN' }}
+                                                            <br>
+                                                            <span>MARCA:</span>
+                                                            {{ $item->item->brand ? strtoupper($item->item->brand->name) : 'SN' }}
+                                                        </div>
                                                     </td>
                                                     <td style="text-align: right; vertical-align: middle;">
                                                         {{ number_format($item->stock, 0) }}
                                                     </td>
                                                     <td style="text-align: right; vertical-align: middle;">
-                                                        <input type="hidden" name="products[{{ $item->id }}][pricePurchase]" value="{{ $item->pricePurchase }}">
+                                                        <input type="hidden"
+                                                            name="products[{{ $item->id }}][pricePurchase]"
+                                                            value="{{ $item->pricePurchase }}">
                                                         {{ number_format($item->pricePurchase, 2, ',', '.') }}
                                                     </td>
                                                     <td style="text-align: center; vertical-align: middle;">
-                                                        <input type="number" name="products[{{ $item->id }}][priceSale]" value="{{ $item->priceSale }}" min="0.01" step="0.01" class="form-control" style="text-align: right" required>
+                                                        <input type="number"
+                                                            name="products[{{ $item->id }}][priceSale]"
+                                                            value="{{ $item->priceSale }}" min="0.01" step="0.01"
+                                                            class="form-control" style="text-align: right" required>
                                                     </td>
                                                     <td style="text-align: center; vertical-align: middle;">
                                                         <input type="number"
@@ -514,6 +570,7 @@
             border-color: var(--primary-color);
             transition: all 0.3s ease;
         }
+
         .btn-primary:hover {
             background-color: #326ab1;
             border-color: #326ab1;
@@ -527,6 +584,7 @@
             margin-bottom: 25px;
             overflow: hidden;
         }
+
         .card-header {
             background-color: #fafafa;
             padding: 15px 25px;
@@ -535,23 +593,29 @@
             justify-content: space-between;
             align-items: center;
         }
-        .card-title, .card-header h5 {
+
+        .card-title,
+        .card-header h5 {
             margin: 0;
             font-weight: 600;
             font-size: 1.1em;
             color: var(--secondary-color);
         }
+
         .card-body {
             padding: 25px;
         }
+
         .card-footer {
             background-color: #fdfdfd;
             padding: 15px 25px;
             border-top: 1px solid var(--border-color);
         }
+
         .info-item {
             margin-bottom: 10px;
         }
+
         .info-item small {
             display: block;
             color: var(--text-color-light);
@@ -559,12 +623,14 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .info-item p {
             margin: 0;
             font-size: 1.05em;
             color: var(--text-color);
             font-weight: 500;
         }
+
         .badge {
             font-size: 0.9em;
             padding: 5px 10px;
@@ -573,8 +639,16 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .badge-danger { background-color: var(--danger-color); color: white; }
-        .badge-success { background-color: var(--success-color); color: white; }
+
+        .badge-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success-color);
+            color: white;
+        }
 
         .table thead th {
             background-color: #f5f7fa;
@@ -582,15 +656,18 @@
             text-transform: uppercase;
             font-size: 0.85em;
         }
+
         .table.zebra-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0,0,0,0.02);
+            background-color: rgba(0, 0, 0, 0.02);
         }
+
         .summary-item {
             display: flex;
             justify-content: space-between;
             padding: 5px 0;
             font-size: 1.1em;
         }
+
         .summary-item.total {
             font-weight: bold;
             border-top: 1px solid var(--border-color);
@@ -599,9 +676,11 @@
             font-size: 1.2em;
             color: var(--primary-color);
         }
+
         .form-upload .input-group {
             display: flex;
         }
+
         .summary-container {
             display: flex;
             justify-content: flex-end;
@@ -619,7 +698,7 @@
                 $('.btn-form-delete').val('Eliminando...');
             });
         });
-        $('.form-submit').submit(function(e){
+        $('.form-submit').submit(function(e) {
             $('.btn-submit').attr('disabled', true);
             $('.btn-submit').val('Guardando...');
         });

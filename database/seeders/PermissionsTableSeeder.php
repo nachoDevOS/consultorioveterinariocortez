@@ -217,6 +217,23 @@ class PermissionsTableSeeder extends Seeder
         }
 
         $permissions = [
+            'browse_suppliers' => 'Ver lista de proveedores',
+            'read_suppliers' => 'Ver detalles de proveedores',
+            'edit_suppliers' => 'Editar información de proveedores',
+            'add_suppliers' => 'Agregar nuevos proveedores',
+            'delete_suppliers' => 'Eliminar proveedores',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'suppliers',
+                'tableDescription'=>'Proveedores'
+            ]);
+        }
+
+        $permissions = [
             'browse_laboratories' => 'Ver lista de laboratorio',
             'read_laboratories' => 'Ver detalles de los laboratorio',
             'edit_laboratories' => 'Editar información de laboratorio',
