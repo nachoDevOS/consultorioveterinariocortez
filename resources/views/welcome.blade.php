@@ -493,7 +493,7 @@
             const defaultLat = -14.8203618;
             const defaultLng = -64.897594; // Coordenadas de ejemplo
             // Mapbox permite un zoom mucho mayor, lo que da más nitidez.
-            const map = L.map('map', { maxZoom: 20 }).setView([defaultLat, defaultLng], 17); 
+            const map = L.map('map', { maxZoom: 17 }).setView([defaultLat, defaultLng], 17); 
 
             // 2. Definir las capas de mapa usando Mapbox
             const mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
