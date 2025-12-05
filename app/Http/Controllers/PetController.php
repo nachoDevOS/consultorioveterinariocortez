@@ -192,5 +192,14 @@ class PetController extends Controller
         }
     }
 
+    public function history($id)
+    {
+        // Podrías crear un permiso específico para 'read_history_pets' si lo necesitas
+        $this->custom_authorize('read_pets'); 
+        $pet = Pet::with(['person'])->findOrFail($id);
+
+        // Aquí pasamos la variable $pet a la nueva vista del historial
+        return view('administrations.pets.history', compact('pet'));
+    }
 
 }

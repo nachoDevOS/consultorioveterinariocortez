@@ -57,6 +57,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('pets/ajax/list', [PetController::class, 'list']);
     Route::get('pets/create', [PetController::class, 'create'])->name('voyager.pets.create');
     Route::get('pets/{id}', [PetController::class, 'show'])->name('voyager.pets.show');
+    Route::get('pets/{id}/history', [PetController::class, 'history'])->name('voyager.pets.history');
     Route::get('pets/{id}/edit', [PetController::class, 'edit'])->name('voyager.pets.edit');
     Route::post('pets', [PetController::class, 'store'])->name('voyager.pets.store');
     Route::put('pets/{id}', [PetController::class, 'update'])->name('voyager.pets.update');
