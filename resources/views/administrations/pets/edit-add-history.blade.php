@@ -12,7 +12,7 @@
 @section('content')
     <div class="page-content container-fluid">
         <form class="form-edit-add" role="form"
-              action="#" {{-- route('voyager.pets.history.store', $pet->id) --}}
+              action="{{ route('voyager.pets.history.store', $pet->id) }}"
               method="POST" enctype="multipart/form-data" autocomplete="off">
             
             {{ csrf_field() }}
@@ -122,7 +122,7 @@
                                 <div class="form-group col-md-12"><label for="observed_signs">Signos observados</label><textarea class="form-control" id="observed_signs" name="observed_signs" rows="3"></textarea></div>
                                 <div class="form-group col-md-3">
                                     <label for="appetite">Apetito</label>
-                                    <select name="appetite" id="appetite" required class="form-control select2">
+                                    <select name="appetite" id="appetite" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
                                         <option value="Si">Si</option>
                                         <option value="No">No</option>
@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="water_intake">Ingesta de agua</label>
-                                    <select name="water_intake" id="water_intake" required class="form-control select2">
+                                    <select name="water_intake" id="water_intake" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
                                         <option value="Si">Si</option>
                                         <option value="No">No</option>
@@ -140,9 +140,9 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="activity">Actividad</label>
-                                    <select name="activity" id="activity" required class="form-control select2">
+                                    <select name="activity" id="activity" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Iperactivo">Iperactivo</option>
+                                        <option value="Hiperactivo">Hiperactivo</option>
                                         <option value="Normal">Normal</option>
                                         <option value="Poca Actividad">Poca Actividad</option>
                                         <option value="Casi nulo">Casi nulo</option>
@@ -150,7 +150,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="urination">Micción</label>
-                                    <select name="urination" id="urination" required class="form-control select2">
+                                    <select name="urination" id="urination" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
                                         <option value="Excesivo">Excesivo</option>
                                         <option value="Normal">Normal</option>
@@ -243,7 +243,7 @@
                             <div class="row">
                                 <div class="form-group col-md-3">
                                     <label for="housing">Vivienda</label>
-                                    <select name="housing" id="housing" required class="form-control select2">
+                                    <select name="housing" id="housing" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
                                         <option value="Si">Si</option>
                                         <option value="No">No</option>
@@ -251,7 +251,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="access_to_exterior">Acceso al exterior</label>
-                                    <select name="access_to_exterior" id="access_to_exterior" required class="form-control select2">
+                                    <select name="access_to_exterior" id="access_to_exterior" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
                                         <option value="Si">Si</option>
                                         <option value="No">No</option>

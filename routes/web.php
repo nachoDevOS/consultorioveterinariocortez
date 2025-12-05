@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnamnesisFormController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AppointmentController;
@@ -62,6 +63,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::put('pets/{id}', [PetController::class, 'update'])->name('voyager.pets.update');
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('voyager.pets.destroy');
     Route::get('pets/{id}/history/create', [PetController::class, 'createHistory'])->name('voyager.pets.history.create');
+    Route::post('pets/{pet}/history', [AnamnesisFormController::class, 'store'])->name('voyager.pets.history.store');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 

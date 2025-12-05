@@ -30,6 +30,7 @@ class AnamnesisForm extends Model
 
         // HISTORIA CLÍNICA ACTUAL
         'appetite',
+        'observed_signs',
         'water_intake',
         'activity',
         'urination',
