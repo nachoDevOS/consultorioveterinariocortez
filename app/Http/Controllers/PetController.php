@@ -165,4 +165,24 @@ class PetController extends Controller
             return redirect()->route('voyager.pets.edit', $id)->with(['message' => 'Ocurrió un error al actualizar la mascota.', 'alert-type' => 'error'])->withInput();
         }
     }
+
+    public function destroy($id)
+    {
+        $this->custom_authorize('delete_pets');
+
+        DB::beginTransaction();
+        try {
+            $pet = Pet::findOrFail($id);
+            $pet->delete(); // Asumiendo que el modelo Pet usa SoftDeletes
+
+            DB::commit();
+            return redirect()->route('voyager.pets.index')->with(['message' => 'Mascota eliminada exitosamente.', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al eliminar mascota: ' . $e->getMessage());
+            return redirect()->route('voyager.pets.index')->with(['message' => 'Ocurrió un error al eliminar la mascota.', 'alert-type' => 'error']);
+        }
+    }
+
+
 }
