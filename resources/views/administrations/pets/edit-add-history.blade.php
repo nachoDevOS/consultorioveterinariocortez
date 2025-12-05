@@ -62,12 +62,8 @@
                                     <input type="text" class="form-control" id="pet_name" name="pet_name" value="{{ $pet->name }}" readonly>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="pet_species">Especie</label>
-                                    <input type="text" class="form-control" id="pet_species" name="pet_species" value="{{ $pet->animal->name ?? 'N/A' }}" readonly>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="pet_race">Raza</label>
-                                    <input type="text" class="form-control" id="pet_race" name="pet_race" value="{{ $pet->race->name ?? 'N/A' }}" readonly>
+                                    <label for="pet_species_race">Especie y Raza</label>
+                                    <input type="text" class="form-control" id="pet_species_race" name="pet_species_race" value="{{ ($pet->animal->name ?? 'N/A') . ' - ' . ($pet->race->name ?? 'N/A') }}" readonly>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="pet_age">Edad</label>
@@ -263,8 +259,18 @@
                                     <input type="text" class="form-control" id="stay_place" name="stay_place" placeholder="Ej: Dentro de casa, Patio">
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="cohabiting_animals">Animales convivientes</label>
-                                    <input type="text" class="form-control" id="cohabiting_animals" name="cohabiting_animals">
+                                    <label for="cohabiting_animals">Animales convivientes (Especie y Raza)</label>
+                                    <select class="form-control select2" name="cohabiting_animals[]" id="cohabiting_animals" multiple="multiple">
+                                        @if(isset($animals))
+                                            @foreach ($animals as $animal)
+                                                <optgroup label="{{ $animal->name }}">
+                                                    @foreach ($animal->races as $race)
+                                                        <option value="{{ $race->id }}">{{ $race->name }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        @endif
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="toxic_exposure">Exposición a tóxicos</label>

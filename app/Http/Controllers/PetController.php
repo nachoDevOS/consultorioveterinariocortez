@@ -196,8 +196,12 @@ class PetController extends Controller
     {
         $this->custom_authorize('add_pets'); // O un nuevo permiso 'add_pet_histories'
         $pet = Pet::with(['person', 'animal', 'race'])->findOrFail($id);
+        $animals = Animal::with(['races'])
+            ->whereNull('deleted_at')
+            ->get();
 
-        return view('administrations.pets.edit-add-history', compact('pet'));
+
+        return view('administrations.pets.edit-add-history', compact('pet', 'animals'));
     }
 
 
