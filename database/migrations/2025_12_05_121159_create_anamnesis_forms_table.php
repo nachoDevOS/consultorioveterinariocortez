@@ -68,9 +68,6 @@ return new class extends Migration
             // OBSERVACIONES ADICIONALES
             $table->text('additional_observations')->nullable();
 
-
-
-
             $table->smallInteger('status')->default(1);
 
             $table->timestamps();            
