@@ -38,7 +38,6 @@ class HomeController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'service' => 'required|exists:services,id', // Validar que el ID del servicio exista
-            'message' => 'required|string|max:1000',
             'terms' => 'accepted'
         ]);
       
