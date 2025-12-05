@@ -110,6 +110,14 @@ class PetController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $this->custom_authorize('read_pets');
+        $pet = Pet::with(['person', 'animal', 'race'])->findOrFail($id);
+
+        return view('administrations.pets.read', compact('pet'));
+    }
+
     public function edit($id)
     {
         $this->custom_authorize('edit_pets');
