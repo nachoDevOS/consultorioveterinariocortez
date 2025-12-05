@@ -61,6 +61,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::post('pets', [PetController::class, 'store'])->name('voyager.pets.store');
     Route::put('pets/{id}', [PetController::class, 'update'])->name('voyager.pets.update');
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('voyager.pets.destroy');
+    Route::get('pets/{id}/history/create', [PetController::class, 'createHistory'])->name('voyager.pets.history.create');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 
