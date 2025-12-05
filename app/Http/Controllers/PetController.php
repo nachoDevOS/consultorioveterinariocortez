@@ -204,5 +204,38 @@ class PetController extends Controller
         return view('administrations.pets.edit-add-history', compact('pet', 'animals'));
     }
 
+    public function ajaxStoreRace(Request $request)
+    {
+        // Opcional: Autorización para añadir razas
+        // $this->custom_authorize('add_races');
+
+        $validator = Validator::make($request->all(), [
+            'animal_id' => 'required|exists:animals,id',
+            'name' => 'required|string|max:255|unique:races,name,NULL,id,animal_id,'.$request->animal_id,
+            'observation' => 'nullable|string',
+        ], [
+            'name.unique' => 'Ya existe una raza con este nombre para la especie seleccionada.'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $race = new Race();
+            $race->animal_id = $request->animal_id;
+            $race->name = $request->name;
+            $race->observation = $request->observation;
+            $race->status = 1;
+            $race->save();
+
+            $race->load('animal'); // Cargar la relación para devolver el nombre del animal
+
+            return response()->json(['success' => true, 'message' => 'Raza registrada exitosamente.', 'race' => $race]);
+        } catch (\Exception $e) {
+            Log::error('Error al registrar raza vía AJAX: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Ocurrió un error al registrar la raza.'], 500);
+        }
+    }
 
 }

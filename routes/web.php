@@ -79,6 +79,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::delete('races/{id}', [RaceController::class, 'destroy'])->name('voyager.races.destroy');
     // Ruta para la lista AJAX de razas por animal
     Route::get('animals/{id}/races/ajax', [RaceController::class, 'ajaxList'])->name('animals.races.ajax');
+    Route::post('races/ajax-store', [PetController::class, 'ajaxStoreRace'])->name('voyager.races.ajax.store');
 
 
     Route::resource('incomes', IncomeController::class);

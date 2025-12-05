@@ -260,15 +260,22 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="cohabiting_animals">Animales convivientes (Especie y Raza)</label>
-                                    <select class="form-control select2" name="cohabiting_animals[]" id="cohabiting_animals" multiple="multiple">
-                                        @if(isset($animals))
-                                            @foreach ($animals->sortBy('name') as $animal)
-                                                @foreach ($animal->races->sortBy('name') as $race)
-                                                    <option value="{{ $race->id }}">{{ $animal->name }} - {{ $race->name }}</option>
+                                    <div class="input-group">
+                                        <select class="form-control select2" name="cohabiting_animals[]" id="cohabiting_animals" multiple="multiple">
+                                            @if(isset($animals))
+                                                @foreach ($animals->sortBy('name') as $animal)
+                                                    @foreach ($animal->races->sortBy('name') as $race)
+                                                        <option value="{{ $race->id }}">{{ $animal->name }} - {{ $race->name }}</option>
+                                                    @endforeach
                                                 @endforeach
-                                            @endforeach
-                                        @endif
-                                    </select>
+                                            @endif
+                                        </select>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addRaceModal" style="margin-top: 0; padding-top: 5px; padding-bottom: 5px;">
+                                                <i class="voyager-plus"></i>
+                                            </button>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="toxic_exposure">Exposición a tóxicos</label>
@@ -330,8 +337,104 @@
             </button>
         </form>
     </div>
+
+    {{-- Modal para añadir nueva raza --}}
+    <div class="modal fade" id="addRaceModal" tabindex="-1" role="dialog" aria-labelledby="addRaceModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="addRaceForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addRaceModalLabel">Añadir Nueva Raza</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ csrf_field() }}
+                        <div class="alert alert-danger" id="addRaceErrors" style="display: none;">
+                            <ul></ul>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_animal_id">Especie</label>
+                            <select name="animal_id" id="modal_animal_id" class="form-control select2" required>
+                                <option value="" disabled selected>-- Seleccione una especie --</option>
+                                @if(isset($animals))
+                                    @foreach ($animals->sortBy('name') as $animal)
+                                        <option value="{{ $animal->id }}">{{ $animal->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_race_name">Nombre de la Raza</label>
+                            <input type="text" class="form-control" id="modal_race_name" name="name" required placeholder="Ej: Labrador Retriever">
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_race_observation">Observación (Opcional)</label>
+                            <textarea name="observation" id="modal_race_observation" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="saveRaceBtn">Guardar Raza</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('javascript')
     <script src="{{ asset('js/btn-submit.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#addRaceForm').on('submit', function(e) {
+                e.preventDefault();
+                $('#saveRaceBtn').prop('disabled', true).text('Guardando...');
+                $('#addRaceErrors').hide().find('ul').empty();
+
+                $.ajax({
+                    url: '{{ route('voyager.races.ajax.store') }}',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(data) {
+                        if (data.success) {
+                            // Crear la nueva opción
+                            var newOption = new Option(data.race.animal.name + ' - ' + data.race.name, data.race.id, false, false);
+                            // Añadirla al select2 principal
+                            $('#cohabiting_animals').append(newOption).trigger('change');
+
+                            // Opcional: seleccionar la nueva raza
+                            var selectedValues = $('#cohabiting_animals').val();
+                            selectedValues.push(data.race.id);
+                            $('#cohabiting_animals').val(selectedValues).trigger('change');
+
+                            // Cerrar modal y mostrar mensaje
+                            $('#addRaceModal').modal('hide');
+                            toastr.success(data.message);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        var errors = jqXHR.responseJSON.errors;
+                        var errorList = $('#addRaceErrors ul');
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errorList.append('<li>' + errors[key][0] + '</li>');
+                            }
+                        }
+                        $('#addRaceErrors').show();
+                    },
+                    complete: function() {
+                        $('#saveRaceBtn').prop('disabled', false).text('Guardar Raza');
+                    }
+                });
+            });
+
+            // Limpiar el formulario del modal cuando se cierra
+            $('#addRaceModal').on('hidden.bs.modal', function () {
+                $('#addRaceForm')[0].reset();
+                $('#modal_animal_id').val(null).trigger('change');
+                $('#addRaceErrors').hide().find('ul').empty();
+                $('#saveRaceBtn').prop('disabled', false).text('Guardar Raza');
+            });
+        });
+    </script>
 @stop
