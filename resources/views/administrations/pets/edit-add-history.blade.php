@@ -262,12 +262,10 @@
                                     <label for="cohabiting_animals">Animales convivientes (Especie y Raza)</label>
                                     <select class="form-control select2" name="cohabiting_animals[]" id="cohabiting_animals" multiple="multiple">
                                         @if(isset($animals))
-                                            @foreach ($animals as $animal)
-                                                <optgroup label="{{ $animal->name }}">
-                                                    @foreach ($animal->races as $race)
-                                                        <option value="{{ $race->id }}">{{ $race->name }}</option>
-                                                    @endforeach
-                                                </optgroup>
+                                            @foreach ($animals->sortBy('name') as $animal)
+                                                @foreach ($animal->races->sortBy('name') as $race)
+                                                    <option value="{{ $race->id }}">{{ $animal->name }} - {{ $race->name }}</option>
+                                                @endforeach
                                             @endforeach
                                         @endif
                                     </select>
