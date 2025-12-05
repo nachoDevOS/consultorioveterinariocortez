@@ -60,6 +60,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('pets/{id}/edit', [PetController::class, 'edit'])->name('voyager.pets.edit');
     Route::post('pets', [PetController::class, 'store'])->name('voyager.pets.store');
     Route::put('pets/{id}', [PetController::class, 'update'])->name('voyager.pets.update');
+    Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('voyager.pets.destroy');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 

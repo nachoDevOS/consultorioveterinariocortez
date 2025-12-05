@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Animal;
 use Illuminate\Http\Request;
 use App\Models\Pet;
+use App\Models\Race;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -53,8 +54,9 @@ class PetController extends Controller
             ->orderBy('id', 'DESC')
             ->paginate($paginate);
 
-        // return $data;
         // dump($data);
+
+        // return $data;
 
         return view('administrations.pets.list', compact('data'));
     }
