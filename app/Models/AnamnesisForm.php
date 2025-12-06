@@ -77,4 +77,14 @@ class AnamnesisForm extends Model
         'deleteRole',
         'deleteObservation',
     ];
+
+
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class, 'pet_id');
+    }
+    public function doctor()
+    {
+        return $this->belongsTo(User::class, 'doctor_id');
+    }
 }

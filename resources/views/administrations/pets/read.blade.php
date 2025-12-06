@@ -108,12 +108,39 @@
                             </div>
                         </div>
                         <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Historial Clínico</h3>
+                            </div>
                             <div class="panel-body" style="padding-top:0;">
-                                {{-- 
-                                    Aquí puedes empezar a construir la lógica para mostrar y registrar el historial.
-                                    Por ejemplo, una tabla con las visitas, diagnósticos, tratamientos, etc.
-                                --}}
-                                <h4 class="text-center" style="margin-top: 50px; margin-bottom: 50px;">Aún no hay registros en el historial.</h4>
+                                @if($pet->anamnesisForms->count() > 0)
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Problema Principal</th>
+                                                    <th>Veterinario</th>
+                                                    <th class="text-right">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($pet->anamnesisForms as $history)
+                                                    <tr>
+                                                        <td>{{ \Carbon\Carbon::parse($history->date)->format('d/m/Y') }}</td>
+                                                        <td>{{ $history->main_problem ?? 'No especificado' }}</td>
+                                                        <td>{{ $history->doctor->name ?? 'No especificado' }}</td>
+                                                        <td class="no-sort no-click" id="bread-actions">
+                                                            {{-- Aquí puedes agregar botones para ver, editar o eliminar un historial --}}
+                                                            <a href="#" title="Ver" class="btn btn-sm btn-info view"><i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span></a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <h4 class="text-center" style="margin-top: 50px; margin-bottom: 50px;">Aún no hay registros en el historial.</h4>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -122,3 +149,11 @@
         </div>
     </div>
 @stop
+
+@push('javascript')
+<script>
+    $(document).ready(function () {
+        // Aquí puedes añadir lógica JS si es necesario, por ejemplo para los modales de ver detalle.
+    });
+</script>
+@endpush

@@ -113,7 +113,10 @@ class PetController extends Controller
     public function show($id)
     {
         $this->custom_authorize('read_pets');
-        $pet = Pet::with(['person', 'animal', 'race'])->findOrFail($id);
+        // Cargamos la mascota con sus relaciones, incluyendo los historiales (anamnesisForms) y el doctor de cada historial
+        $pet = Pet::with(['person', 'animal', 'race', 'anamnesisForms' => function($q) {
+            $q->with('doctor')->orderBy('date', 'desc');
+        }])->findOrFail($id);
 
         return view('administrations.pets.read', compact('pet'));
     }

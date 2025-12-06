@@ -99,7 +99,7 @@ class AnamnesisFormController extends Controller
                 'females_repro' => $request->females_repro,
                 'males_repro' => $request->males_repro,
                 'repro_complications' => $request->repro_complications,
-                'additional_observations' => $request->additional
+                'additional_observations' => $request->additional_observations
             ]);
 
             DB::commit();
@@ -108,7 +108,6 @@ class AnamnesisFormController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al guardar el historial clínico');
-            return 0;
             return redirect()->back()->with(['message' => 'Ocurrió un error al guardar el historial.', 'alert-type' => 'error'])->withInput();
         }
     }
