@@ -126,7 +126,7 @@ class AnamnesisFormController extends Controller
                 'males_repro' => $request->males_repro,
                 'repro_complications' => $request->repro_complications,
                 'additional_observations' => $request->additional_observations,
-                'products_used' => $request->products ? json_encode(array_values($request->products)) : null,
+
             ]);
 
             // 3. Descontar stock de los productos utilizados
