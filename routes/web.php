@@ -70,6 +70,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::put('pets/history/{anamnesis}', [AnamnesisFormController::class, 'update'])->name('voyager.pets.history.update');
     Route::get('pets/{pet}/history/list', [AnamnesisFormController::class, 'listByPet'])->name('voyager.pets.history.list');
     Route::get('pets/history/{history}', [AnamnesisFormController::class, 'show'])->name('voyager.pets.history.show');
+    Route::delete('pets/history/{anamnesis}', [AnamnesisFormController::class, 'destroy'])->name('voyager.pets.history.destroy');
+    
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 

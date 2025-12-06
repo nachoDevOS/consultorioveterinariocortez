@@ -127,6 +127,9 @@
             </div>
         </div>
     </div>
+
+    @include('partials.modal-delete')
+
 @stop
 
 @push('javascript')
@@ -157,6 +160,10 @@
                 $('#div-results-history').loading('toggle');
             }
         });
+    }
+
+    function deleteItem(url){
+        $('#delete_form').attr('action', url);
     }
 </script>
 @endpush
