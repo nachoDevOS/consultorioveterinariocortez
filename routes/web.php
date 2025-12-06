@@ -64,6 +64,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('voyager.pets.destroy');
     Route::get('pets/{id}/history/create', [PetController::class, 'createHistory'])->name('voyager.pets.history.create');
     Route::post('pets/{pet}/history', [AnamnesisFormController::class, 'store'])->name('voyager.pets.history.store');
+    Route::get('pets/{pet}/history/list', [AnamnesisFormController::class, 'listByPet'])->name('voyager.pets.history.list');
 
     Route::get('whatsapp', [MicroServiceController::class, 'message'])->name('whatsapp.message');
 

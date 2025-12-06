@@ -108,39 +108,18 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">Historial Clínico</h3>
-                            </div>
-                            <div class="panel-body" style="padding-top:0;">
-                                @if($pet->anamnesisForms->count() > 0)
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Problema Principal</th>
-                                                    <th>Veterinario</th>
-                                                    <th class="text-right">Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($pet->anamnesisForms as $history)
-                                                    <tr>
-                                                        <td>{{ \Carbon\Carbon::parse($history->date)->format('d/m/Y') }}</td>
-                                                        <td>{{ $history->main_problem ?? 'No especificado' }}</td>
-                                                        <td>{{ $history->doctor->name ?? 'No especificado' }}</td>
-                                                        <td class="no-sort no-click" id="bread-actions">
-                                                            {{-- Aquí puedes agregar botones para ver, editar o eliminar un historial --}}
-                                                            <a href="#" title="Ver" class="btn btn-sm btn-info view"><i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span></a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                            <div class="panel panel-bordered">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <h3 class="panel-title" style="padding-top: 10px;"><i class="fa-solid fa-book-medical"></i> Historial Clínico</h3>
+                                        </div>
+                                        <div class="col-sm-4" style="margin-bottom: 0px">
+                                            <input type="text" id="input-search-history" placeholder="🔍 Buscar en historial..." class="form-control">
+                                        </div>
                                     </div>
-                                @else
-                                    <h4 class="text-center" style="margin-top: 50px; margin-bottom: 50px;">Aún no hay registros en el historial.</h4>
-                                @endif
+                                    <div class="row" id="div-results-history" style="min-height: 120px"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -152,8 +131,32 @@
 
 @push('javascript')
 <script>
+    var timeout = null;
     $(document).ready(function () {
-        // Aquí puedes añadir lógica JS si es necesario, por ejemplo para los modales de ver detalle.
+        list_histories();
+
+        $('#input-search-history').on('keyup', function(e){
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                list_histories();
+            }, 1000); // 1 segundo de espera
+        });
     });
+
+    function list_histories(page = 1){
+        $('#div-results-history').loading({message: 'Cargando...'});
+
+        let url = '{{ route("voyager.pets.history.list", ["pet" => $pet->id]) }}';
+        let search = $('#input-search-history').val() ? $('#input-search-history').val() : '';
+
+        $.ajax({
+            url: `${url}?search=${search}&page=${page}`,
+            type: 'get',
+            success: function(result){
+                $("#div-results-history").html(result);
+                $('#div-results-history').loading('toggle');
+            }
+        });
+    }
 </script>
 @endpush

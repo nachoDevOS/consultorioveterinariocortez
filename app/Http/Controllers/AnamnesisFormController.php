@@ -111,4 +111,28 @@ class AnamnesisFormController extends Controller
             return redirect()->back()->with(['message' => 'Ocurrió un error al guardar el historial.', 'alert-type' => 'error'])->withInput();
         }
     }
+
+    public function listByPet(Pet $pet)
+    {
+        // Opcional: puedes añadir un permiso específico para ver el historial
+        // $this->custom_authorize('read_pet_histories');
+
+        $search = request('search') ?? null;
+        $paginate = request('paginate') ?? 5; // Paginamos de 5 en 5, puedes cambiarlo
+
+        $data = AnamnesisForm::with(['doctor'])
+            ->where('pet_id', $pet->id)
+            ->when($search, function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('main_problem', 'like', "%$search%")
+                      ->orWhere('date', 'like', "%$search%")
+                      ->orWhereHas('doctor', function($query) use ($search) {
+                          $query->where('name', 'like', "%$search%");
+                      });
+                });
+            })
+            ->orderBy('date', 'desc')
+            ->paginate($paginate);
+        return view('administrations.pets.history-list', compact('data', 'pet'));
+    }
 }
