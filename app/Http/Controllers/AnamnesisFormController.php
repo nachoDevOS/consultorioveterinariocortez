@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AnamnesisForm;
 use App\Models\AnamnesisItemStock;
+use App\Models\Race;
 use App\Models\Animal;
 use App\Models\ItemStock;
 use App\Models\Pet;
@@ -49,6 +50,26 @@ class AnamnesisFormController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate($paginate);
         return view('administrations.pets.history-list', compact('data', 'pet'));
+    }
+
+    public function show(AnamnesisForm $history)
+    {
+        // Cargar todas las relaciones necesarias para la vista de detalle
+        $history->load([
+            'pet.person', 
+            'pet.animal', 
+            'pet.race', 
+            'doctor', 
+            'anamnesisItemStocks.itemStock.item.category', 
+            'anamnesisItemStocks.itemStock.item.presentation', 
+            'anamnesisItemStocks.itemStock.item.laboratory', 
+            'anamnesisItemStocks.itemStock.item.brand'
+        ]);
+
+        $cohabiting_animal_ids = json_decode($history->cohabiting_animals);
+        $cohabitingAnimals = $cohabiting_animal_ids ? Race::with('animal')->whereIn('id', $cohabiting_animal_ids)->get() : null;
+
+        return view('administrations.pets.read-history', compact('history', 'cohabitingAnimals'));
     }
 
     public function edit(AnamnesisForm $anamnesis)
