@@ -182,12 +182,20 @@
                                                 $total += $subtotal;
                                             @endphp
                                             <tr>
-                                                <td>
-                                                    <strong>{!! $product->nameGeneric . ($product->nameTrade ? ' | ' . $product->nameTrade : '') !!}</strong><br>
-                                                    <small>
-                                                        @if($product->laboratory) Lab: {{ $product->laboratory->name }} @endif
-                                                        @if($product->brand) | Marca: {{ $product->brand->name }} @endif
-                                                    </small>
+                                                <td style="vertical-align: middle;">
+                                                    <div style="display: flex; align-items: center;">
+                                                        <div style="flex-grow: 1; line-height: 1.5;">
+                                                            <div style="font-size: 15px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                                                <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> {!! $product->nameGeneric . ($product->nameTrade ? '<span style="color: #444; font-weight: normal;">| '.$product->nameTrade.'</span>' : '') !!}
+                                                            </div>
+                                                            <div style="font-size: 12px; color: #555;">
+                                                                {!! $product->observation ? '<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">'.$product->observation.'</span></div>' : '' !!}
+                                                                <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> {{ $product->category->name ?? 'N/A' }} | {{ $product->presentation->name ?? 'N/A' }}</div>
+                                                                <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> {{ $product->laboratory ? $product->laboratory->name : 'SN' }}</div>
+                                                                <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> {{ $product->brand ? $product->brand->name : 'SN' }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                                 <td>{{ $product->category->name ?? 'N/A' }} | {{ $product->presentation->name ?? 'N/A' }}</td>
                                                 <td class="text-right">{{ number_format($item->price, 2, ',', '.') }}</td>
