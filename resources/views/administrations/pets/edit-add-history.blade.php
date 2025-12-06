@@ -365,7 +365,7 @@
                                                         <td style="vertical-align: middle; text-align: center"><b class="text-{{$product->stock > 10 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger')}}">{{$product->stock}}</b></td>
                                                         <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$product->id}}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-{{$product->id}}" value="{{$item->price}}" onkeyup="getSubtotal({{$product->id}})" onchange="getSubtotal({{$product->id}})" required></td>
                                                         <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$product->id}}][quantity]" step="1" min="1" max="{{$product->stock + $item->quantity}}" style="text-align: right" class="form-control" id="input-quantity-{{$product->id}}" value="{{$item->quantity}}" onkeyup="getSubtotal({{$product->id}})" onchange="getSubtotal({{$product->id}})" required></td>
-                                                        <td class="text-right" style="vertical-align: middle;"><b class="label-subtotal" id="label-subtotal-{{$product->id}}" style="font-size: 1.2em;">0.00</b></td>
+                                                        <td class="text-right" style="vertical-align: middle;"><b class="label-subtotal" id="label-subtotal-{{$product->id}}" style="font-size: 1.2em;">{{ number_format($item->price * $item->quantity, 2, '.', '') }}</b></td>
                                                         <td style="width: 5%"><button type="button" onclick="removeTr({{$product->id}})" class="btn btn-link"><i class="voyager-trash text-danger"></i></button></td>
                                                     </tr>
                                                 @empty
@@ -535,6 +535,9 @@
         @if($isEdit)
             $(document).ready(function() {
                 setNumber();
+                $('.tr-item').each(function() {
+                    getSubtotal($(this).attr('id').split('-')[2]);
+                });
                 getTotal();
             });
         @endif

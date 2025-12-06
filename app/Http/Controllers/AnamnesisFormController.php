@@ -265,9 +265,44 @@ class AnamnesisFormController extends Controller
         DB::beginTransaction();
         try {
             // 2. Actualizar el registro de Anamnesis
-            $requestData = $request->all();
-            $requestData['cohabiting_animals'] = $request->cohabiting_animals ? json_encode($request->cohabiting_animals) : null;
-            $anamnesis->update($requestData);
+
+            $anamnesis->update([
+                'date' => $request->date,
+                'reproductive_status' => $request->reproductive_status,
+                'weight' => $request->weight,
+                'identification' => $request->identification,   
+                'main_problem' => $request->main_problem,
+                'evolution_time' => $request->evolution_time,
+                'recent_changes' => $request->recent_changes,
+                'appetite' => $request->appetite,
+                'water_intake' => $request->water_intake,
+                'activity' => $request->activity,
+                'observed_signs' => $request->observed_signs,
+                'urination'=> $request->urination,
+                'defecation' => $request->defecation,
+                'temperature' => $request->temperature,
+                'heart_rate' => $request->heart_rate,
+                'respiratory_rate' => $request->respiratory_rate,
+                'previous_diseases' => $request->previous_diseases,
+                'previous_surgeries' => $request->previous_surgeries,
+                'current_medications' => $request->current_medications,
+                'allergies' => $request->allergies,
+                'vaccines' => $request->vaccines,
+                'deworming' => $request->deworming,
+                'diet_type' => $request->diet_type,
+                'diet_brand' => $request->diet_brand,
+                'diet_frequency' => $request->diet_frequency,
+                'diet_recent_changes' => $request->diet_recent_changes,
+                'housing' => $request->housing,
+                'access_to_exterior' => $request->access_to_exterior,
+                'stay_place' => $request->stay_place,
+                'cohabiting_animals' => $anamnesis->cohabiting_animals ? json_encode($anamnesis->cohabiting_animals) : null, // Mantener el valor anterior si no se actualiza
+                'toxic_exposure' => $request->toxic_exposure,
+                'females_repro' => $request->females_repro,
+                'males_repro' => $request->males_repro,
+                'repro_complications' => $request->repro_complications,
+                'additional_observations' => $request->additional_observations,
+            ]);
 
             // 3. Sincronizar los productos (items)
             // Devolver stock de items eliminados
@@ -313,5 +348,31 @@ class AnamnesisFormController extends Controller
         }
     }
 
+    public function destroy(AnamnesisForm $anamnesis)
+    {
+        // Opcional: Añadir permiso para eliminar
+        // $this->custom_authorize('delete_pet_histories');
+
+        DB::beginTransaction();
+        try {
+            // 1. Devolver el stock de los productos asociados
+            foreach ($anamnesis->anamnesisItemStocks as $item) {
+                $itemStock = $item->itemStock;
+                if ($itemStock) {
+                    $itemStock->increment('stock', $item->quantity);
+                }
+            }
+
+            // 2. Eliminar el historial clínico (y sus items asociados en cascada si está configurado)
+            $anamnesis->delete();
+
+            DB::commit();
+            return redirect()->route('voyager.pets.show', $anamnesis->pet_id)->with(['message' => 'Historial clínico eliminado exitosamente y stock restituido.', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al eliminar el historial clínico: ' . $e->getMessage());
+            return redirect()->route('voyager.pets.show', $anamnesis->pet_id)->with(['message' => 'Ocurrió un error al eliminar el historial.', 'alert-type' => 'error']);
+        }
+    }
     
 }

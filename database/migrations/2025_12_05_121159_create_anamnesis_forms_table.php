@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('recent_changes')->nullable();
 
             // HISTORIA CLÍNICA ACTUAL
+            $table->text('observed_signs')->nullable();
             $table->string('appetite')->nullable();
             $table->string('water_intake')->nullable();
             $table->string('activity')->nullable();
