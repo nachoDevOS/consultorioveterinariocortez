@@ -320,16 +320,18 @@
                                         <table id="dataTable" class="table table-bordered table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 30px">N&deg;</th>
-                                                    <th>Detalles</th>
-                                                    <th style="text-align: center; width:15%">Precio</th>
+                                                    <th style="width: 5%">N&deg;</th>
+                                                    <th style="">Detalles</th>
+                                                    <th style="text-align: center; width:10%">Stock</th>
+                                                    <th style="text-align: center; width:12%">Precio</th>
                                                     <th style="text-align: center; width:12%">Cantidad</th>
-                                                    <th style="width: 30px"></th>
+                                                    <th style="text-align: center; width:12%">Subtotal</th>
+                                                    <th style="width: 5%"></th>
                                                 </tr>
                                             </thead>
                                             <tbody id="table-body">
                                                 <tr id="tr-empty">
-                                                    <td colspan="5" style="height: 250px">
+                                                    <td colspan="7" style="height: 250px">
                                                         <h4 class="text-center text-muted" style="margin-top: 50px">
                                                             <i class="fa-solid fa-flask" style="font-size: 50px"></i> <br><br>
                                                             Lista de productos vacía
@@ -338,6 +340,14 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="pull-right">
+                                        <h3 style="margin: 0px">
+                                            <small>Total:</small>
+                                            <b id="label-total">0.00</b>
+                                        </h3>
                                     </div>
                                 </div>
                             </div>
@@ -514,7 +524,8 @@
                     }
 
                     if ($('.table').find(`#tr-item-${product.id}`).val() === undefined) {
-                        $('#table-body').append(`
+                        if (product.stock > 0) {
+                            $('#table-body').append(`
                                 <tr class="tr-item" id="tr-item-${product.id}">
                                     <td class="td-item"></td>
                                     <td>
@@ -533,46 +544,29 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td style="vertical-align: middle; padding: 5px;">
-                                        <div class="input-group input-group-item">                                       
-                                            <input type="text" name="products[${product.id}][lote]" class="form-control" placeholder="Opcional"/>
-                                        </div>
+                                    <td style="vertical-align: middle; text-align: center">
+                                        <b class="text-${product.stock > 10 ? 'success' : (product.stock > 0 ? 'warning' : 'danger')}">${product.stock}</b>
                                     </td>
                                     <td style="vertical-align: middle; padding: 5px;">
-                                        <div class="input-group input-group-item">
-                                            <input type="number" name="products[${product.id}][quantity]" step="1" min="1" style="text-align: right" class="form-control" id="input-quantity-${product.id}" value="1" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
-                                        </div>
+                                        <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
                                     </td>
                                     <td style="vertical-align: middle; padding: 5px;">
-                                        <div style="margin-bottom: 5px;">
-                                            <small>Compra:</small>
-                                            <input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
-                                        </div>
-                                        <div>
-                                            <small>Venta:</small>
-                                            <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
-                                        </div>
+                                        <input type="number" name="products[${product.id}][quantity]" step="1" min="1" max="${product.stock}" style="text-align: right" class="form-control" id="input-quantity-${product.id}" value="1" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
                                     </td>
-                                    <td class="text-right" style="vertical-align: middle; padding: 5px;">
-                                        <input type="hidden" name="products[${product.id}][amountPurchase]" id="subTotalPurchase-${product.id}" />
-                                        <input type="hidden" name="products[${product.id}][amountSale]" id="subTotalSale-${product.id}" />
-                                        <div style="text-align: right;">
-                                            <div style="margin-bottom: 5px;">
-                                                <small>Compra:</small><br>
-                                                <b class="label-subtotal" id="label-subtotal-purchase-${product.id}" style="font-size: 1.2em;">0.00</b>
-                                            </div>
-                                            <div>
-                                                <small>Venta:</small><br>
-                                                <b id="label-subtotal-sale-${product.id}" style="font-size: 1.2em;">0.00</b>
-                                            </div>
-                                            <button type="button" onclick="removeTr(${product.id})" class="btn btn-link" style="padding: 5px 0px 0px 0px; margin-top: 5px;"><i class="voyager-trash text-danger" style="font-size: 1.2em;"></i></button>
-                                        </div>
+                                    <td class="text-right" style="vertical-align: middle;">
+                                        <b class="label-subtotal" id="label-subtotal-${product.id}" style="font-size: 1.2em;">0.00</b>
+                                    </td>
+                                    <td style="width: 5%">
+                                        <button type="button" onclick="removeTr(${product.id})" class="btn btn-link"><i class="voyager-trash text-danger"></i></button>
                                     </td>
                                 </tr>
                             `);
                             setNumber();
                             getSubtotal(product.id);
-                            toastr.success(`+1 ${product.name}`, 'Producto agregado');
+                            toastr.success(`+1 ${product.item.nameGeneric}`, 'Producto agregado');
+                        } else {
+                            toastr.error('No hay stock disponible para este producto.', 'Error');
+                        }
                     } else {
                         toastr.info('EL producto ya está agregado', 'Información');
                     }
@@ -580,6 +574,22 @@
                 }
             });
         });
+
+        function getSubtotal(id) {
+            let quantity = $(`#input-quantity-${id}`).val() ? parseFloat($(`#input-quantity-${id}`).val()) : 0;
+            let price = $(`#input-priceSale-${id}`).val() ? parseFloat($(`#input-priceSale-${id}`).val()) : 0;
+            let subtotal = quantity * price;
+            $(`#label-subtotal-${id}`).text(subtotal.toFixed(2));
+            getTotal();
+        }
+
+        function getTotal() {
+            let total = 0;
+            $(".label-subtotal").each(function() {
+                total += parseFloat($(this).text()) || 0;
+            });
+            $('#label-total').text(total.toFixed(2));
+        }
 
         function setNumber() {
 
@@ -604,6 +614,10 @@
             toastr.info('Producto eliminado del carrito', 'Eliminado');
         }
 
+        // Definir variables globales para select2
+        window.storagePath = "{{ asset('storage') }}/";
+        window.defaultImage = "{{ asset('images/default.jpg') }}";
+
         function formatResultProducts(option) {
             if (option.loading) {
                 return '<span class="text-center"><i class="fas fa-spinner fa-spin"></i> Buscando...</span>';
@@ -611,11 +625,11 @@
             let image = window.defaultImage;
                 
             if (option.image) {
-                // Remove the extension and add the cropped suffix with webp extension
                 const lastDotIndex = option.image.lastIndexOf('.');
                 const baseName = lastDotIndex !== -1 ? option.image.substring(0, lastDotIndex) : option.image;
                 image = `${window.storagePath}${baseName}-cropped.webp`;
             }
+            let stockLabel = option.stock > 10 ? 'success' : (option.stock > 0 ? 'warning' : 'danger');
 
             // Mostrar las opciones encontradas con diseño mejorado
             return $(`<div style="display: flex; align-items: center; padding: 10px 5px;">
@@ -632,6 +646,7 @@
                                     <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> ${option.item.laboratory ? option.item.laboratory.name : 'SN'}</div>
                                     <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> ${option.item.brand ? option.item.brand.name : 'SN'}</div>
                                 </div>
+                                <div class="text-right"><label class="label label-${stockLabel}">Stock: ${option.stock}</label></div>
                             </div>
                         </div>`);
         }

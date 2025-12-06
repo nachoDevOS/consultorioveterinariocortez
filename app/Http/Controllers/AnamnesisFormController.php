@@ -126,7 +126,7 @@ class AnamnesisFormController extends Controller
                 'males_repro' => $request->males_repro,
                 'repro_complications' => $request->repro_complications,
                 'additional_observations' => $request->additional_observations,
-                'products_used' => $request->products ? json_encode($request->products) : null,
+                'products_used' => $request->products ? json_encode(array_values($request->products)) : null,
             ]);
 
             // 3. Descontar stock de los productos utilizados
@@ -134,7 +134,7 @@ class AnamnesisFormController extends Controller
                 foreach ($request->products as $productId => $productData) {
                     $itemStock = ItemStock::find($productId);
                     if ($itemStock && $itemStock->stock >= $productData['quantity']) {
-                        $itemStock->decrement('stock', $productData['quantity']);
+                        $itemStock->decrement('stock', intval($productData['quantity']));
                     } else {
                         // Si no hay stock suficiente, revertimos la transacción
                         throw new \Exception("No hay stock suficiente para el producto: " . ($itemStock->item->name ?? 'ID '.$productId));
