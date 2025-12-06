@@ -1,21 +1,28 @@
 @extends('voyager::master')
 
-@section('page_title', 'Añadir Historial Clínico')
+@php
+    $isEdit = !is_null($dataTypeContent->getKey());
+@endphp
+
+@section('page_title', $isEdit ? 'Editar Historial Clínico' : 'Añadir Historial Clínico')
 
 @section('page_header')
     <h1 class="page-title">
         <i class="fa-solid fa-notes-medical"></i>
-        Ficha de Anamnesis Veterinaria
+        {{ $isEdit ? 'Editar' : 'Añadir' }} Ficha de Anamnesis Veterinaria
     </h1>
 @stop
 
 @section('content')
     <div class="page-content container-fluid">
         <form class="form-edit-add" role="form"
-              action="{{ route('voyager.pets.history.store', $pet->id) }}"
+              action="{{ $isEdit ? route('voyager.pets.history.update', $dataTypeContent->id) : route('voyager.pets.history.store', $pet->id) }}"
               method="POST" enctype="multipart/form-data" autocomplete="off">
             
             {{ csrf_field() }}
+            @if($isEdit)
+                {{ method_field("PUT") }}
+            @endif
 
             <div class="row">
                 <div class="col-md-12">
@@ -40,7 +47,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="date">Fecha de Atención</label>
-                                    <input type="date" class="form-control" id="date" name="date" value="{{ date('Y-m-d') }}" required>
+                                    <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $isEdit ? \Carbon\Carbon::parse($dataTypeContent->date)->format('Y-m-d') : date('Y-m-d')) }}" required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="vet_name">Veterinario</label>
@@ -75,15 +82,15 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="reproductive_status">Reproductivo</label>
-                                    <input type="text" class="form-control" id="reproductive_status" name="reproductive_status" placeholder="Ej: Castrado">
+                                    <input type="text" class="form-control" id="reproductive_status" name="reproductive_status" placeholder="Ej: Castrado" value="{{ old('reproductive_status', $dataTypeContent->reproductive_status ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="weight">Peso (kg)</label>
-                                    <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="Peso en kg">
+                                    <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="Peso en kg" value="{{ old('weight', $dataTypeContent->weight ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="identification">Identificación</label>
-                                    <input type="text" class="form-control" id="identification" name="identification" placeholder="Ej: Microchip, Tatuaje">
+                                    <input type="text" class="form-control" id="identification" name="identification" placeholder="Ej: Microchip, Tatuaje" value="{{ old('identification', $dataTypeContent->identification ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -96,15 +103,15 @@
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label for="main_problem">Problema principal</label>
-                                    <textarea class="form-control" id="main_problem" name="main_problem" rows="3"></textarea>
+                                    <textarea class="form-control" id="main_problem" name="main_problem" rows="3">{{ old('main_problem', $dataTypeContent->main_problem ?? '') }}</textarea>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="evolution_time">Tiempo de evolución</label>
-                                    <input type="text" class="form-control" id="evolution_time" name="evolution_time">
+                                    <input type="text" class="form-control" id="evolution_time" name="evolution_time" value="{{ old('evolution_time', $dataTypeContent->evolution_time ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="recent_changes">Cambios recientes</label>
-                                    <input type="text" class="form-control" id="recent_changes" name="recent_changes">
+                                    <input type="text" class="form-control" id="recent_changes" name="recent_changes" value="{{ old('recent_changes', $dataTypeContent->recent_changes ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -115,60 +122,60 @@
                         <div class="panel-heading"><h3 class="panel-title"><i class="fa-solid fa-stethoscope"></i> HISTORIA CLÍNICA ACTUAL</h3></div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-12"><label for="observed_signs">Signos observados</label><textarea class="form-control" id="observed_signs" name="observed_signs" rows="3"></textarea></div>
+                                <div class="form-group col-md-12"><label for="observed_signs">Signos observados</label><textarea class="form-control" id="observed_signs" name="observed_signs" rows="3">{{ old('observed_signs', $dataTypeContent->observed_signs ?? '') }}</textarea></div>
                                 <div class="form-group col-md-3">
                                     <label for="appetite">Apetito</label>
                                     <select name="appetite" id="appetite" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Si">Si</option>
-                                        <option value="No">No</option>
-                                        <option value="Poco Apetito">Poco Apetito</option>
+                                        <option value="Si" @if(old('appetite', $dataTypeContent->appetite ?? '') == 'Si') selected @endif>Si</option>
+                                        <option value="No" @if(old('appetite', $dataTypeContent->appetite ?? '') == 'No') selected @endif>No</option>
+                                        <option value="Poco Apetito" @if(old('appetite', $dataTypeContent->appetite ?? '') == 'Poco Apetito') selected @endif>Poco Apetito</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="water_intake">Ingesta de agua</label>
                                     <select name="water_intake" id="water_intake" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Si">Si</option>
-                                        <option value="No">No</option>
-                                        <option value="Poco">Poco</option>
+                                        <option value="Si" @if(old('water_intake', $dataTypeContent->water_intake ?? '') == 'Si') selected @endif>Si</option>
+                                        <option value="No" @if(old('water_intake', $dataTypeContent->water_intake ?? '') == 'No') selected @endif>No</option>
+                                        <option value="Poco" @if(old('water_intake', $dataTypeContent->water_intake ?? '') == 'Poco') selected @endif>Poco</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="activity">Actividad</label>
                                     <select name="activity" id="activity" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Hiperactivo">Hiperactivo</option>
-                                        <option value="Normal">Normal</option>
-                                        <option value="Poca Actividad">Poca Actividad</option>
-                                        <option value="Casi nulo">Casi nulo</option>
+                                        <option value="Hiperactivo" @if(old('activity', $dataTypeContent->activity ?? '') == 'Hiperactivo') selected @endif>Hiperactivo</option>
+                                        <option value="Normal" @if(old('activity', $dataTypeContent->activity ?? '') == 'Normal') selected @endif>Normal</option>
+                                        <option value="Poca Actividad" @if(old('activity', $dataTypeContent->activity ?? '') == 'Poca Actividad') selected @endif>Poca Actividad</option>
+                                        <option value="Casi nulo" @if(old('activity', $dataTypeContent->activity ?? '') == 'Casi nulo') selected @endif>Casi nulo</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="urination">Micción</label>
                                     <select name="urination" id="urination" class="form-control select2" required>
                                         <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Excesivo">Excesivo</option>
-                                        <option value="Normal">Normal</option>
-                                        <option value="Muy Poco">Muy Poco</option>
-                                        <option value="Ninguna">Ninguna</option>
+                                        <option value="Excesivo" @if(old('urination', $dataTypeContent->urination ?? '') == 'Excesivo') selected @endif>Excesivo</option>
+                                        <option value="Normal" @if(old('urination', $dataTypeContent->urination ?? '') == 'Normal') selected @endif>Normal</option>
+                                        <option value="Muy Poco" @if(old('urination', $dataTypeContent->urination ?? '') == 'Muy Poco') selected @endif>Muy Poco</option>
+                                        <option value="Ninguna" @if(old('urination', $dataTypeContent->urination ?? '') == 'Ninguna') selected @endif>Ninguna</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="defecation">Defecación</label>
-                                    <input type="text" class="form-control" id="defecation" name="defecation">
+                                    <input type="text" class="form-control" id="defecation" name="defecation" value="{{ old('defecation', $dataTypeContent->defecation ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="temperature">Temperatura (°C)</label>
-                                    <input type="text" class="form-control" id="temperature" name="temperature">
+                                    <input type="text" class="form-control" id="temperature" name="temperature" value="{{ old('temperature', $dataTypeContent->temperature ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="heart_rate">Frecuencia Cardiaca (lpm)</label>
-                                    <input type="text" class="form-control" id="heart_rate" name="heart_rate">
+                                    <input type="text" class="form-control" id="heart_rate" name="heart_rate" value="{{ old('heart_rate', $dataTypeContent->heart_rate ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="respiratory_rate">Frecuencia Respiratoria (rpm)</label>
-                                    <input type="text" class="form-control" id="respiratory_rate" name="respiratory_rate">
+                                    <input type="text" class="form-control" id="respiratory_rate" name="respiratory_rate" value="{{ old('respiratory_rate', $dataTypeContent->respiratory_rate ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -181,27 +188,27 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label for="previous_diseases">Enfermedades previas</label>
-                                    <input type="text" class="form-control" id="previous_diseases" name="previous_diseases">
+                                    <input type="text" class="form-control" id="previous_diseases" name="previous_diseases" value="{{ old('previous_diseases', $dataTypeContent->previous_diseases ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="previous_surgeries">Cirugías anteriores</label>
-                                    <input type="text" class="form-control" id="previous_surgeries" name="previous_surgeries">
+                                    <input type="text" class="form-control" id="previous_surgeries" name="previous_surgeries" value="{{ old('previous_surgeries', $dataTypeContent->previous_surgeries ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="current_medications">Medicamentos actuales</label>
-                                    <input type="text" class="form-control" id="current_medications" name="current_medications">
+                                    <input type="text" class="form-control" id="current_medications" name="current_medications" value="{{ old('current_medications', $dataTypeContent->current_medications ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="allergies">Alergias</label>
-                                    <input type="text" class="form-control" id="allergies" name="allergies">
+                                    <input type="text" class="form-control" id="allergies" name="allergies" value="{{ old('allergies', $dataTypeContent->allergies ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="vaccines">Vacunas</label>
-                                    <input type="text" class="form-control" id="vaccines" name="vaccines" placeholder="Detallar últimas vacunas">
+                                    <input type="text" class="form-control" id="vaccines" name="vaccines" placeholder="Detallar últimas vacunas" value="{{ old('vaccines', $dataTypeContent->vaccines ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="deworming">Desparasitaciones</label>
-                                    <input type="text" class="form-control" id="deworming" name="deworming" placeholder="Detallar últimas desparasitaciones">
+                                    <input type="text" class="form-control" id="deworming" name="deworming" placeholder="Detallar últimas desparasitaciones" value="{{ old('deworming', $dataTypeContent->deworming ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -214,19 +221,19 @@
                             <div class="row">
                                 <div class="form-group col-md-3">
                                     <label for="diet_type">Tipo de dieta</label>
-                                    <input type="text" class="form-control" id="diet_type" name="diet_type" placeholder="Ej: Balanceado, Casera">
+                                    <input type="text" class="form-control" id="diet_type" name="diet_type" placeholder="Ej: Balanceado, Casera" value="{{ old('diet_type', $dataTypeContent->diet_type ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="diet_brand">Marca</label>
-                                    <input type="text" class="form-control" id="diet_brand" name="diet_brand">
+                                    <input type="text" class="form-control" id="diet_brand" name="diet_brand" value="{{ old('diet_brand', $dataTypeContent->diet_brand ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="diet_frequency">Frecuencia</label>
-                                    <input type="text" class="form-control" id="diet_frequency" name="diet_frequency" placeholder="Ej: 2 veces al día">
+                                    <input type="text" class="form-control" id="diet_frequency" name="diet_frequency" placeholder="Ej: 2 veces al día" value="{{ old('diet_frequency', $dataTypeContent->diet_frequency ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="diet_recent_changes">Cambios recientes</label>
-                                    <input type="text" class="form-control" id="diet_recent_changes" name="diet_recent_changes">
+                                    <input type="text" class="form-control" id="diet_recent_changes" name="diet_recent_changes" value="{{ old('diet_recent_changes', $dataTypeContent->diet_recent_changes ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -240,23 +247,23 @@
                                 <div class="form-group col-md-3">
                                     <label for="housing">Vivienda</label>
                                     <select name="housing" id="housing" class="form-control select2" required>
-                                        <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Si">Si</option>
-                                        <option value="No">No</option>
+                                        <option value="" disabled>--Seleccione una opción--</option>
+                                        <option value="Si" @if(old('housing', $dataTypeContent->housing ?? '') == 'Si') selected @endif>Si</option>
+                                        <option value="No" @if(old('housing', $dataTypeContent->housing ?? '') == 'No') selected @endif>No</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="access_to_exterior">Acceso al exterior</label>
                                     <select name="access_to_exterior" id="access_to_exterior" class="form-control select2" required>
-                                        <option value="" disabled selected>--Seleccione una opción--</option>
-                                        <option value="Si">Si</option>
-                                        <option value="No">No</option>
-                                        <option value="Algunas Veces">Algunas Veces</option>
+                                        <option value="" disabled>--Seleccione una opción--</option>
+                                        <option value="Si" @if(old('access_to_exterior', $dataTypeContent->access_to_exterior ?? '') == 'Si') selected @endif>Si</option>
+                                        <option value="No" @if(old('access_to_exterior', $dataTypeContent->access_to_exterior ?? '') == 'No') selected @endif>No</option>
+                                        <option value="Algunas Veces" @if(old('access_to_exterior', $dataTypeContent->access_to_exterior ?? '') == 'Algunas Veces') selected @endif>Algunas Veces</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="stay_place">Lugar donde permanece</label>
-                                    <input type="text" class="form-control" id="stay_place" name="stay_place" placeholder="Ej: Dentro de casa, Patio">
+                                    <input type="text" class="form-control" id="stay_place" name="stay_place" placeholder="Ej: Dentro de casa, Patio" value="{{ old('stay_place', $dataTypeContent->stay_place ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="cohabiting_animals">Animales convivientes (Especie y Raza)</label>
@@ -265,7 +272,7 @@
                                             @if(isset($animals))
                                                 @foreach ($animals->sortBy('name') as $animal)
                                                     @foreach ($animal->races->sortBy('name') as $race)
-                                                        <option value="{{ $race->id }}">{{ $animal->name }} - {{ $race->name }}</option>
+                                                        <option value="{{ $race->id }}" @if(is_array(old('cohabiting_animals', $dataTypeContent->cohabiting_animals)) && in_array($race->id, old('cohabiting_animals', $dataTypeContent->cohabiting_animals))) selected @endif>{{ $animal->name }} - {{ $race->name }}</option>
                                                     @endforeach
                                                 @endforeach
                                             @endif
@@ -279,7 +286,7 @@
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="toxic_exposure">Exposición a tóxicos</label>
-                                    <input type="text" class="form-control" id="toxic_exposure" name="toxic_exposure">
+                                    <input type="text" class="form-control" id="toxic_exposure" name="toxic_exposure" value="{{ old('toxic_exposure', $dataTypeContent->toxic_exposure ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -292,15 +299,15 @@
                             <div class="row">
                                 <div class="form-group col-md-4">
                                     <label for="females_repro">Hembras</label>
-                                    <input type="text" class="form-control" id="females_repro" name="females_repro" placeholder="Ej: Último celo, gestaciones">
+                                    <input type="text" class="form-control" id="females_repro" name="females_repro" placeholder="Ej: Último celo, gestaciones" value="{{ old('females_repro', $dataTypeContent->females_repro ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="males_repro">Machos</label>
-                                    <input type="text" class="form-control" id="males_repro" name="males_repro" placeholder="Ej: Montas, enfermedades">
+                                    <input type="text" class="form-control" id="males_repro" name="males_repro" placeholder="Ej: Montas, enfermedades" value="{{ old('males_repro', $dataTypeContent->males_repro ?? '') }}">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="repro_complications">Complicaciones reproductivas</label>
-                                    <input type="text" class="form-control" id="repro_complications" name="repro_complications">
+                                    <input type="text" class="form-control" id="repro_complications" name="repro_complications" value="{{ old('repro_complications', $dataTypeContent->repro_complications ?? '') }}">
                                 </div>
                             </div>
                         </div>
@@ -330,6 +337,38 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="table-body">
+                                                @if($isEdit)
+                                                    @forelse ($dataTypeContent->anamnesisItemStocks as $item)
+                                                        @php
+                                                            $product = $item->itemStock;
+                                                        @endphp
+                                                        <tr class="tr-item" id="tr-item-{{$product->id}}">
+                                                            <td class="td-item"></td>
+                                                            <td>
+                                                                <input type="hidden" name="products[{{$product->id}}][id]" value="{{$product->id}}">
+                                                                <div style="display: flex; align-items: center;">
+                                                                    <div style="flex-grow: 1; line-height: 1.5;">
+                                                                        <div style="font-size: 15px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                                                            <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> {{$product->item->nameGeneric}} {{$product->item->nameTrade ? '<span style="color: #444; font-weight: normal;">| '.$product->item->nameTrade.'</span>' : ''}}
+                                                                        </div>
+                                                                        <div style="font-size: 12px; color: #555;">
+                                                                            {{$product->item->observation ? '<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">'.$product->item->observation.'</span></div>' : ''}}
+                                                                            <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> {{$product->item->category->name}} | {{$product->item->presentation->name}}</div>
+                                                                            <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> {{$product->item->laboratory ? $product->item->laboratory->name : 'SN'}}</div>
+                                                                            <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> {{$product->item->brand ? $product->item->brand->name : 'SN'}}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td style="vertical-align: middle; text-align: center"><b class="text-{{$product->stock > 10 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger')}}">{{$product->stock}}</b></td>
+                                                            <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$product->id}}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-{{$product->id}}" value="{{$item->price}}" onkeyup="getSubtotal({{$product->id}})" onchange="getSubtotal({{$product->id}})" required></td>
+                                                            <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$product->id}}][quantity]" step="1" min="1" max="{{$product->stock + $item->quantity}}" style="text-align: right" class="form-control" id="input-quantity-{{$product->id}}" value="{{$item->quantity}}" onkeyup="getSubtotal({{$product->id}})" onchange="getSubtotal({{$product->id}})" required></td>
+                                                            <td class="text-right" style="vertical-align: middle;"><b class="label-subtotal" id="label-subtotal-{{$product->id}}" style="font-size: 1.2em;">0.00</b></td>
+                                                            <td style="width: 5%"><button type="button" onclick="removeTr({{$product->id}})" class="btn btn-link"><i class="voyager-trash text-danger"></i></button></td>
+                                                        </tr>
+                                                    @empty
+                                                    @endforelse
+                                                @endif
                                                 <tr id="tr-empty">
                                                     <td colspan="7" style="height: 250px">
                                                         <h4 class="text-center text-muted" style="margin-top: 50px">
@@ -362,7 +401,7 @@
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label for="additional_observations">Observaciones Adicionales</label>
-                                    <textarea class="form-control" id="additional_observations" name="additional_observations" rows="4"></textarea>
+                                    <textarea class="form-control" id="additional_observations" name="additional_observations" rows="4">{{ old('additional_observations', $dataTypeContent->additional_observations ?? '') }}</textarea>
                                 </div>
                                 {{-- <div class="form-group col-md-6">
                                     <label for="owner_signature">Firma del Propietario</label>
@@ -382,7 +421,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary pull-right save btn-submit">
-                <i class="voyager-check"></i> Guardar Historial
+                <i class="voyager-check"></i> {{ $isEdit ? 'Actualizar' : 'Guardar' }} Historial
             </button>
         </form>
     </div>
@@ -490,6 +529,12 @@
         // Lógica para agregar productos
         // =================================================
         var productSelected;
+        @if($isEdit)
+            $(document).ready(function() {
+                setNumber();
+                getTotal();
+            });
+        @endif
         $(document).ready(function() {
             $('<style>.select2-results__options { max-height: 450px !important; }</style>').appendTo('head');
 

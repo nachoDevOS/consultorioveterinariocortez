@@ -87,4 +87,9 @@ class AnamnesisForm extends Model
     {
         return $this->belongsTo(User::class, 'doctor_id');
     }
+
+    public function anamnesisItemStocks()
+    {
+        return $this->hasMany(AnamnesisItemStock::class, 'anamnesisForm_id');
+    }
 }

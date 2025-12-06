@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AnamnesisForm;
 use App\Models\AnamnesisItemStock;
+use App\Models\Animal;
 use App\Models\ItemStock;
 use App\Models\Pet;
 use Illuminate\Http\Request;
@@ -16,6 +17,15 @@ class AnamnesisFormController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function create(Pet $pet)
+    {
+        // Reutilizamos la misma vista para crear y editar
+        $animals = Animal::with('races')->get();
+        $anamnesis = new AnamnesisForm(); // Un objeto vacío para el modo 'create'
+        $dataTypeContent = $anamnesis; // Para compatibilidad con la vista
+        return view('administrations.pets.edit-add-history', compact('pet', 'animals', 'dataTypeContent'));
     }
 
     public function listByPet(Pet $pet)
@@ -38,8 +48,26 @@ class AnamnesisFormController extends Controller
                 });
             })
             ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate($paginate);
         return view('administrations.pets.history-list', compact('data', 'pet'));
+    }
+
+    public function edit(AnamnesisForm $anamnesis)
+    {
+        $pet = $anamnesis->pet;
+        $animals = Animal::with('races')->get();
+
+        // Decodificar el JSON de animales convivientes para que el select2 lo pueda leer
+        $anamnesis->cohabiting_animals = json_decode($anamnesis->cohabiting_animals);
+
+        // Cargar los productos asociados para mostrarlos en la tabla
+        $anamnesis->load(['anamnesisItemStocks.itemStock.item.category', 'anamnesisItemStocks.itemStock.item.presentation', 'anamnesisItemStocks.itemStock.item.laboratory', 'anamnesisItemStocks.itemStock.item.brand']);
+
+        // Renombrar para que la vista sea compatible con el modo 'edit' de Voyager
+        $dataTypeContent = $anamnesis;
+
+        return view('administrations.pets.edit-add-history', compact('pet', 'dataTypeContent', 'animals'));
     }
 
     public function store(Request $request, Pet $pet)
@@ -85,10 +113,12 @@ class AnamnesisFormController extends Controller
 
         ]);
 
-        foreach ($request->products as $product) {
-            $itemStock = ItemStock::findOrFail($product['id']);
-            if ($itemStock->stock < $product['quantity']) {
-                return back()->with(['message' => 'Stock insuficiente para ' . $itemStock->item->name, 'alert-type' => 'error']);
+        if ($request->has('products')) {
+            foreach ($request->products as $product) {
+                $itemStock = ItemStock::findOrFail($product['id']);
+                if ($itemStock->stock < $product['quantity']) {
+                    return back()->with(['message' => 'Stock insuficiente para ' . $itemStock->item->name, 'alert-type' => 'error'])->withInput();
+                }
             }
         }
    
@@ -167,6 +197,99 @@ class AnamnesisFormController extends Controller
             return 0;
             Log::error('Error al guardar el historial clínico: ' . $e->getMessage());
             return redirect()->back()->with(['message' => 'Ocurrió un error al guardar el historial.', 'alert-type' => 'error'])->withInput();
+        }
+    }
+
+    public function update(Request $request, AnamnesisForm $anamnesis)
+    {
+        // 1. Validar los datos del formulario
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'reproductive_status' => 'nullable|string|max:255',
+            'weight' => 'nullable|numeric|min:0',
+            'identification' => 'nullable|string|max:255',
+            'main_problem' => 'nullable|string',
+            'evolution_time' => 'nullable|string|max:255',
+            'recent_changes' => 'nullable|string|max:255',
+            'observed_signs' => 'nullable|string',
+            'appetite' => 'required|string',
+            'water_intake' => 'required|string',
+            'activity' => 'required|string',
+            'urination' => 'required|string',
+            'defecation' => 'nullable|string|max:255',
+            'temperature' => 'nullable|string|max:50',
+            'heart_rate' => 'nullable|string|max:50',
+            'respiratory_rate' => 'nullable|string|max:50',
+            'previous_diseases' => 'nullable|string',
+            'previous_surgeries' => 'nullable|string',
+            'current_medications' => 'nullable|string',
+            'allergies' => 'nullable|string',
+            'vaccines' => 'nullable|string',
+            'deworming' => 'nullable|string',
+            'diet_type' => 'nullable|string|max:255',
+            'diet_brand' => 'nullable|string|max:255',
+            'diet_frequency' => 'nullable|string|max:255',
+            'diet_recent_changes' => 'nullable|string',
+            'housing' => 'required|string',
+            'access_to_exterior' => 'required|string',
+            'stay_place' => 'nullable|string|max:255',
+            'cohabiting_animals' => 'nullable|array',
+            'cohabiting_animals.*' => 'exists:races,id',
+            'toxic_exposure' => 'nullable|string',
+            'females_repro' => 'nullable|string',
+            'males_repro' => 'nullable|string',
+            'repro_complications' => 'nullable|string',
+            'additional_observations' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // 2. Actualizar el registro de Anamnesis
+            $requestData = $request->all();
+            $requestData['cohabiting_animals'] = $request->cohabiting_animals ? json_encode($request->cohabiting_animals) : null;
+            $anamnesis->update($requestData);
+
+            // 3. Sincronizar los productos (items)
+            // Devolver stock de items eliminados
+            $existingItems = $anamnesis->anamnesisItemStocks;
+            $newItemsIds = $request->products ? array_column($request->products, 'id') : [];
+
+            foreach ($existingItems as $existingItem) {
+                if (!in_array($existingItem->itemStock_id, $newItemsIds)) {
+                    $itemStock = ItemStock::find($existingItem->itemStock_id);
+                    if ($itemStock) {
+                        $itemStock->increment('stock', $existingItem->quantity);
+                    }
+                    $existingItem->delete();
+                }
+            }
+
+            // Actualizar/Crear nuevos items
+            if ($request->products) {
+                foreach ($request->products as $product) {
+                    $itemStock = ItemStock::findOrFail($product['id']);
+                    $quantityDifference = $product['quantity'] - ($anamnesis->anamnesisItemStocks()->where('itemStock_id', $product['id'])->first()->quantity ?? 0);
+
+                    if ($itemStock->stock < $quantityDifference) {
+                        DB::rollBack();
+                        return back()->with(['message' => 'Stock insuficiente para ' . $itemStock->item->name, 'alert-type' => 'error'])->withInput();
+                    }
+
+                    $anamnesis->anamnesisItemStocks()->updateOrCreate(
+                        ['itemStock_id' => $product['id']],
+                        ['price' => $product['priceSale'], 'quantity' => $product['quantity'], 'amount' => $product['priceSale'] * $product['quantity'], 'pricePurchase' => $itemStock->pricePurchase]
+                    );
+                    $itemStock->decrement('stock', $quantityDifference);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('voyager.pets.show', $anamnesis->pet_id)->with(['message' => 'Historial clínico actualizado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al actualizar el historial clínico: ' . $e->getMessage());
+            return redirect()->back()->with(['message' => 'Ocurrió un error al actualizar el historial.', 'alert-type' => 'error'])->withInput();
         }
     }
 
