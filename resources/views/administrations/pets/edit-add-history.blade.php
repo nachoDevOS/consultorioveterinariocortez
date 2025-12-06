@@ -582,15 +582,26 @@
         });
 
         function setNumber() {
+
             var length = 0;
-            $(".td-item").each(function(index) { $(this).text(index + 1); length++; });
-            $('#tr-empty').css('display', length > 0 ? 'none' : 'table-row');
+            $(".td-item").each(function(index) {
+                $(this).text(index +1);
+                length++;
+            });
+
+            if(length > 0){
+                $('#tr-empty').css('display', 'none');
+            }else{
+                $('#tr-empty').fadeIn('fast');
+            }
         }
 
         function removeTr(id) {
             $(`#tr-item-${id}`).remove();
+            $('#select-product_id').val("").trigger("change");
             setNumber();
-            toastr.warning('Producto eliminado', 'Eliminado');
+            getTotal();
+            toastr.info('Producto eliminado del carrito', 'Eliminado');
         }
 
         function formatResultProducts(option) {
