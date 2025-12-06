@@ -21,10 +21,8 @@ class AnamnesisFormController extends Controller
 
     public function create(Pet $pet)
     {
-        // Reutilizamos la misma vista para crear y editar
         $animals = Animal::with('races')->get();
-        $anamnesis = new AnamnesisForm(); // Un objeto vacío para el modo 'create'
-        $dataTypeContent = $anamnesis; // Para compatibilidad con la vista
+        $dataTypeContent = null; // Aseguramos que la variable exista para el modo 'create'
         return view('administrations.pets.edit-add-history', compact('pet', 'animals', 'dataTypeContent'));
     }
 
@@ -141,6 +139,7 @@ class AnamnesisFormController extends Controller
                 'appetite' => $request->appetite,
                 'water_intake' => $request->water_intake,
                 'activity' => $request->activity,
+                'observed_signs' => $request->observed_signs,
                 'urination'=> $request->urination,
                 'defecation' => $request->defecation,
                 'temperature' => $request->temperature,
