@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnamnesisForm;
+use App\Models\ItemStock;
 use App\Models\Pet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,30 @@ class AnamnesisFormController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function listByPet(Pet $pet)
+    {
+        // Opcional: puedes añadir un permiso específico para ver el historial
+        // $this->custom_authorize('read_pet_histories');
+
+        $search = request('search') ?? null;
+        $paginate = request('paginate') ?? 5; // Paginamos de 5 en 5, puedes cambiarlo
+
+        $data = AnamnesisForm::with(['doctor'])
+            ->where('pet_id', $pet->id)
+            ->when($search, function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('main_problem', 'like', "%$search%")
+                      ->orWhere('date', 'like', "%$search%")
+                      ->orWhereHas('doctor', function($query) use ($search) {
+                          $query->where('name', 'like', "%$search%");
+                      });
+                });
+            })
+            ->orderBy('date', 'desc')
+            ->paginate($paginate);
+        return view('administrations.pets.history-list', compact('data', 'pet'));
     }
 
     public function store(Request $request, Pet $pet)
@@ -56,6 +81,7 @@ class AnamnesisFormController extends Controller
             'males_repro' => 'nullable|string',
             'repro_complications' => 'nullable|string',
             'additional_observations' => 'nullable|string',
+
         ]);
 
         DB::beginTransaction();
@@ -99,40 +125,32 @@ class AnamnesisFormController extends Controller
                 'females_repro' => $request->females_repro,
                 'males_repro' => $request->males_repro,
                 'repro_complications' => $request->repro_complications,
-                'additional_observations' => $request->additional_observations
+                'additional_observations' => $request->additional_observations,
+                'products_used' => $request->products ? json_encode($request->products) : null,
             ]);
+
+            // 3. Descontar stock de los productos utilizados
+            if ($request->has('products')) {
+                foreach ($request->products as $productId => $productData) {
+                    $itemStock = ItemStock::find($productId);
+                    if ($itemStock && $itemStock->stock >= $productData['quantity']) {
+                        $itemStock->decrement('stock', $productData['quantity']);
+                    } else {
+                        // Si no hay stock suficiente, revertimos la transacción
+                        throw new \Exception("No hay stock suficiente para el producto: " . ($itemStock->item->name ?? 'ID '.$productId));
+                    }
+                }
+            }
 
             DB::commit();
 
             return redirect()->route('voyager.pets.show', $pet->id)->with(['message' => 'Historial clínico guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al guardar el historial clínico');
+            Log::error('Error al guardar el historial clínico: ' . $e->getMessage());
             return redirect()->back()->with(['message' => 'Ocurrió un error al guardar el historial.', 'alert-type' => 'error'])->withInput();
         }
     }
 
-    public function listByPet(Pet $pet)
-    {
-        // Opcional: puedes añadir un permiso específico para ver el historial
-        // $this->custom_authorize('read_pet_histories');
-
-        $search = request('search') ?? null;
-        $paginate = request('paginate') ?? 5; // Paginamos de 5 en 5, puedes cambiarlo
-
-        $data = AnamnesisForm::with(['doctor'])
-            ->where('pet_id', $pet->id)
-            ->when($search, function ($query, $search) {
-                return $query->where(function($q) use ($search) {
-                    $q->where('main_problem', 'like', "%$search%")
-                      ->orWhere('date', 'like', "%$search%")
-                      ->orWhereHas('doctor', function($query) use ($search) {
-                          $query->where('name', 'like', "%$search%");
-                      });
-                });
-            })
-            ->orderBy('date', 'desc')
-            ->paginate($paginate);
-        return view('administrations.pets.history-list', compact('data', 'pet'));
-    }
+    
 }

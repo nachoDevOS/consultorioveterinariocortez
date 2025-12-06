@@ -306,6 +306,45 @@
                         </div>
                     </div>
 
+                    {{-- Productos Utilizados --}}
+                    <div class="panel panel-bordered">
+                        <div class="panel-heading"><h3 class="panel-title"><i class="fa-solid fa-pills"></i> PRODUCTOS UTILIZADOS</h3></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="product_id">Buscar producto</label>
+                                    <select class="form-control" id="select-product_id"></select>
+                                </div>
+                                <div class="col-md-12" style="height: 350px; max-height: 350px; overflow-y: auto">
+                                    <div class="table-responsive">
+                                        <table id="dataTable" class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 30px">N&deg;</th>
+                                                    <th>Detalles</th>
+                                                    <th style="text-align: center; width:15%">Precio</th>
+                                                    <th style="text-align: center; width:12%">Cantidad</th>
+                                                    <th style="width: 30px"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table-body">
+                                                <tr id="tr-empty">
+                                                    <td colspan="5" style="height: 250px">
+                                                        <h4 class="text-center text-muted" style="margin-top: 50px">
+                                                            <i class="fa-solid fa-flask" style="font-size: 50px"></i> <br><br>
+                                                            Lista de productos vacía
+                                                        </h4>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     {{-- Observaciones y Firmas --}}
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h3 class="panel-title"><i class="fa-solid fa-file-signature"></i> OBSERVACIONES ADICIONALES</h3></div>
@@ -436,5 +475,122 @@
                 $('#saveRaceBtn').prop('disabled', false).text('Guardar Raza');
             });
         });
+
+        // =================================================
+        // Lógica para agregar productos
+        // =================================================
+        var productSelected;
+        $(document).ready(function() {
+            $('<style>.select2-results__options { max-height: 450px !important; }</style>').appendTo('head');
+
+            $('#select-product_id').select2({
+                width: '100%',
+                placeholder: '<i class="fa fa-search"></i> Buscar...',
+                escapeMarkup: function(markup) { return markup; },
+                language: {
+                    inputTooShort: function(data) { return `Por favor ingrese ${data.minimum - data.input.length} o más caracteres`; },
+                    noResults: function() { return `<i class="far fa-frown"></i> No hay resultados encontrados`; }
+                },
+                quietMillis: 250,
+                minimumInputLength: 2,
+                ajax: {
+                    url: "{{ url('admin/item/stock/ajax') }}",
+                    processResults: function(data) {
+                        return { results: data };
+                    },
+                    cache: true
+                },
+                templateResult: formatResultProducts,
+                templateSelection: (opt) => {
+                    productSelected = opt;
+                    return productSelected.id;
+                }
+            }).change(function() {
+                if ($('#select-product_id option:selected').val()) {
+                    let product = productSelected;
+                    let image = "{{ asset('images/default.jpg') }}";
+                    if (product.item.image) {
+                        image = "{{ asset('storage') }}/" + product.item.image.replace('.avif', '-cropped.webp');
+                    }
+
+                    if ($('.table').find(`#tr-item-${product.id}`).val() === undefined) {
+                        $('#table-body').append(`
+                            <tr class="tr-item" id="tr-item-${product.id}">
+                                <td class="td-item"></td>
+                                <td>
+                                    <input type="hidden" name="products[${product.id}][item_stock_id]" value="${product.id}"/>
+                                    <input type="hidden" name="products[${product.id}][price]" value="${product.priceSale}"/>
+                                    <div style="display: flex; align-items: center;">
+                                        <img src="${image}" width="50px" style="border-radius: 4px; margin-right: 10px;"/>
+                                        <div>
+                                            <b style="font-size: 14px;">${product.item.nameGeneric || product.item.nameTrade}</b><br>
+                                            <small>Marca: ${product.item.brand.name}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: middle; text-align: right">
+                                    <h4>${product.priceSale} Bs.</h4>
+                                </td>
+                                <td width="100px" style="vertical-align: middle;">
+                                    <input type="number" name="products[${product.id}][quantity]" step="1" min="1" style="text-align: right" class="form-control" value="1" max="${product.stock}" required/>
+                                </td>
+                                <td width="50px" class="text-right" style="vertical-align: middle;">
+                                    <button type="button" onclick="removeTr(${product.id})" class="btn btn-link"><i class="voyager-trash text-danger"></i></button>
+                                </td>
+                            </tr>
+                        `);
+                        setNumber();
+                        toastr.success(`+1 ${product.item.nameGeneric || product.item.nameTrade}`, 'Producto agregado');
+                    } else {
+                        toastr.info('EL producto ya está agregado', 'Información');
+                    }
+                    $('#select-product_id').val('').trigger('change');
+                }
+            });
+        });
+
+        function setNumber() {
+            var length = 0;
+            $(".td-item").each(function(index) { $(this).text(index + 1); length++; });
+            $('#tr-empty').css('display', length > 0 ? 'none' : 'table-row');
+        }
+
+        function removeTr(id) {
+            $(`#tr-item-${id}`).remove();
+            setNumber();
+            toastr.warning('Producto eliminado', 'Eliminado');
+        }
+
+        function formatResultProducts(option) {
+            if (option.loading) {
+                return '<span class="text-center"><i class="fas fa-spinner fa-spin"></i> Buscando...</span>';
+            }
+            let image = window.defaultImage;
+                
+            if (option.image) {
+                // Remove the extension and add the cropped suffix with webp extension
+                const lastDotIndex = option.image.lastIndexOf('.');
+                const baseName = lastDotIndex !== -1 ? option.image.substring(0, lastDotIndex) : option.image;
+                image = `${window.storagePath}${baseName}-cropped.webp`;
+            }
+
+            // Mostrar las opciones encontradas con diseño mejorado
+            return $(`<div style="display: flex; align-items: center; padding: 10px 5px;">
+                            <div style="flex-shrink: 0; margin-right: 15px;">
+                                <img src="${image}" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+                            </div>
+                            <div style="flex-grow: 1; line-height: 1.5;">
+                                <div style="font-size: 16px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                    <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> ${option.item.nameGeneric} ${option.item.nameTrade ? `<span style="color: #444; font-weight: normal;">| ${option.item.nameTrade}</span>` : ''}
+                                </div>
+                                <div style="font-size: 12px; color: #555;">
+                                    ${option.item.observation ? `<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">${option.observation}</span></div>` : ''}
+                                    <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> ${option.item.category.name} | ${option.item.presentation.name}</div>
+                                    <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> ${option.item.laboratory ? option.item.laboratory.name : 'SN'}</div>
+                                    <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> ${option.item.brand ? option.item.brand.name : 'SN'}</div>
+                                </div>
+                            </div>
+                        </div>`);
+        }
     </script>
 @stop

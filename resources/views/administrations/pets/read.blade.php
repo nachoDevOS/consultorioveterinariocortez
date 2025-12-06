@@ -15,7 +15,7 @@
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
                             <a href="{{ route('voyager.pets.history.create', ['id' => $pet->id]) }}" class="btn btn-primary">
-                                <i class="fa-solid fa-notes-medical"></i> <span>Ver Historial</span>
+                                <i class="fa-solid fa-notes-medical"></i> <span>Agregar Historial</span>
                             </a>
                             <a href="{{ route('voyager.pets.index') }}" class="btn btn-warning">
                                 <i class="voyager-list"></i> <span>Volver a la lista</span>

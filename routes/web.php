@@ -99,6 +99,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::put('items/{id}', [ItemController::class, 'update'])->name('voyager.items.update');
     Route::get('items/{id}', [ItemController::class, 'show'])->name('voyager.items.show');
     Route::get('items/{id}/stock/ajax/list', [ItemController::class, 'listStock']);
+
+    Route::get('item/stock/ajax', [AjaxController::class, 'itemStockList']);//
     // Route::get('items/{id}/sales/ajax/list', [ItemController::class, 'listSales']);
 
     Route::post('items/{id}/stock', [ItemController::class, 'storeStock'])->name('items-stock.store');
@@ -119,6 +121,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
 
     Route::get('ajax/personList', [AjaxController::class, 'personList']);
     Route::post('ajax/person/store', [AjaxController::class, 'personStore']);
+    Route::get('ajax/item-stock/list', [AjaxController::class, 'itemStockList'])->name('ajax.item-stock.list');
 
 });
 
