@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnamnesisForm;
+use App\Models\AnamnesisItemStock;
 use App\Models\ItemStock;
 use App\Models\Pet;
 use Illuminate\Http\Request;
@@ -84,6 +85,14 @@ class AnamnesisFormController extends Controller
 
         ]);
 
+        foreach ($request->products as $product) {
+            $itemStock = ItemStock::findOrFail($product['id']);
+            if ($itemStock->stock < $product['quantity']) {
+                return back()->with(['message' => 'Stock insuficiente para ' . $itemStock->item->name, 'alert-type' => 'error']);
+            }
+        }
+   
+
         DB::beginTransaction();
         try {
             // return $request;
@@ -129,24 +138,33 @@ class AnamnesisFormController extends Controller
 
             ]);
 
-            // 3. Descontar stock de los productos utilizados
-            if ($request->has('products')) {
-                foreach ($request->products as $productId => $productData) {
-                    $itemStock = ItemStock::find($productId);
-                    if ($itemStock && $itemStock->stock >= $productData['quantity']) {
-                        $itemStock->decrement('stock', intval($productData['quantity']));
-                    } else {
-                        // Si no hay stock suficiente, revertimos la transacción
-                        throw new \Exception("No hay stock suficiente para el producto: " . ($itemStock->item->name ?? 'ID '.$productId));
-                    }
-                }
-            }
+           
+            // return 1;
+
+            // return $request;
+
+            if ($request->products) {
+                foreach ($request->products as $key => $value) {
+                    $itemStock = ItemStock::where('id', $value['id'])->first();
+                    AnamnesisItemStock::create([
+                        'anamnesisForm_id' => $anamnesis->id,
+                        'itemStock_id' => $itemStock->id,
+                        'pricePurchase' => $itemStock->pricePurchase,
+                        'price' => $value['priceSale'],
+                        'quantity' => $value['quantity'],
+                        'amount' => $value['priceSale'] * $value['quantity'],
+                    ]);
+                    $itemStock->decrement('stock', $value['quantity']);
+                } 
+            }  
+            // return 1;
 
             DB::commit();
 
             return redirect()->route('voyager.pets.show', $pet->id)->with(['message' => 'Historial clínico guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
+            return 0;
             Log::error('Error al guardar el historial clínico: ' . $e->getMessage());
             return redirect()->back()->with(['message' => 'Ocurrió un error al guardar el historial.', 'alert-type' => 'error'])->withInput();
         }

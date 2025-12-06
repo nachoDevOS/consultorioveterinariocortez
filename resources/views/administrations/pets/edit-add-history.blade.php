@@ -197,11 +197,11 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="vaccines">Vacunas</label>
-                                    <input type="text" class="form-control" id="vaccines" placeholder="Detallar últimas vacunas">
+                                    <input type="text" class="form-control" id="vaccines" name="vaccines" placeholder="Detallar últimas vacunas">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="deworming">Desparasitaciones</label>
-                                    <input type="text" class="form-control" id="deworming" placeholder="Detallar últimas desparasitaciones">
+                                    <input type="text" class="form-control" id="deworming" name="deworming" placeholder="Detallar últimas desparasitaciones">
                                 </div>
                             </div>
                         </div>
