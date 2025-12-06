@@ -515,32 +515,64 @@
 
                     if ($('.table').find(`#tr-item-${product.id}`).val() === undefined) {
                         $('#table-body').append(`
-                            <tr class="tr-item" id="tr-item-${product.id}">
-                                <td class="td-item"></td>
-                                <td>
-                                    <input type="hidden" name="products[${product.id}][item_stock_id]" value="${product.id}"/>
-                                    <input type="hidden" name="products[${product.id}][price]" value="${product.priceSale}"/>
-                                    <div style="display: flex; align-items: center;">
-                                        <img src="${image}" width="50px" style="border-radius: 4px; margin-right: 10px;"/>
-                                        <div>
-                                            <b style="font-size: 14px;">${product.item.nameGeneric || product.item.nameTrade}</b><br>
-                                            <small>Marca: ${product.item.brand.name}</small>
+                                <tr class="tr-item" id="tr-item-${product.id}">
+                                    <td class="td-item"></td>
+                                    <td>
+                                        <input type="hidden" name="products[${product.id}][id]" value="${product.id}"/>
+                                        <div style="display: flex; align-items: center;">
+                                            <div style="flex-grow: 1; line-height: 1.5;">
+                                                <div style="font-size: 15px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                                    <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> ${product.item.nameGeneric} ${product.item.nameTrade ? `<span style="color: #444; font-weight: normal;">| ${product.item.nameTrade}</span>` : ''}
+                                                </div>
+                                                <div style="font-size: 12px; color: #555;">
+                                                    ${product.item.observation ? `<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">${product.item.observation}</span></div>` : ''}
+                                                    <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> ${product.item.category.name} | ${product.item.presentation.name}</div>
+                                                    <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> ${product.item.laboratory ? product.item.laboratory.name : 'SN'}</div>
+                                                    <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> ${product.item.brand ? product.item.brand.name : 'SN'}</div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td style="vertical-align: middle; text-align: right">
-                                    <h4>${product.priceSale} Bs.</h4>
-                                </td>
-                                <td width="100px" style="vertical-align: middle;">
-                                    <input type="number" name="products[${product.id}][quantity]" step="1" min="1" style="text-align: right" class="form-control" value="1" max="${product.stock}" required/>
-                                </td>
-                                <td width="50px" class="text-right" style="vertical-align: middle;">
-                                    <button type="button" onclick="removeTr(${product.id})" class="btn btn-link"><i class="voyager-trash text-danger"></i></button>
-                                </td>
-                            </tr>
-                        `);
-                        setNumber();
-                        toastr.success(`+1 ${product.item.nameGeneric || product.item.nameTrade}`, 'Producto agregado');
+                                    </td>
+                                    <td style="vertical-align: middle; padding: 5px;">
+                                        <div class="input-group input-group-item">                                       
+                                            <input type="text" name="products[${product.id}][lote]" class="form-control" placeholder="Opcional"/>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align: middle; padding: 5px;">
+                                        <div class="input-group input-group-item">
+                                            <input type="number" name="products[${product.id}][quantity]" step="1" min="1" style="text-align: right" class="form-control" id="input-quantity-${product.id}" value="1" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align: middle; padding: 5px;">
+                                        <div style="margin-bottom: 5px;">
+                                            <small>Compra:</small>
+                                            <input type="number" name="products[${product.id}][pricePurchase]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-pricePurchase-${product.id}" value="${product.pricePurchase || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                        </div>
+                                        <div>
+                                            <small>Venta:</small>
+                                            <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>
+                                        </div>
+                                    </td>
+                                    <td class="text-right" style="vertical-align: middle; padding: 5px;">
+                                        <input type="hidden" name="products[${product.id}][amountPurchase]" id="subTotalPurchase-${product.id}" />
+                                        <input type="hidden" name="products[${product.id}][amountSale]" id="subTotalSale-${product.id}" />
+                                        <div style="text-align: right;">
+                                            <div style="margin-bottom: 5px;">
+                                                <small>Compra:</small><br>
+                                                <b class="label-subtotal" id="label-subtotal-purchase-${product.id}" style="font-size: 1.2em;">0.00</b>
+                                            </div>
+                                            <div>
+                                                <small>Venta:</small><br>
+                                                <b id="label-subtotal-sale-${product.id}" style="font-size: 1.2em;">0.00</b>
+                                            </div>
+                                            <button type="button" onclick="removeTr(${product.id})" class="btn btn-link" style="padding: 5px 0px 0px 0px; margin-top: 5px;"><i class="voyager-trash text-danger" style="font-size: 1.2em;"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `);
+                            setNumber();
+                            getSubtotal(product.id);
+                            toastr.success(`+1 ${product.name}`, 'Producto agregado');
                     } else {
                         toastr.info('EL producto ya está agregado', 'Información');
                     }
