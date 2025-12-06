@@ -103,12 +103,11 @@ class AnamnesisFormController extends Controller
             ]);
 
             DB::commit();
-            return 1;
 
             return redirect()->route('voyager.pets.show', $pet->id)->with(['message' => 'Historial clínico guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al guardar el historial clínico: ' . $e->getMessage());
+            Log::error('Error al guardar el historial clínico');
             return 0;
             return redirect()->back()->with(['message' => 'Ocurrió un error al guardar el historial.', 'alert-type' => 'error'])->withInput();
         }
