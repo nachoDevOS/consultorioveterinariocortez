@@ -8,19 +8,19 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body" style="padding: 0px">
-                        <div class="col-md-6" style="padding: 0px">
+                        <div class="col-md-6" style="padding: 0px; display: flex; align-items: center;">
                             <h1 class="page-title">
                                 <i class="fa-solid fa-dog"></i> Viendo Mascota
                             </h1>
                         </div>
                         <div class="col-md-6 text-right" style="margin-top: 30px">
-                            <a href="{{ route('voyager.pets.history.create', ['id' => $pet->id]) }}" class="btn btn-primary">
+                            <a href="{{ route('voyager.pets.history.create', ['id' => $pet->id]) }}" class="btn btn-primary btn-sm">
                                 <i class="fa-solid fa-notes-medical"></i> <span>Agregar Historial</span>
                             </a>
-                            <a class="btn btn-primary">
-                                <i class="fa-solid fa-notes-medical"></i> <span>Agregar Recordatorio</span>
-                            </a>
-                            <a href="{{ route('voyager.pets.index') }}" class="btn btn-warning">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#reminder-modal">
+                                <i class="fa-solid fa-bell"></i> <span>Agregar Recordatorio</span>
+                            </button>
+                            <a href="{{ route('voyager.pets.index') }}" class="btn btn-warning btn-sm">
                                 <i class="voyager-list"></i> <span>Volver a la lista</span>
                             </a>
                         </div>
@@ -133,7 +133,7 @@
                                             <h3 class="panel-title" style="padding-top: 10px;"><i class="fa-solid fa-bell"></i> Recordatorio</h3>
                                         </div>
                                         <div class="col-sm-4" style="margin-bottom: 0px">
-                                            <input type="text" id="input-search-history" placeholder="🔍 Buscar recordatorio..." class="form-control">
+                                            <input type="text" id="input-search-reminder" placeholder="🔍 Buscar recordatorio..." class="form-control">
                                         </div>
                                     </div>
                                     <div class="row" id="div-results-reminder" style="min-height: 120px"></div>
@@ -141,6 +141,58 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Reminder modal --}}
+    <form id="form-store-reminder" action="{{ route('reminders.store') }}" method="POST">
+        @csrf
+        <input type="hidden" name="pet_id" value="{{ $pet->id }}">
+        <div class="modal modal-primary fade" tabindex="-1" id="reminder-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa-solid fa-bell"></i> Nuevo Recordatorio</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Fecha</label>
+                                <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Hora</label>
+                                <input type="time" name="time" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Descripción</label>
+                                <textarea name="description" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-dark">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Reminder Delete Modal --}}
+    <div class="modal modal-danger fade" tabindex="-1" id="delete-modal-reminder" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-trash"></i> ¿Estás seguro de que quieres eliminar este recordatorio?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete-reminder">Sí, ¡Bórralo!</button>
                 </div>
             </div>
         </div>
@@ -154,6 +206,7 @@
 <script>
     var timeout = null;
     $(document).ready(function () {
+        var reminderIdToDelete;
         list_histories();
 
         $('#input-search-history').on('keyup', function(e){
@@ -161,6 +214,67 @@
             timeout = setTimeout(function() {
                 list_histories();
             }, 1000); // 1 segundo de espera
+        });
+
+        // Reminders
+        list_reminders();
+        $('#input-search-reminder').on('keyup', function(e){
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                list_reminders();
+            }, 1000); // 1 segundo de espera
+        });
+
+        // Manejar el envío del formulario de recordatorios con AJAX
+        $('#form-store-reminder').on('submit', function(e) {
+            e.preventDefault();
+            let form = $(this);
+            let button = form.find('button[type="submit"]');
+            button.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        list_reminders(); // Recargar la lista de recordatorios
+                        form.trigger('reset');
+                        $('#reminder-modal').modal('hide');
+                    } else {
+                        toastr.error(response.message);
+                    }
+                    button.prop('disabled', false);
+                },
+                error: function() {
+                    toastr.error('Ocurrió un error inesperado.');
+                    button.prop('disabled', false);
+                }
+            });
+        });
+
+        // Manejar el clic en el botón de confirmación de borrado
+        $('#confirm-delete-reminder').on('click', function() {
+            $.ajax({
+                url: '{{ url("admin/reminders") }}/' + reminderIdToDelete,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        list_reminders(); // Recargar la lista de recordatorios
+                    } else {
+                        toastr.error(response.message);
+                    }
+                    $('#delete-modal-reminder').modal('hide');
+                },
+                error: function() {
+                    toastr.error('Ocurrió un error al intentar eliminar el recordatorio.');
+                }
+            });
         });
     });
 
@@ -180,8 +294,26 @@
         });
     }
 
-    function deleteItem(url){
-        $('#delete_form').attr('action', url);
+    function list_reminders(page = 1){
+        $('#div-results-reminder').loading({message: 'Cargando...'});
+
+        let url = '{{ url("admin/reminders/list") }}/{{ $pet->id }}';
+        let search = $('#input-search-reminder').val() ? $('#input-search-reminder').val() : '';
+
+        $.ajax({
+            url: `${url}?search=${search}&page=${page}`,
+            type: 'get',
+            success: function(result){
+                $("#div-results-reminder").html(result);
+                $('#div-results-reminder').loading('toggle');
+            }
+        });
+    }
+
+    // Almacena el ID del recordatorio a eliminar y muestra el modal
+    function deleteItem(id){
+        reminderIdToDelete = id;
+        // No es necesario cambiar el action del form, ya que usamos AJAX
     }
 </script>
 @endpush

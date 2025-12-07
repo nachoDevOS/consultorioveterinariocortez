@@ -134,6 +134,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::post('ajax/person/store', [AjaxController::class, 'personStore']);
     Route::get('ajax/item-stock/list', [AjaxController::class, 'itemStockList'])->name('ajax.item-stock.list');
 
+    // Reminders
+    Route::post('reminders/store', [\App\Http\Controllers\ReminderController::class, 'store'])->name('reminders.store');
+    Route::get('reminders/list/{pet_id}', [\App\Http\Controllers\ReminderController::class, 'list'])->name('reminders.list');
+    Route::delete('reminders/{reminder}', [\App\Http\Controllers\ReminderController::class, 'destroy'])->name('reminders.destroy');
+
+
 });
 
 
