@@ -16,7 +16,7 @@
             </thead>
             <tbody>
                 @forelse ($data as $item)
-                    <tr>
+                    <tr style="{{ $item->status == 'Pendiente' && !$item->view ? 'background-color: #fcf8e3' : '' }}">
                         <td style="text-align: center; width: 5%">{{ $item->id }}</td>
                         <td>{{ $item->service->name }}</td>
                         <td>{{ $item->nameClient }}</td>
@@ -50,7 +50,7 @@
                             @endif
                 
                             @if (auth()->user()->hasPermission('delete_appointments'))
-                                <a href="#" onclick="deleteItem('{{ route('voyager.people.destroy', ['id' => $item->id]) }}')" title="Eliminar" data-toggle="modal" data-target="#modal-delete" class="btn btn-sm btn-danger delete">
+                                <a href="#" onclick="deleteItem('{{ route('voyager.appointments.destroy', ['id' => $item->id]) }}')" title="Eliminar" data-toggle="modal" data-target="#modal-delete" class="btn btn-sm btn-danger delete">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm"></span>
                                 </a>
                             @endif

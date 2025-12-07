@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -17,7 +18,7 @@ class AppointmentController extends Controller
 
     public function index()
     {
-        // $this->custom_authorize('browse_appointments');
+        $this->custom_authorize('browse_appointments');
 
         return view('appointments.browse');
     }
@@ -57,10 +58,30 @@ class AppointmentController extends Controller
 
     public function show($id)
     {
+        $this->custom_authorize('read_appointments');
+
         $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
         $appointment->update(['view'=> 1]);
         // $this->authorize('read', $appointment);
         return Voyager::view('appointments.read', compact('appointment'));
+    }
+
+    public function destroy($id)
+    {
+        $this->custom_authorize('delete_appointments');
+
+        DB::beginTransaction();
+        try {
+            $appointment = Appointment::findOrFail($id);
+            $appointment->delete();
+
+            DB::commit();
+            return redirect()->route('voyager.appointments.index')->with(['message' => 'Cita eliminada exitosamente.', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al eliminar cita: ' . $e->getMessage());
+            return redirect()->route('voyager.appointments.index')->with(['message' => 'Ocurrió un error al eliminar la cita.', 'alert-type' => 'error']);
+        }
     }
 
 

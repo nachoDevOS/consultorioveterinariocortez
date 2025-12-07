@@ -49,6 +49,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::post('appointments', [AppointmentController::class, 'store'])->name('voyager.appointments.store');
     Route::get('appointments/{id}', [AppointmentController::class, 'show'])->name('voyager.appointments.show');
     Route::put('appointments/{id}', [AppointmentController::class, 'update'])->name('voyager.appointments.update');
+    Route::delete('appointments/{id}', [AppointmentController::class, 'destroy'])->name('voyager.appointments.destroy');
+
 
     Route::get('people', [PersonController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list', [PersonController::class, 'list']);
