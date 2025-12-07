@@ -2,6 +2,10 @@
 
 @section('page_title', 'Viendo Cita')
 
+@section('css')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+@stop
+
 @section('page_header')
     <div class="container-fluid">
         <div class="row">
@@ -112,9 +116,49 @@
                 </div>
             </div>
         </div>
+
+        @if ($appointment->latitud && $appointment->longitud)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="panel-heading" style="border-bottom:0;">
+                        <h3 class="panel-title">Ubicación de la Cita</h3>
+                    </div>
+                    <div class="panel-body" style="padding-top:0;">
+                        <div id="appointment-map" style="height: 400px; width: 100%; border-radius: 5px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 @stop
 
 @push('javascript')
-<script></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if ($appointment->latitud && $appointment->longitud)
+            const lat = {{ $appointment->latitud }};
+            const lng = {{ $appointment->longitud }};
+            const mapboxAccessToken = '{{ setting('system.mapsToken') }}';
+
+            if (!mapboxAccessToken) {
+                document.getElementById('appointment-map').innerHTML = '<div class="alert alert-danger" style="margin: 10px">Error: El mapa no se puede cargar. El token de acceso no está configurado.</div>';
+                return;
+            }
+
+            const map = L.map('appointment-map').setView([lat, lng], 16);
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: mapboxAccessToken
+            }).addTo(map);
+
+            L.marker([lat, lng]).addTo(map).bindPopup('Ubicación de la cita.').openPopup();
+        @endif
+    });
+</script>
 @endpush
