@@ -18,6 +18,9 @@
                             </h1>
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#resend-modal">
+                                <i class="fa-brands fa-whatsapp"></i> <span>Reenviar por WhatsApp</span>
+                            </a>
                             <a href="{{ route('voyager.appointments.index') }}" class="btn btn-warning">
                                 <i class="voyager-list"></i> <span>Volver a la lista</span>
                             </a>
@@ -131,6 +134,34 @@
             </div>
         </div>
         @endif
+    </div>
+
+    {{-- Modal para reenviar por WhatsApp --}}
+    <div class="modal fade" id="resend-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Reenviar Cita por WhatsApp</h4>
+                </div>
+                <form action="{{ route('voyager.appointments.resend', ['id' => $appointment->id]) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="phone_number">Número de WhatsApp</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">+591</span>
+                                <input type="tel" name="phone_number" class="form-control" placeholder="Ej: 71234567" pattern="[0-9]{8}" title="Ingrese un número de 8 dígitos." required maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @stop
 
