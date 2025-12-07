@@ -93,10 +93,9 @@ class PetController extends Controller
         DB::beginTransaction();
         try {
             $pet = new Pet($request->all());
-            $pet->status = 1; // O 'active'
 
-            if ($request->hasFile('image')) {
-                $pet->image = $this->storageController->store_image($request->file('image'), 'pets');
+            if ($request->image) {
+                $pet->image = $this->storageController->store_image($request->image, 'pets');
             }
 
             $pet->save();
@@ -158,12 +157,8 @@ class PetController extends Controller
             $pet = Pet::findOrFail($id);
             $pet->fill($request->all());
 
-            if ($request->hasFile('image')) {
-                // Eliminar imagen anterior si existe
-                if ($pet->image) {
-                    $this->storageController->delete($pet->image);
-                }
-                $pet->image = $this->storageController->store_image($request->file('image'), 'pets');
+            if ($request->image) {
+                $pet->image = $this->storageController->store_image($request->image, 'pets');
             }
 
             $pet->save();
