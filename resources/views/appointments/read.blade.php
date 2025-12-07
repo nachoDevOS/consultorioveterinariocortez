@@ -46,8 +46,7 @@
                                 <div class="row">
                                     <div class="col-md-4 text-center">
                                         @php
-                                            // Si en el futuro el modelo Appointment tiene una imagen, puedes cambiar 'null' por $appointment->image
-                                            $image = null ? Voyager::image(null) : asset('images/default.jpg');
+                                            $image = $appointment->file ? Voyager::image($appointment->file) : asset('images/default.jpg');
                                         @endphp
                                         <img src="{{ $image }}" style="width: 100%; max-width: 250px; border-radius: 10px; margin-top: 20px; object-fit: cover;" alt="Imagen de la cita">
                                     </div>
