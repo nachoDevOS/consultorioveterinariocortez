@@ -679,7 +679,7 @@
 
         function login() {
            
-            fetch('{{ setting('whatsapp.servidores') }}/login?id={{ setting('whatsapp.servidores') }}')
+            fetch('{{ setting('whatsapp.servidores') }}/login?id={{ setting('whatsapp.session') }}')
                 .then(response => {
                     if(response.ok) {
                         return response.json();
