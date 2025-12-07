@@ -130,7 +130,7 @@
                         <div class="row">
                             <div class="col-sm-8">
                                 <h4>
-                                    Historial de Ventas
+                                    Historial de Distribuciones o Dispensaciones
                                 </h4>
                             </div>
                         </div>
