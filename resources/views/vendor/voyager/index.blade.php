@@ -12,6 +12,9 @@
                                 <p class="text-muted">Resumen de rendimiento - {{ now()->format('d F Y') }}</p>
                             </div>
                             <div class="col-md-4 text-right">
+                                <div id="status" class="col-md-4 text-right" style="margin-top: 30px">
+                                    <span>Obteniendo estado...</span>
+                                </div>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary" id="refresh-dashboard">
                                         <i class="voyager-refresh"></i> Actualizar
@@ -390,6 +393,27 @@
             </div>
         </div> --}}
     </div>
+
+
+        {{-- Modal QR --}}
+    <div class="modal modal-success fade" tabindex="-1" id="qr_modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-lock"></i> Iniciar sesión</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 text-center">
+                        <img alt="Código QR" id="qr_code">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -597,6 +621,87 @@
 @stop
 
 @section('javascript')
+
+<script src="{{ asset('js/qrious.js') }}"></script>
+    {{-- Socket.io --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io("{{ setting('whatsapp.servidores') }}");
+        socket.on('login', data => {
+            $('#status').html('<button class="btn btn-success">En línea</button>');
+            $('#qr_modal').modal('hide');
+        });
+        socket.on('qr', data => {
+            $('#qr_modal').modal('show');
+            new QRious({
+                element: document.querySelector("#qr_code"),
+                value: data.qr,
+                size: 450,
+                backgroundAlpha: 0,
+                foreground: "#000000",
+                level: "H", // Puede ser L,M,Q y H (L es el de menor nivel, H el mayor)
+            });
+        });
+        socket.on('logout', data => {
+            $('#status').html('<button type="button" class="btn btn-danger btn-offline" onclick="login()">Sesión finalizada</button>');
+        });
+        socket.on('disconnected', data => {
+            $('#qr_modal').modal('hide');
+            $('#status').html('<button type="button" class="btn btn-danger btn-offline" onclick="login()">Sesión finalizada</button>');
+            console.log(data);
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            fetch('{{ setting('whatsapp.servidores') }}/status?id={{ setting('whatsapp.session') }}')
+                .then(response => {
+                    if(response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Ocurrió un error');
+                })
+                .then(res => {
+                    if (res.success) {
+                        if (res.status == 1) {
+                            $('#status').html('<button class="btn btn-success">En línea</button>');
+                        } else {
+                            $('#status').html('<button type="button" class="btn btn-danger btn-offline" onclick="login()">WhatsApp Fuera de línea</button>');
+                        }
+                    } else {
+                        console.log('Error al obtener el estado')
+                    }
+                })
+                .catch(function(error) {
+                    $('#status').html('<b class="text-danger">Servidor fuera de línea</b>');
+                    console.log('Request failed', error);
+                });
+        });
+
+        function login() {
+           
+            fetch('{{ setting('whatsapp.servidores') }}/login?id={{ setting('whatsapp.servidores') }}')
+                .then(response => {
+                    if(response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Ocurrió un error');
+                })
+                .then(res => {
+                    if (res.success) {
+                        $('#status').html('<span>Iniciando sesión...</span>');
+                    } else {
+                        console.log('Error al iniciar sesión')
+                    }
+                })
+                .catch(function(error) {
+                    console.log('Request failed', error);
+                });
+        }
+    </script>
+
+
+
+{{-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ --}}
     <!-- Incluir Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
