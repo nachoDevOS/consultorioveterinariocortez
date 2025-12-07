@@ -33,7 +33,7 @@ class HomeController extends Controller
             'pet_age' => 'required|string|max:100',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
-            'pet_photo' => 'nullable|image|max:3072', // Opcional, tipo imagen, máximo 3MB
+            'pet_photo' => 'nullable|image|max:2048', // Opcional, tipo imagen, máximo 2MB
             'appointment_location' => 'required|string|max:500', // Dirección obtenida por geocodificación
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
