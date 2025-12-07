@@ -45,6 +45,11 @@ class Pet extends Model
         return $this->belongsTo(Race::class, 'race_id');
     }
 
+    public function reminders()
+    {
+        return $this->hasMany(Reminder::class, 'pet_id');
+    }
+
     public function anamnesisForms()
     {
         return $this->hasMany(AnamnesisForm::class, 'pet_id');

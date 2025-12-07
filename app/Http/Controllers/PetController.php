@@ -32,7 +32,7 @@ class PetController extends Controller
         $search = request('search') ?? null;
         $paginate = request('paginate') ?? 10;
 
-        $data = Pet::with(['person', 'animal', 'race'])
+        $data = Pet::with(['person', 'animal', 'race', 'reminders'])
             ->when($search, function ($query, $search) {
                 return $query->where(function($q) use ($search) {
                     $q->where('name', 'like', "%$search%")

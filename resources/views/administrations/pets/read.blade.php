@@ -122,6 +122,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-5">
+                            <div class="panel panel-bordered">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <h3 class="panel-title" style="padding-top: 10px;"><i class="fa-solid fa-bell"></i> Recordatorio</h3>
+                                        </div>
+                                        <div class="col-sm-4" style="margin-bottom: 0px">
+                                            <input type="text" id="input-search-history" placeholder="🔍 Buscar recordatorio..." class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row" id="div-results-history" style="min-height: 120px"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
