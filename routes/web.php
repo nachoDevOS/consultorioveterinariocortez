@@ -47,6 +47,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('appointments', [AppointmentController::class, 'index'])->name('voyager.appointments.index');
     Route::get('appointments/ajax/list', [AppointmentController::class, 'list']);
     Route::post('appointments', [AppointmentController::class, 'store'])->name('voyager.appointments.store');
+    Route::get('appointments/{id}', [AppointmentController::class, 'show'])->name('voyager.appointments.show');
     Route::put('appointments/{id}', [AppointmentController::class, 'update'])->name('voyager.appointments.update');
 
     Route::get('people', [PersonController::class, 'index'])->name('voyager.people.index');

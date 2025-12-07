@@ -44,7 +44,7 @@
                         </td>
                         <td style="width: 10%" class="no-sort no-click bread-actions text-right">
                             @if (auth()->user()->hasPermission('read_appointments'))
-                                <a href="{{ route('voyager.people.show', ['id' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                <a href="{{ route('voyager.appointments.show', ['id' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm"></span>
                                 </a>
                             @endif

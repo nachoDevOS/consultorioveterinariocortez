@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use TCG\Voyager\Facades\Voyager;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -52,6 +53,13 @@ class AppointmentController extends Controller
 
 
         return view('appointments.list', compact('data'));
+    }
+
+    public function show($id)
+    {
+        $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
+        // $this->authorize('read', $appointment);
+        return Voyager::view('appointments.read', compact('appointment'));
     }
 
 
