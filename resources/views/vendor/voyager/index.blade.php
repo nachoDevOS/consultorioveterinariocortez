@@ -621,84 +621,113 @@
 @stop
 
 @section('javascript')
-
-<script src="{{ asset('js/qrious.js') }}"></script>
+    <script src="{{ asset('js/qrious.js') }}"></script>
     {{-- Socket.io --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        const socket = io("{{ setting('whatsapp.servidores') }}");
-        socket.on('login', data => {
-            $('#status').html('<button class="btn btn-success">En línea</button>');
-            $('#qr_modal').modal('hide');
-        });
-        socket.on('qr', data => {
-            $('#qr_modal').modal('show');
-            new QRious({
-                element: document.querySelector("#qr_code"),
-                value: data.qr,
-                size: 450,
-                backgroundAlpha: 0,
-                foreground: "#000000",
-                level: "H", // Puede ser L,M,Q y H (L es el de menor nivel, H el mayor)
-            });
-        });
-        socket.on('logout', data => {
-            $('#status').html('<button type="button" class="btn btn-danger btn-offline" onclick="login()">Sesión finalizada</button>');
-        });
-        socket.on('disconnected', data => {
-            $('#qr_modal').modal('hide');
-            $('#status').html('<button type="button" class="btn btn-danger btn-offline" onclick="login()">Sesión finalizada</button>');
-            console.log(data);
-        });
-    </script>
-    <script>
         $(document).ready(function () {
-            fetch('{{ setting('whatsapp.servidores') }}/status?id={{ setting('whatsapp.session') }}')
-                .then(response => {
-                    if(response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Ocurrió un error');
-                })
-                .then(res => {
-                    if (res.success) {
-                        if (res.status == 1) {
-                            $('#status').html('<button class="btn btn-success">En línea</button>');
-                        } else {
-                            $('#status').html('<button type="button" class="btn btn-danger btn-offline" onclick="login()">WhatsApp Fuera de línea</button>');
-                        }
-                    } else {
-                        console.log('Error al obtener el estado')
-                    }
-                })
-                .catch(function(error) {
-                    $('#status').html('<b class="text-danger">Servidor fuera de línea</b>');
-                    console.log('Request failed', error);
+            const serverUrl = "{{ setting('whatsapp.servidores') }}";
+            const sessionId = "{{ setting('whatsapp.session') }}";
+
+            // --- Helper Functions ---
+            function updateStatus(status, message) {
+                let html = '';
+                switch (status) {
+                    case 'online':
+                        html = '<button class="btn btn-success">En línea</button>';
+                        break;
+                    case 'offline':
+                        html = `<button type="button" class="btn btn-danger btn-offline" onclick="login()">${message || 'WhatsApp Fuera de línea'}</button>`;
+                        break;
+                    case 'loading':
+                        html = '<span>Iniciando sesión...</span>';
+                        break;
+                    case 'server_offline':
+                        html = '<b class="text-danger">Servidor fuera de línea</b>';
+                        break;
+                    default:
+                        html = '<span>Obteniendo estado...</span>';
+                }
+                $('#status').html(html);
+            }
+
+            function handleFetchError(error, context) {
+                updateStatus('server_offline');
+                console.error(`Error en ${context}:`, error);
+                toastr.error('No se pudo conectar con el servidor de WhatsApp.', 'Error de Conexión');
+            }
+
+            // --- Socket.io Event Listeners ---
+            const socket = io(serverUrl);
+
+            socket.on('login', data => {
+                updateStatus('online');
+                $('#qr_modal').modal('hide');
+                toastr.success('La sesión de WhatsApp se ha iniciado correctamente.', 'Conectado');
+            });
+
+            socket.on('qr', data => {
+                $('#qr_modal').modal('show');
+                new QRious({
+                    element: document.querySelector("#qr_code"),
+                    value: data.qr,
+                    size: 450,
+                    backgroundAlpha: 0,
+                    foreground: "#000000",
+                    level: "H",
                 });
+            });
+
+            socket.on('logout', data => {
+                updateStatus('offline', 'Sesión finalizada');
+                toastr.warning('La sesión de WhatsApp ha finalizado.', 'Desconectado');
+            });
+
+            socket.on('disconnected', data => {
+                $('#qr_modal').modal('hide');
+                updateStatus('offline', 'Sesión finalizada');
+                console.log('Socket disconnected:', data);
+                toastr.error('Se perdió la conexión con el servidor de WhatsApp.', 'Desconectado');
+            });
+
+            // --- Initial Status Check ---
+            async function checkInitialStatus() {
+                try {
+                    const response = await fetch(`${serverUrl}/status?id=${sessionId}`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const res = await response.json();
+
+                    if (res.success) {
+                        updateStatus(res.status == 1 ? 'online' : 'offline');
+                    } else {
+                        console.warn('El servidor respondió, pero no se pudo obtener el estado.');
+                    }
+                } catch (error) {
+                    handleFetchError(error, 'checkInitialStatus');
+                }
+            }
+
+            checkInitialStatus();
         });
 
-        function login() {
-           
-            fetch('{{ setting('whatsapp.servidores') }}/login?id={{ setting('whatsapp.session') }}')
-                .then(response => {
-                    if(response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Ocurrió un error');
-                })
-                .then(res => {
-                    if (res.success) {
-                        $('#status').html('<span>Iniciando sesión...</span>');
-                    } else {
-                        console.log('Error al iniciar sesión')
-                    }
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+        // --- Global function for login button ---
+        async function login() {
+            const serverUrl = "{{ setting('whatsapp.servidores') }}";
+            const sessionId = "{{ setting('whatsapp.session') }}";
+            $('#status').html('<span>Iniciando sesión...</span>');
+            try {
+                const response = await fetch(`${serverUrl}/login?id=${sessionId}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const res = await response.json();
+                if (!res.success) {
+                    console.error('Error al intentar iniciar sesión:', res);
+                }
+            } catch (error) {
+                console.error('Error en login():', error);
+                $('#status').html('<b class="text-danger">Error al conectar</b>');
+            }
         }
     </script>
-
 
 
 {{-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ --}}
