@@ -125,7 +125,7 @@
                         <h3 class="panel-title">Ubicación de la Cita</h3>
                     </div>
                     <div class="panel-body" style="padding-top:0;">
-                        <div id="appointment-map" style="height: 400px; width: 100%; border-radius: 5px;"></div>
+                        <div id="appointment-map" style="height: 600px; width: 100%; border-radius: 5px;"></div>
                     </div>
                 </div>
             </div>
@@ -150,12 +150,26 @@
 
             const map = L.map('appointment-map').setView([lat, lng], 16);
 
-            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            const satelliteLayer = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
                 tileSize: 512,
                 zoomOffset: -1,
                 accessToken: mapboxAccessToken
             }).addTo(map);
+
+            const streetsLayer = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: mapboxAccessToken
+            });
+
+            const baseMaps = {
+                "Satélite": satelliteLayer,
+                "Calles": streetsLayer
+            };
+
+            L.control.layers(baseMaps).addTo(map);
 
             L.marker([lat, lng]).addTo(map).bindPopup('Ubicación de la cita.').openPopup();
         @endif
