@@ -12,12 +12,10 @@
                                 <p class="text-muted">Resumen de rendimiento - {{ now()->format('d F Y') }}</p>
                             </div>
                             <div class="col-md-4 text-right">
-                                <div class="btn-group">
-                                    @if (setting('whatsapp.servidores') && setting('whatsapp.session'))
-                                        <div id="status" style="display: inline-block; margin-right: 10px;">
-                                            <span>Obteniendo estado...</span>
-                                        </div>
-                                    @endif
+                                <div class="btn-group">                              
+                                    <div id="status" style="display: inline-block; margin-right: 10px;">
+                                        <span>Obteniendo estado...</span>
+                                    </div>
                                     
                                     {{-- <button type="button" class="btn btn-primary" id="refresh-dashboard">
                                         <i class="voyager-refresh"></i> Actualizar
