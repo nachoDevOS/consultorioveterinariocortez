@@ -12,14 +12,16 @@
                                 <p class="text-muted">Resumen de rendimiento - {{ now()->format('d F Y') }}</p>
                             </div>
                             <div class="col-md-4 text-right">
-                                <div id="status" class="col-md-4 text-right" style="margin-top: 30px">
-                                    <span>Obteniendo estado...</span>
-                                </div>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary" id="refresh-dashboard">
+                                    @if (setting('whatsapp.servidores') && setting('whatsapp.session'))
+                                        <div id="status" style="display: inline-block; margin-right: 10px;">
+                                            <span>Obteniendo estado...</span>
+                                        </div>
+                                    @endif
+                                    
+                                    {{-- <button type="button" class="btn btn-primary" id="refresh-dashboard">
                                         <i class="voyager-refresh"></i> Actualizar
-                                    </button>
-                                </div>
+                                    </button> --}}
                             </div>
                         </div>                        
                     </div>
@@ -634,7 +636,7 @@
                 let html = '';
                 switch (status) {
                     case 'online':
-                        html = '<button class="btn btn-success">En línea</button>';
+                        html = '<button class="btn btn-success">WhatsApp en línea</button>';
                         break;
                     case 'offline':
                         html = `<button type="button" class="btn btn-danger btn-offline" onclick="login()">${message || 'WhatsApp Fuera de línea'}</button>`;

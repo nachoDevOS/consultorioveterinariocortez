@@ -58,6 +58,7 @@ class AppointmentController extends Controller
     public function show($id)
     {
         $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
+        $appointment->update(['view'=> 1]);
         // $this->authorize('read', $appointment);
         return Voyager::view('appointments.read', compact('appointment'));
     }

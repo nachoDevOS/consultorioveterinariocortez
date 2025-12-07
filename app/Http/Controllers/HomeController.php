@@ -103,10 +103,14 @@ class HomeController extends Controller
             "https://veterinaria.soluciondigital.dev/admin/appointments";
         $servidor = setting('solucion-digital.servidorWhatsapp');
         $id = setting('solucion-digital.sessionWhatsapp');
-        Http::post($servidor.'/send?id='.$id.'&token='.null, [
+
+        if(setting('redes-sociales.whatsapp') && setting('solucion-digital.servidorWhatsapp') && setting('solucion-digital.sessionWhatsapp'))
+        {
+            Http::post($servidor.'/send?id='.$id.'&token='.null, [
                     'phone' => '+591'.setting('redes-sociales.whatsapp'),
                     'text' => $notificationMessage,
                 ]);
+        }
 
 
         // Redirigir de vuelta a la página anterior con un mensaje de éxito
