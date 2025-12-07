@@ -133,7 +133,7 @@
                                             <input type="text" id="input-search-history" placeholder="🔍 Buscar recordatorio..." class="form-control">
                                         </div>
                                     </div>
-                                    <div class="row" id="div-results-history" style="min-height: 120px"></div>
+                                    <div class="row" id="div-results-reminder" style="min-height: 120px"></div>
                                 </div>
                             </div>
                         </div>
