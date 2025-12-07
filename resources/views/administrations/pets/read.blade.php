@@ -8,14 +8,17 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body" style="padding: 0px">
-                        <div class="col-md-8" style="padding: 0px">
+                        <div class="col-md-6" style="padding: 0px">
                             <h1 class="page-title">
                                 <i class="fa-solid fa-dog"></i> Viendo Mascota
                             </h1>
                         </div>
-                        <div class="col-md-4 text-right" style="margin-top: 30px">
+                        <div class="col-md-6 text-right" style="margin-top: 30px">
                             <a href="{{ route('voyager.pets.history.create', ['id' => $pet->id]) }}" class="btn btn-primary">
                                 <i class="fa-solid fa-notes-medical"></i> <span>Agregar Historial</span>
+                            </a>
+                            <a class="btn btn-primary">
+                                <i class="fa-solid fa-notes-medical"></i> <span>Agregar Recordatorio</span>
                             </a>
                             <a href="{{ route('voyager.pets.index') }}" class="btn btn-warning">
                                 <i class="voyager-list"></i> <span>Volver a la lista</span>
