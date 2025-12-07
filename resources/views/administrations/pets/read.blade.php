@@ -107,7 +107,7 @@
                                 <small>Registrado el {{ \Carbon\Carbon::parse($pet->created_at)->format('d/m/Y H:i') }}</small>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-7">
                             <div class="panel panel-bordered">
                                 <div class="panel-body">
                                     <div class="row">

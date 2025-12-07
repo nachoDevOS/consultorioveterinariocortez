@@ -108,7 +108,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('items/{id}/stock/ajax/list', [ItemController::class, 'listStock']);
 
     Route::get('item/stock/ajax', [AjaxController::class, 'itemStockList']);//
-    // Route::get('items/{id}/sales/ajax/list', [ItemController::class, 'listSales']);
+    Route::get('items/{id}/sales/ajax/list', [ItemController::class, 'listSales']);
 
     Route::post('items/{id}/stock', [ItemController::class, 'storeStock'])->name('items-stock.store');
     Route::delete('items/{id}/stock/{stock}', [ItemController::class, 'destroyStock'])->name('items-stock.destroy');

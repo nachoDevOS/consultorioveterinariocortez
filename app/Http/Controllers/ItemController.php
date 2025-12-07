@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\AnamnesisItemStock;
 use App\Models\ItemStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -175,6 +176,30 @@ class ItemController extends Controller
         return view('parameterInventories.items.listStock', compact('data'));
     }
 
+    public function listSales($id)
+    {
+        $this->custom_authorize('read_items');
+        $paginate = request('paginate') ?? 10;
+        
+        // Obtenemos los IDs de los lotes (ItemStock) que pertenecen al producto actual
+        $itemStockIds = Item::findOrFail($id)->itemStocks()->pluck('id');
+
+        // Buscamos en el historial de dispensaciones (AnamnesisItemStock)
+        // y cargamos las relaciones para obtener toda la información contextual
+        $sales = AnamnesisItemStock::with([
+                'itemStock',
+                'anamnesisForm.pet',
+                'anamnesisForm.doctor',
+                'registerUser'
+            ])
+            ->whereIn('itemStock_id', $itemStockIds)
+            ->orderBy('created_at', 'desc')
+            ->paginate($paginate);
+
+        // Devolvemos la vista parcial que renderiza la tabla
+        return view('parameterInventories.items.sales-list', compact('sales'));
+    }
+
 
     public function storeStock(Request $request, $id)
     {
@@ -228,16 +253,5 @@ class ItemController extends Controller
         }
     }
 
-    public function listSales($id)
-    {
-        $paginate = request('paginate') ?? 10;
-        $sales = \App\Models\SaleDetail::with(['sale.person'])
-            ->whereHas('itemStock', function($q) use ($id){
-                $q->where('item_id', $id);
-            })
-            ->where('deleted_at', null)
-            ->orderBy('id', 'DESC')
-            ->paginate($paginate);
-        return view('parameters.items.partials.list-sales', compact('sales'));
-    }
+
 }

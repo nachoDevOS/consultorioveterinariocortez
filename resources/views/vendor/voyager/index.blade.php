@@ -36,7 +36,7 @@
         @include('voyager::dimmers')
 
         <!-- KPI Cards -->
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-3">
                 <div class="panel panel-bordered dashboard-kpi">
                     <div class="panel-body text-center">
@@ -388,7 +388,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @stop
 

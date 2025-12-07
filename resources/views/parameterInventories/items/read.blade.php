@@ -130,7 +130,7 @@
                         <div class="row">
                             <div class="col-sm-8">
                                 <h4>
-                                    Historial de Distribuciones o Dispensaciones
+                                    <i class="fa-solid fa-clock-rotate-left"></i> Historial de Dispensaciones
                                 </h4>
                             </div>
                         </div>
@@ -277,7 +277,7 @@
             let url = '{{ url("admin/items/".$item->id."/sales/ajax/list") }}';
 
             $.ajax({
-                url: `${url}?paginate=${countPageSales}&page=${page}`,
+                url: `${url}?paginate=${countPageSales}&page=${page}&ajax=true`,
                 type: 'get',
                 success: function(result){
                     $("#div-results-sales").html(result);
