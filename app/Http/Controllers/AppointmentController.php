@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
@@ -81,6 +82,60 @@ class AppointmentController extends Controller
             DB::rollBack();
             Log::error('Error al eliminar cita: ' . $e->getMessage());
             return redirect()->route('voyager.appointments.index')->with(['message' => 'Ocurrió un error al eliminar la cita.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function resend(Request $request, $id)
+    {
+        $this->custom_authorize('read_appointments'); // O un permiso más específico si lo deseas
+
+        $request->validate([
+            'phone_number' => 'required|digits:8',
+        ]);
+
+        try {
+            $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
+
+            // Construir el mensaje detallado para WhatsApp
+            $message = "🗓️ *Recordatorio de Cita* 🗓️\n\n" .
+                "Hola, te reenviamos los detalles de tu cita en la Clínica Veterinaria Cortez:\n\n" .
+                "👤 *Cliente:* {$appointment->nameClient}\n" .
+                "📞 *Teléfono Original:* {$appointment->phoneClient}\n\n" .
+                "🐾 *Mascota:*\n" .
+                "   - *Nombre:* {$appointment->nameAnimal}\n" .
+                "   - *Tipo:* {$appointment->animal->name}\n" .
+                "   - *Raza:* " . ($appointment->race->name ?? 'No especificada') . "\n" .
+                "   - *Género:* {$appointment->gender}\n\n" .
+                "🩺 *Servicio Solicitado:*\n" .
+                "   - {$appointment->service->name}\n\n" .
+                "🗓️ *Fecha y Hora:*\n" .
+                "   - " . \Carbon\Carbon::parse($appointment->date)->format('d/m/Y') . " a las " . \Carbon\Carbon::parse($appointment->time)->format('H:i') . "\n\n" .
+                "📝 *Observaciones:*\n" .
+                "_{$appointment->observation}_\n\n";
+
+            if ($appointment->latitud && $appointment->longitud) {
+                $message .= "📍 *Ubicación de la Cita:*\n" .
+                    "   - Ver en mapa: https://www.google.com/maps?q={$appointment->latitud},{$appointment->longitud}\n\n";
+            }
+
+            $message .= "\n\n*Contacto Directo:*\n" .
+            "Haz clic para contactar al cliente: https://wa.me/591{$appointment->phoneClient}";
+
+
+            $servidor = setting('whatsapp.servidores');
+            $sessionId = setting('whatsapp.session');
+
+            if ($servidor && $sessionId) {
+                Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
+                    'phone' => '+591' . $request->phone_number,
+                    'text' => $message,
+                ]);
+            }
+
+            return redirect()->back()->with(['message' => 'La cita ha sido reenviada por WhatsApp exitosamente.', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            \Log::error('Error al reenviar cita por WhatsApp: ' . $e->getMessage());
+            return redirect()->back()->with(['message' => 'Ocurrió un error al intentar reenviar la cita.', 'alert-type' => 'error']);
         }
     }
 

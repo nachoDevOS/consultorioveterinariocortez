@@ -94,7 +94,6 @@ class HomeController extends Controller
             "_{$request->message}_\n\n" .
 
             "📍 *Ubicación de la Cita:*\n" .
-            "   - {$request->appointment_location}\n" .
             "   - Ver en mapa: https://www.google.com/maps?q={$request->latitude},{$request->longitude}\n\n" .            "Por favor, revisa el panel de administración para gestionar la cita.";
         
         $notificationMessage .= "\n\n*Contacto Directo:*\n" .
