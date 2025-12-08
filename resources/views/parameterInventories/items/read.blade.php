@@ -188,7 +188,7 @@
                                 <input style="text-align: right" type="number" step="1" min="0" name="pricePurchase" class="form-control" required>
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="full_name">P. Unitario</label>
+                                <label for="full_name">P. Venta</label>
                                 <input style="text-align: right" type="number" step="1" min="1" name="priceSale" class="form-control" required>
                             </div>
                         </div>    

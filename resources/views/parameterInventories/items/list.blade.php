@@ -44,7 +44,7 @@
                                     <tr>
                                         <th style="font-size: 10px; padding: 2px 5px;">Lote</th>
                                         <th style="font-size: 10px; padding: 2px 5px;">Stock</th>
-                                        <th style="font-size: 10px; padding: 2px 5px;">Precio</th>
+                                        <th style="font-size: 10px; padding: 2px 5px;">Precio de Venta</th>
                                     </tr>
                                 </thead>
                                 <tbody>

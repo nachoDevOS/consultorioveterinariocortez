@@ -6,10 +6,10 @@
                     <th style="width:5px">N&deg;</th>
                     <th style="text-align: center; width:12%">Lote</th>
                     <th style="text-align: center; width:8%">Cant. Ingresada</th>
-                    <th style="text-align: center; width:8%">Precio Compra</th>
+                    <th style="text-align: center; width:8%">Precio de Compra</th>
 
                     <th style="text-align: center; width:8%">Stock Disponible</th>
-                    <th style="text-align: center; width:8%">Precio Unitario</th>
+                    <th style="text-align: center; width:8%">Precio de Venta</th>
                     <th style="text-align: center">Detalles</th>                     
                     <th style="text-align: center; width:10%">Estado</th>
                     <th style="text-align: center; width:5%">Acciones</th>
