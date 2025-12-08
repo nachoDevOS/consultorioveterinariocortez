@@ -16,18 +16,18 @@
                 <tr>
                     <td>{{ $item->id }}</td> 
                     <td>
-                        @if($item->person_id)
+                        @if($item->worker_id)
                             @php
                                 $image = asset('images/default.jpg');
-                                if($item->person->image){
-                                    $image = asset('storage/' . str_replace('.avif', '', $item->person->image) . '-cropped.webp');
+                                if($item->worker->image){
+                                    $image = asset('storage/' . str_replace('.avif', '', $item->worker->image) . '-cropped.webp');
                                 }
                             @endphp
                             <div style="display: flex; align-items: center;">
-                                <img src="{{ $image }}" alt="{{ $item->person->first_name }}" class="image-expandable" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px; object-fit: cover;">
+                                <img src="{{ $image }}" alt="{{ $item->worker->first_name }}" class="image-expandable" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px; object-fit: cover;">
                                 <div>
-                                    <small>CI:</small> {{$item->person->ci}} <br>
-                                    {{ strtoupper($item->person->first_name) }} {{ strtoupper($item->person->last_name) }}
+                                    <small>CI:</small> {{$item->worker->ci}} <br>
+                                    {{ strtoupper($item->worker->first_name) }} {{ strtoupper($item->worker->last_name) }}
                                 </div>
                             </div>
                         @else
