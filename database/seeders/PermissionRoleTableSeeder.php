@@ -30,6 +30,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             table_name = "pets" or
                                             table_name = "people" or
                                             table_name = "incomes" or
+                                            table_name = "workers" or
 
                                             table_name = "services" or
                                             table_name = "animals" or
@@ -41,9 +42,6 @@ class PermissionRoleTableSeeder extends Seeder
                                             table_name = "laboratories" or
                                             table_name = "brands" or
                                             table_name = "items" or
-
-
-                                            `key` = "add_egressdonor" or
 
 
                                             table_name = "people" or
