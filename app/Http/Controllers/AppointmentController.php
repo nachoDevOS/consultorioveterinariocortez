@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Worker;
 use App\Models\Appointment;
+use App\Models\AppointmentWorker;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
@@ -61,10 +64,16 @@ class AppointmentController extends Controller
     {
         $this->custom_authorize('read_appointments');
 
-        $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
+        $appointment = Appointment::with(['service', 'animal', 'race', 'appointmentWorkers.worker'])->findOrFail($id);
         $appointment->update(['view'=> 1]);
-        // $this->authorize('read', $appointment);
-        return Voyager::view('appointments.read', compact('appointment'));
+
+        // Obtener todos los trabajadores activos para el modal
+        $workers = Worker::where('status', 1)->get();
+
+        // Obtener la asignación actual si existe
+        $workerAssignment = AppointmentWorker::where('appointment_id', $id)->first();
+
+        return Voyager::view('appointments.read', compact('appointment', 'workers', 'workerAssignment'));
     }
 
     public function destroy($id)

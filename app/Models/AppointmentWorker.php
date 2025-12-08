@@ -17,6 +17,7 @@ class AppointmentWorker extends Model
         'appointment_id',
         'worker_id',
         'status',
+        'observation',
 
         'registerUser_id',
         'registerRole',

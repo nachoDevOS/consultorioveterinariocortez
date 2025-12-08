@@ -38,6 +38,8 @@ return new class extends Migration
             $table->smallInteger('view')->default(0);
             $table->string('status')->default('Pendiente');
 
+            $table->foreignId('worker_id')->nullable()->constrained('workers'); //Para ver el personal asignado
+
             $table->timestamps();            
             $table->foreignId('registerUser_id')->nullable()->constrained('users');
             $table->string('registerRole')->nullable();

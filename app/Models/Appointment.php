@@ -30,6 +30,7 @@ class Appointment extends Model
         'longitud',
         'view',
         'status',
+        'worker_id',
 
         'registerUser_id',
         'registerRole',
@@ -53,6 +54,11 @@ class Appointment extends Model
     public function race()
     {
         return $this->belongsTo(Race::class, 'race_id');
+    }
+
+    public function appointmentWorkers()
+    {
+        return $this->hasMany(AppointmentWorker::class, 'appointment_id');
     }
 
 }
