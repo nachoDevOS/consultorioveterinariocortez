@@ -21,19 +21,19 @@
                 <div class="panel-content">
                     @php
                         $user = App\Models\User::where('id', Auth::user()->id)->first();
-                        if($user->person)
+                        if($user->worker)
                         {
                             // if($user->person->image)
                             // {
                             //     $user_avatar = asset('storage/'.str_replace('.', '-cropped.', $user->person->image));
                             // }
 
-                            if ($user->person->image) {
-                                $pathInfo = pathinfo($user->person->image);
+                            if ($user->worker->image) {
+                                $pathInfo = pathinfo($user->worker->image);
                                 $extension = strtolower($pathInfo['extension'] ?? '');
 
                                 if (str_contains($extension, 'avif')) {
-                                    $image = str_replace('.avif', '', $user->person->image);
+                                    $image = str_replace('.avif', '', $user->worker->image);
                                 }
                                 $user_avatar = asset('storage/' . $image . '-cropped.webp');
                             }

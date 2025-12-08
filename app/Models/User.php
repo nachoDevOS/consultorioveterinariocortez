@@ -35,9 +35,9 @@ class User extends \TCG\Voyager\Models\User
         'deleteObservation',
     ];
 
-    public function person()
+    public function worker()
     {
-        return $this->belongsTo(Person::class, 'person_id');
+        return $this->belongsTo(Worker::class, 'worker_id');
     }
 
 
