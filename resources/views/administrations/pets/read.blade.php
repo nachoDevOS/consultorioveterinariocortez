@@ -315,5 +315,35 @@
         reminderIdToDelete = id;
         // No es necesario cambiar el action del form, ya que usamos AJAX
     }
+
+    function sendWhatsApp(reminderId, button) {
+        // Deshabilitar botón y mostrar carga
+        $(button).prop('disabled', true);
+        $(button).html('<i class="fa-solid fa-spinner fa-spin"></i>');
+
+        $.ajax({
+            url: `/admin/reminders/${reminderId}/send-whatsapp`,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                toastr.error('Ocurrió un error inesperado al enviar el mensaje.');
+            },
+            complete: function() {
+                // Habilitar botón y restaurar ícono
+                $(button).prop('disabled', false);
+                $(button).html('<i class="fa-brands fa-whatsapp"></i>');
+            }
+        });
+    }
 </script>
 @endpush

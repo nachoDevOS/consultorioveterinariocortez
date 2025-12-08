@@ -140,6 +140,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::post('reminders/store', [ReminderController::class, 'store'])->name('reminders.store');
     Route::get('reminders/list/{pet_id}', [ReminderController::class, 'list'])->name('reminders.list');
     Route::delete('reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
+    Route::post('reminders/{reminder}/send-whatsapp', [ReminderController::class, 'sendWhatsApp'])->name('reminders.send.whatsapp');
 
 
 });

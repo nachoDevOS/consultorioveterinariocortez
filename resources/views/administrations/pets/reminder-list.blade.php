@@ -5,7 +5,7 @@
                 <th style="text-align: center; width: 10%">Id</th>
                 <th style="text-align: center">Descripción</th>
                 <th style="text-align: center; width: 30%">Fecha y hora</th>
-                <th style="width: 5%">Acciones</th>
+                <th style="width: 15%">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +16,9 @@
                     <td style="text-align: center">{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }} {{ $item->time }}</td>
                  
                     <td class="no-sort no-click bread-actions">
+                        @if($item->pet && $item->pet->person && $item->pet->person->phone)
+                            <button onclick="sendWhatsApp({{ $item->id }}, this)" title="Enviar por WhatsApp" class="btn btn-sm btn-success"><i class="fa-brands fa-whatsapp"></i></button>
+                        @endif
                         {{-- <a href="#" title="Editar" class="btn btn-sm btn-info edit">
                             <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                         </a> --}}
