@@ -55,6 +55,11 @@ class Appointment extends Model
     {
         return $this->belongsTo(Race::class, 'race_id');
     }
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id');
+    }
+
 
     public function appointmentWorkers()
     {

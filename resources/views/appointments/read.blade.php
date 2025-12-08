@@ -99,7 +99,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td><small style="font-size: 14px">Personal Asignado:</small></td>
-                                                        <td>{{ $appointment->worker->first_name ?? 'No asignado' }} {{ $appointment->worker->paternal_surname ?? '' }}</td>
+                                                        <td>{{ $appointment->worker->first_name ?? 'No asignado' }} {{ $appointment->worker->paternal_surname ?? '' }} {{ $appointment->worker->maternal_surname ?? '' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><small style="font-size: 14px">Estado:</small></td>

@@ -57,6 +57,7 @@ class PermissionsTableSeeder extends Seeder
         $permissions = [
             'browse_appointments' => 'Ver lista de cita',
             'read_appointments' => 'Ver detalles de la cita',
+            'edit_appointments' => 'Asignar personal a la cita',
             // 'edit_appointments' => 'Editar información de personas',
             // 'add_appointments' => 'Agregar nuevas personas',
             'delete_appointments' => 'Eliminar Citas',

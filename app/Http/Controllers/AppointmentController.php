@@ -64,7 +64,7 @@ class AppointmentController extends Controller
     {
         $this->custom_authorize('read_appointments');
 
-        $appointment = Appointment::with(['service', 'animal', 'race', 'appointmentWorkers.worker'])->findOrFail($id);
+        $appointment = Appointment::with(['service', 'animal', 'race', 'worker', 'appointmentWorkers.worker'])->findOrFail($id);
         $appointment->update(['view'=> 1]);
 
         // Obtener todos los trabajadores activos para el modal
@@ -145,6 +145,47 @@ class AppointmentController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error al reenviar cita por WhatsApp: ' . $e->getMessage());
             return redirect()->back()->with(['message' => 'Ocurrió un error al intentar reenviar la cita.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function assignWorker(Request $request, $id)
+    {
+        $this->custom_authorize('edit_appointments');
+
+        $request->validate([
+            'worker_id' => 'required|exists:workers,id',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Verificar si ya existe una asignación para esta cita
+            $assignment = AppointmentWorker::where('appointment_id', $id)->first();
+            $appointment = Appointment::findOrFail($id);
+            $appointment->update([
+                'worker_id' => $request->worker_id,
+                'status'=> 'Asignado'
+            ]);
+
+
+            if ($assignment) {
+                // Actualizar la asignación existente
+                $assignment->worker_id = $request->worker_id;
+                $assignment->save();
+            } else {
+                // Crear una nueva asignación
+                AppointmentWorker::create([
+                    'appointment_id' => $id,
+                    'worker_id' => $request->worker_id,
+                    'observation' => $request->observation
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with(['message' => 'Trabajador asignado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al asignar trabajador: ' . $e->getMessage());
+            return redirect()->back()->with(['message' => 'Ocurrió un error al asignar el trabajador.', 'alert-type' => 'error']);
         }
     }
 
