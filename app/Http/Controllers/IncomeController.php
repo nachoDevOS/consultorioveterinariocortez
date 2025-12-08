@@ -189,7 +189,7 @@ class IncomeController extends Controller
                         // ->where('deleted_at', null)
                         ->orderBy('id', 'DESC')
                         ->get();
-        return 1;
+  
 
         return view('administrations.incomes.read', compact('income', 'history'));
     }
