@@ -90,6 +90,23 @@ class PermissionsTableSeeder extends Seeder
         }
 
         $permissions = [
+            'browse_workers' => 'Ver lista de trabajadores',
+            'read_workers' => 'Ver detalles de un trabajador',
+            'edit_workers' => 'Editar información de trabajadores',
+            'add_workers' => 'Agregar nuevos trabajadores',
+            'delete_workers' => 'Eliminar trabajadores',
+        ];
+
+        foreach ($permissions as $key => $description) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'keyDescription'=> $description,
+                'table_name' => 'workers',
+                'tableDescription'=>'Trabajadores'
+            ]);
+        }
+
+        $permissions = [
             'browse_people' => 'Ver lista de personas',
             'read_people' => 'Ver detalles de una persona',
             'edit_people' => 'Editar información de personas',
