@@ -12,17 +12,17 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body" style="padding: 0px">
-                        <div class="col-md-8" style="padding: 0px">
+                        <div class="col-md-6" style="padding: 0px">
                             <h1 class="page-title">
                                 <i class="fa-solid fa-calendar-check"></i> Viendo Cita
                             </h1>
                         </div>
-                        <div class="col-md-4 text-right" style="margin-top: 30px">
+                        <div class="col-md-6 text-right" style="margin-top: 30px">
                             <a href="#" class="btn btn-success" data-toggle="modal" data-target="#resend-modal">
-                                <i class="fa-brands fa-whatsapp"></i> <span>Reenviar por WhatsApp</span>
+                                <i class="fa-brands fa-whatsapp"></i> <span>Reenviar</span>
                             </a>
                             <a href="{{ route('voyager.appointments.index') }}" class="btn btn-warning">
-                                <i class="voyager-list"></i> <span>Volver a la lista</span>
+                                <i class="voyager-list"></i> <span>Volver</span>
                             </a>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
 
         @if ($appointment->latitud && $appointment->longitud)
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="panel-heading" style="border-bottom:0;">
                         <h3 class="panel-title">Ubicación de la Cita</h3>
