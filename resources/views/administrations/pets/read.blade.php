@@ -297,7 +297,7 @@
     function list_reminders(page = 1){
         $('#div-results-reminder').loading({message: 'Cargando...'});
 
-        let url = '{{ url("admin/reminders/list") }}/{{ $pet->id }}';
+        let url = '{{ route("reminders.list", ["pet_id" => $pet->id]) }}';
         let search = $('#input-search-reminder').val() ? $('#input-search-reminder').val() : '';
 
         $.ajax({

@@ -14,8 +14,10 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MicroServiceController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\RaceController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WhatsappController;
+use App\Models\Reminder;
 
 /*
 |--------------------------------------------------------------------------
@@ -135,9 +137,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('ajax/item-stock/list', [AjaxController::class, 'itemStockList'])->name('ajax.item-stock.list');
 
     // Reminders
-    Route::post('reminders/store', [\App\Http\Controllers\ReminderController::class, 'store'])->name('reminders.store');
-    Route::get('reminders/list/{pet_id}', [\App\Http\Controllers\ReminderController::class, 'list'])->name('reminders.list');
-    Route::delete('reminders/{reminder}', [\App\Http\Controllers\ReminderController::class, 'destroy'])->name('reminders.destroy');
+    Route::post('reminders/store', [ReminderController::class, 'store'])->name('reminders.store');
+    Route::get('reminders/list/{pet_id}', [ReminderController::class, 'list'])->name('reminders.list');
+    Route::delete('reminders/{reminder}', [ReminderController::class, 'destroy'])->name('reminders.destroy');
 
 
 });

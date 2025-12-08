@@ -11,17 +11,19 @@ class ReminderController extends Controller
     public function list($pet_id)
     {
         $search = request('search');
-        $reminders = Reminder::with(['user'])
-            ->where('pet_id', $pet_id)
+        $reminders = Reminder::where('pet_id', $pet_id)
             ->where(function($query) use ($search) {
                 if ($search) {
-                    $query->where('description', 'like', "%$search%")
+                    $query->where('observation', 'like', "%$search%")
                           ->orWhere('date', 'like', "%$search%");
                 }
             })
             ->orderBy('id', 'desc')
             ->paginate(5);
-        return view('administrations.reminders.reminder-list', compact('reminders'));
+        
+        // dump($reminders);
+        // return 1;
+        return view('administrations.pets.reminder-list', compact('reminders'));
     }
 
     public function store(Request $request)
@@ -32,7 +34,7 @@ class ReminderController extends Controller
                 'user_id' => Auth::id(),
                 'date' => $request->date,
                 'time' => $request->time,
-                'description' => $request->description,
+                'observation' => $request->description,
             ]);
             return response()->json(['success' => true, 'message' => 'Recordatorio guardado exitosamente.']);
         } catch (\Throwable $th) {
