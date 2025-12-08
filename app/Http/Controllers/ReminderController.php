@@ -56,8 +56,8 @@ class ReminderController extends Controller
             }
 
             // Obtener configuración de la API de WhatsApp desde los settings de Voyager
-            $servidor = setting('solucion-digital.servidorWhatsapp');
-            $sessionId = setting('solucion-digital.sessionWhatsapp');
+            $servidor = setting('whatsapp.servidores');
+            $sessionId = setting('whatsapp.session');
 
             if (!$servidor || !$sessionId) {
                 return response()->json(['success' => false, 'message' => 'La configuración para enviar WhatsApp no está completa en los ajustes del sistema.']);
