@@ -143,15 +143,16 @@
     </div>
 
     {{-- Modal para reenviar por WhatsApp --}}
-    <div class="modal fade" id="resend-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Reenviar Cita por WhatsApp</h4>
-                </div>
-                <form action="{{ route('voyager.appointments.resend', ['id' => $appointment->id]) }}" method="POST">
-                    @csrf
+    <form action="{{ route('voyager.appointments.resend', ['id' => $appointment->id]) }}" class="form-edit-add" method="POST">
+        @csrf
+        <div class="modal fade" id="resend-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Reenviar Cita por WhatsApp</h4>
+                    </div>
+                
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="phone_number">Número de WhatsApp</label>
@@ -162,49 +163,55 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary btn-submit">Enviar</button>
+                        <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancelar</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-@stop
+    </form>
 
-{{-- Modal para asignar personal --}}
-<div class="modal fade" id="assign-worker-modal" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Asignar Personal a la Cita</h4>
-            </div>
-            <form action="{{ route('appointments.assign.worker', ['id' => $appointment->id]) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="customer_id">Trabajador</label>
-                        <div class="input-group">
-                            <select name="worker_id" id="select-worker_id" required class="form-control"></select>
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary" title="Nuevo registro" data-target="#modal-create-worker" data-toggle="modal" style="margin: 0px" type="button">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                </button>
-                            </span>
+    {{-- Modal para asignar personal --}}
+    <form action="{{ route('appointments.assign.worker', ['id' => $appointment->id]) }}" class="form-edit-add" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="modal fade" id="assign-worker-modal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Asignar Personal a la Cita</h4>
+                    </div>
+                
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="customer_id">Trabajador</label>
+                            <div class="input-group">
+                                <select name="worker_id" id="select-worker_id" required class="form-control"></select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" title="Nuevo registro" data-target="#modal-create-worker" data-toggle="modal" style="margin: 0px" type="button">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="observation" id="observation" class="form-control" rows="4"></textarea>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-submit">Guardar</button>
+                        <button type="button" class="btn btn-default btn-danger" data-dismiss="modal">Cancelar</button>
+                    </div>                
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
+    </form>
+    @include('partials.modal-registerWorker')
+@stop
 
-@include('partials.modal-registerWorker')
+
+
 
 @push('javascript')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
