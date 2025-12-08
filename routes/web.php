@@ -17,6 +17,7 @@ use App\Http\Controllers\RaceController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WhatsappController;
+use App\Http\Controllers\WorkerController;
 use App\Models\Reminder;
 
 /*
@@ -59,6 +60,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('people/ajax/list', [PersonController::class, 'list']);
     Route::post('people', [PersonController::class, 'store'])->name('voyager.people.store');
     Route::put('people/{id}', [PersonController::class, 'update'])->name('voyager.people.update');
+
+    Route::get('workers', [WorkerController::class, 'index'])->name('voyager.workers.index');
+    Route::get('workers/ajax/list', [WorkerController::class, 'list']);
+    Route::post('workers', [WorkerController::class, 'store'])->name('voyager.workers.store');
+    Route::put('workers/{id}', [WorkerController::class, 'update'])->name('voyager.workers.update');
 
     Route::get('pets', [PetController::class, 'index'])->name('voyager.pets.index');
     Route::get('pets/ajax/list', [PetController::class, 'list']);

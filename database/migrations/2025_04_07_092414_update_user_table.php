@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->smallInteger('status')->default(1);
-            $table->foreignId('person_id')->nullable()->constrained('people');
+            $table->foreignId('worker_id')->nullable()->constrained('workers');
 
             $table->foreignId('registerUser_id')->nullable()->constrained('users');
             $table->string('registerRole')->nullable();
