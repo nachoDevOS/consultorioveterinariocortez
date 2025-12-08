@@ -57,7 +57,7 @@
                     </td>
                     <td style="text-align: center">
                         Registrado por {{$item->register->name}} <br>
-                        {{date('d/m/Y h:i:s a', strtotime($item->dateSale))}}<br><small>{{\Carbon\Carbon::parse($item->dateSale)->diffForHumans()}}
+                        {{date('d/m/Y h:i:s a', strtotime($item->created_at))}}<br><small>{{\Carbon\Carbon::parse($item->created_at)->diffForHumans()}}
                     </td>
                     <td style="text-align: center">
                         @if ($item->status=='Pagado')  
