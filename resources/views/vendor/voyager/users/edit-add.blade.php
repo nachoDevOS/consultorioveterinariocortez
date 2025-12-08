@@ -43,11 +43,11 @@
 
                             @if (!$dataTypeContent->getKey())
                                 <div class="form-group">
-                                    <label for="customer_id">Persona</label>
+                                    <label for="customer_id">Trabajador</label>
                                     <div class="input-group">
-                                        <select name="person_id" id="select-person_id" required class="form-control"></select>
+                                        <select name="worker_id" id="select-worker_id" required class="form-control"></select>
                                         <span class="input-group-btn">
-                                            <button class="btn btn-primary" title="Nueva persona" data-target="#modal-create-person" data-toggle="modal" style="margin: 0px" type="button">
+                                            <button class="btn btn-primary" title="Nuevo registro" data-target="#modal-create-worker" data-toggle="modal" style="margin: 0px" type="button">
                                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                             </button>
                                         </span>
@@ -168,14 +168,14 @@
     </div>
 
 
-    @include('partials.modal-registerPerson')
+    @include('partials.modal-registerWorker')
 
 @stop
 
 @section('javascript')
 
-    <script src="{{ asset('js/include/person-select.js') }}"></script>
-    <script src="{{ asset('js/include/person-register.js') }}"></script>
+    <script src="{{ asset('js/include/worker-select.js') }}"></script>
+    <script src="{{ asset('js/include/worker-register.js') }}"></script>
     <script src="{{ asset('js/btn-submit.js') }}"></script>  
 
     <script>

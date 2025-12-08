@@ -37,6 +37,10 @@
     <script>
         window.personListUrl = "{{ url('admin/ajax/personList') }}";
         window.defaultImage = "{{ asset('images/default.jpg') }}";
+
+        window.workerListUrl = "{{ url('admin/ajax/workerList') }}";
+
+        
         window.storagePath = "{{ asset('storage') }}/";
     </script>
 
