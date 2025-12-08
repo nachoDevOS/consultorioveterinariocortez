@@ -18,6 +18,9 @@
                             </h1>
                         </div>
                         <div class="col-md-6 text-right" style="margin-top: 30px">
+                            <a href="#" class="btn btn-info" data-toggle="modal" data-target="#assign-worker-modal">
+                                <i class="voyager-people"></i> <span>Asignar Personal</span>
+                            </a>
                             <a href="#" class="btn btn-success" data-toggle="modal" data-target="#resend-modal">
                                 <i class="fa-brands fa-whatsapp"></i> <span>Reenviar</span>
                             </a>
@@ -95,6 +98,10 @@
                                                         <td>{{ $appointment->observation ?? 'Ninguna' }}</td>
                                                     </tr>
                                                     <tr>
+                                                        <td><small style="font-size: 14px">Personal Asignado:</small></td>
+                                                        <td>{{ $appointment->worker->first_name ?? 'No asignado' }} {{ $appointment->worker->paternal_surname ?? '' }}</td>
+                                                    </tr>
+                                                    <tr>
                                                         <td><small style="font-size: 14px">Estado:</small></td>
                                                         <td>
                                                             @if ($appointment->status != "Pendiente")
@@ -164,8 +171,46 @@
     </div>
 @stop
 
+{{-- Modal para asignar personal --}}
+<div class="modal fade" id="assign-worker-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Asignar Personal a la Cita</h4>
+            </div>
+            <form action="{{ route('appointments.assign.worker', ['id' => $appointment->id]) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="customer_id">Trabajador</label>
+                        <div class="input-group">
+                            <select name="worker_id" id="select-worker_id" required class="form-control"></select>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" title="Nuevo registro" data-target="#modal-create-worker" data-toggle="modal" style="margin: 0px" type="button">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@include('partials.modal-registerWorker')
+
 @push('javascript')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="{{ asset('js/include/worker-select.js') }}"></script>
+<script src="{{ asset('js/include/worker-register.js') }}"></script>
+<script src="{{ asset('js/btn-submit.js') }}"></script>  
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         @if ($appointment->latitud && $appointment->longitud)
@@ -205,4 +250,6 @@
         @endif
     });
 </script>
+
+
 @endpush

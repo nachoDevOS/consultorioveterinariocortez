@@ -54,6 +54,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::put('appointments/{id}', [AppointmentController::class, 'update'])->name('voyager.appointments.update');
     Route::delete('appointments/{id}', [AppointmentController::class, 'destroy'])->name('voyager.appointments.destroy');
     Route::post('appointments/{id}/resend', [AppointmentController::class, 'resend'])->name('voyager.appointments.resend');
+    Route::put('appointments/{id}/assign-worker', [AppointmentController::class, 'assignWorker'])->name('appointments.assign.worker');
 
 
     Route::get('people', [PersonController::class, 'index'])->name('voyager.people.index');
