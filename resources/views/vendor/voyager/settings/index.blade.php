@@ -241,7 +241,7 @@
                         @endphp --}}
                         @foreach($settings as $group => $setting)
                         
-                            @if ( $group != 'System' && $group != 'Whatsapp' && $group != 'Servidor Imagen')
+                            @if ( $group != 'System' && $group != 'Whatsapp' && $group != 'Servidor Imagen' && $group != 'Solucion Digital')
                                 <li @if($group == $active) class="active" @endif>
                                     <a data-toggle="tab" href="#{{ \Illuminate\Support\Str::slug($group) }}">{{ $group }}</a>
                                 </li>
