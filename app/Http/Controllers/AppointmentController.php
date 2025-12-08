@@ -176,7 +176,7 @@ class AppointmentController extends Controller
                     'observation' => $request->observation
                 ]
             );
-
+            
             // Enviar notificación de confirmación al cliente
             $worker = Worker::findOrFail($request->worker_id);
             $clientPhone = $appointment->phoneClient;
@@ -193,14 +193,22 @@ class AppointmentController extends Controller
                     $appointmentDate = \Carbon\Carbon::parse($appointment->date)->format('d/m/Y');
                     $appointmentTime = \Carbon\Carbon::parse($appointment->time)->format('h:i A');
 
+                    $detailsMessage = '';
+                    if ($request->type == 'Domicilio') {
+                        $detailsMessage = "El Dr(a). *{$workerName}*, uno de nuestros especialistas, pasará por tu domicilio para atender con mucho cariño a tu fiel amigo(a).\n\n";
+                    } else { // Asumimos 'Consultorio' o cualquier otro caso
+                        $detailsMessage = "El Dr(a). *{$workerName}*, uno de nuestros especialistas, estará esperando con mucho cariño en nuestras instalaciones para atender a tu fiel amigo(a).\n\n";
+                    }
+
                     $message = "¡Hola, {$clientName}! 👋\n\n" .
                                "¡Excelentes noticias! ✨ Tu cita en *{$clinicName}* para el cuidado de *{$petName}* ha sido *CONFIRMADA*.\n\n" .
-                               "El Dr(a). *{$workerName}*, uno de nuestros especialistas, estará esperando con mucho cariño para atender a tu fiel amigo(a).\n\n" .
+                               $detailsMessage .
                                "Aquí están los detalles de tu cita:\n" .
                                "🗓️ *Fecha:* {$appointmentDate}\n" .
                                "⏰ *Hora:* {$appointmentTime}\n\n" .
                                "Estamos muy contentos de que confíes en nosotros para el bienestar de *{$petName}*. ¡Nos vemos pronto!\n\n" .
                                "Atentamente,\nEl equipo de *{$clinicName}* 🐾";
+
 
                     Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
                         'phone' => '+591' . $clientPhone,

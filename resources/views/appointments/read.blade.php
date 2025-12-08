@@ -208,12 +208,12 @@
                             <textarea name="observation" id="observation" class="form-control" rows="4"></textarea>
                         </div>
                         <label class="checkbox-inline">
-                            <input type="checkbox" required>Confirmar eliminación..!
+                            <input type="checkbox" required>Confirmar asignación..!
                         </label>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary btn-submit">Guardar</button>
-                        <button type="button" class="btn btn-default btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancelar</button>
                     </div>                
                 </div>
             </div>
