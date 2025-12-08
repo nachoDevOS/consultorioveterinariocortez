@@ -159,7 +159,7 @@ class AppointmentController extends Controller
         DB::beginTransaction();
         try {
             // Verificar si ya existe una asignación para esta cita
-            $assignment = AppointmentWorker::where('appointment_id', $id)->first();
+            // $assignment = AppointmentWorker::where('appointment_id', $id)->first();
             $appointment = Appointment::findOrFail($id);
             $appointment->update([
                 'worker_id' => $request->worker_id,
@@ -167,21 +167,49 @@ class AppointmentController extends Controller
             ]);
 
 
-            if ($assignment) {
-                // Actualizar la asignación existente
-                $assignment->worker_id = $request->worker_id;
-                $assignment->save();
-            } else {
-                // Crear una nueva asignación
-                AppointmentWorker::create([
-                    'appointment_id' => $id,
+            // Usar updateOrCreate para simplificar la lógica de asignación
+            AppointmentWorker::updateOrCreate(
+                ['appointment_id' => $id],
+                [
                     'worker_id' => $request->worker_id,
                     'observation' => $request->observation
-                ]);
+                ]
+            );
+
+            // Enviar notificación de confirmación al cliente
+            $worker = Worker::findOrFail($request->worker_id);
+            $clientPhone = $appointment->phoneClient;
+
+            if ($clientPhone) {
+                $servidor = setting('whatsapp.servidores');
+                $sessionId = setting('whatsapp.session');
+
+                if ($servidor && $sessionId) {
+                    $clientName = ucwords(strtolower($appointment->nameClient));
+                    $petName = ucwords(strtolower($appointment->nameAnimal));
+                    $workerName = ucwords(strtolower($worker->first_name.' '.$worker->paternal_surname));
+                    $clinicName = setting('admin.title');
+                    $appointmentDate = \Carbon\Carbon::parse($appointment->date)->format('d/m/Y');
+                    $appointmentTime = \Carbon\Carbon::parse($appointment->time)->format('h:i A');
+
+                    $message = "¡Hola, {$clientName}! 👋\n\n" .
+                               "¡Tu cita en *{$clinicName}* ha sido *CONFIRMADA*!\n\n" .
+                               "El Dr(a). *{$workerName}* ha sido asignado para atender a *{$petName}*.\n\n" .
+                               "🗓️ *Fecha:* {$appointmentDate}\n" .
+                               "⏰ *Hora:* {$appointmentTime}\n\n" .
+                               "¡Te esperamos para cuidar de tu mascota! 🐾";
+
+                    Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
+                        'phone' => '+591' . $clientPhone,
+                        'text' => $message,
+                    ]);
+                } else {
+                    Log::warning('Configuración de WhatsApp incompleta. No se pudo enviar la confirmación de asignación.');
+                }
             }
 
             DB::commit();
-            return redirect()->back()->with(['message' => 'Trabajador asignado exitosamente.', 'alert-type' => 'success']);
+            return redirect()->back()->with(['message' => 'Trabajador asignado y cliente notificado exitosamente.', 'alert-type' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al asignar trabajador: ' . $e->getMessage());
