@@ -70,12 +70,18 @@ class ReminderController extends Controller
             }
 
             // Construir el mensaje detallado
-            $message = "Estimado/a " . strtoupper($owner->first_name) . " " . strtoupper($owner->paternal_surname) . " " . strtoupper($owner->maternal_surname) . ",\n\n" .
-                       "Le recordamos la siguiente cita para su mascota *" . strtoupper($reminder->pet->name) . "*:\n\n" .
-                       "📝 *Descripción:* " . $reminder->observation . "\n" .
+            $ownerName = ucwords(strtolower($owner->first_name.' '.$owner->paternal_surname));
+            $petName = ucwords(strtolower($reminder->pet->name));
+            $clinicName = setting('admin.title');
+
+            $message = "¡Hola, {$ownerName}! 👋\n\n" .
+                       "En *{$clinicName}* sabemos que el bienestar de *{$petName}* es lo más importante para ti, ¡y para nosotros también! ❤️\n\n" .
+                       "Te enviamos un recordatorio amigable sobre su próximo cuidado:\n\n" .
+                       "📝 *Motivo:* {$reminder->observation}\n" .
                        "🗓️ *Fecha:* " . \Carbon\Carbon::parse($reminder->date)->format('d/m/Y') . "\n" .
-                       "⏰ *Hora:* " . $reminder->time . "\n\n" .
-                       "Gracias,\n*Clínica Veterinaria Cortez*";
+                       "⏰ *Hora:* " . \Carbon\Carbon::parse($reminder->time)->format('h:i A') . "\n\n" .
+                       "¡Los esperamos con mucho cariño para seguir cuidando de tu mascota!\n\n" .
+                       "Atentamente,\n*El equipo de {$clinicName}* 🐾";
 
             // Enviar la petición a la API
             Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
