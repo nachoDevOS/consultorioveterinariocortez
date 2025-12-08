@@ -176,7 +176,7 @@ class AppointmentController extends Controller
                     'observation' => $request->observation
                 ]
             );
-            
+
             // Enviar notificación de confirmación al cliente
             $worker = Worker::findOrFail($request->worker_id);
             $clientPhone = $appointment->phoneClient;
@@ -217,6 +217,45 @@ class AppointmentController extends Controller
                 } else {
                     Log::warning('Configuración de WhatsApp incompleta. No se pudo enviar la confirmación de asignación.');
                 }
+            }
+
+            $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
+
+            // Construir el mensaje detallado para WhatsApp
+            $message = "🗓️ *Recordatorio de Cita* 🗓️\n\n" .
+                "Hola, te reenviamos los detalles de tu cita en la Clínica Veterinaria Cortez:\n\n" .
+                "👤 *Cliente:* {$appointment->nameClient}\n" .
+                "📞 *Teléfono Original:* {$appointment->phoneClient}\n\n" .
+                "🐾 *Mascota:*\n" .
+                "   - *Nombre:* {$appointment->nameAnimal}\n" .
+                "   - *Tipo:* {$appointment->animal->name}\n" .
+                "   - *Raza:* " . ($appointment->race->name ?? 'No especificada') . "\n" .
+                "   - *Género:* {$appointment->gender}\n\n" .
+                "🩺 *Servicio Solicitado:*\n" .
+                "   - {$appointment->service->name}\n\n" .
+                "🗓️ *Fecha y Hora:*\n" .
+                "   - " . \Carbon\Carbon::parse($appointment->date)->format('d/m/Y') . " a las " . \Carbon\Carbon::parse($appointment->time)->format('H:i') . "\n\n" .
+                "📝 *Observaciones:*\n" .
+                "_{$appointment->observation}_\n\n";
+
+            if ($appointment->latitud && $appointment->longitud) {
+                $message .= "📍 *Ubicación de la Cita:*\n" .
+                    "   - Ver en mapa: https://www.google.com/maps?q={$appointment->latitud},{$appointment->longitud}\n\n";
+            }
+
+
+            $message .= "\n\n*Contacto Directo:*\n" .
+            "Haz clic para contactar al cliente: https://wa.me/591{$appointment->phoneClient}";
+
+
+            $servidor = setting('whatsapp.servidores');
+            $sessionId = setting('whatsapp.session');
+
+            if ($servidor && $sessionId) {
+                Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
+                    'phone' => '+591' . $worker->phone,
+                    'text' => $message,
+                ]);
             }
 
             DB::commit();
