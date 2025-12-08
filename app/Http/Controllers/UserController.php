@@ -27,7 +27,7 @@ class UserController extends Controller
         $search = request('search') ?? null;
         $paginate = request('paginate') ?? 10;
         
-        $data = User::with(['person'])
+        $data = User::with(['worker'])
                     ->where(function($query) use ($search){
                         $query->OrWhereRaw($search ? "id = '$search'" : 1)
                         ->OrWhereRaw($search ? "name like '%$search%'" : 1)
