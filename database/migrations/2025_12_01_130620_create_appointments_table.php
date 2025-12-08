@@ -39,6 +39,7 @@ return new class extends Migration
             $table->string('status')->default('Pendiente');
 
             $table->foreignId('worker_id')->nullable()->constrained('workers'); //Para ver el personal asignado
+            $table->string('type')->nullable(); //Tipo de atencion: Consultorio o Domicilio
 
             $table->timestamps();            
             $table->foreignId('registerUser_id')->nullable()->constrained('users');

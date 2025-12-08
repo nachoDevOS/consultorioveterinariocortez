@@ -196,8 +196,20 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="type">Tipo de Asignación</label>
+                            <select name="type" id="type" class="form-control select2" required>
+                                <option value="" disabled selected>Seleccione una opción</option>
+                                <option value="Consultorio">Consultorio</option>
+                                <option value="Domicilio">Domicilio</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="observation">Observaciones</label>                     
                             <textarea name="observation" id="observation" class="form-control" rows="4"></textarea>
                         </div>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" required>Confirmar eliminación..!
+                        </label>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary btn-submit">Guardar</button>

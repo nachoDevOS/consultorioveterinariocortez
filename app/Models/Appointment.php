@@ -31,6 +31,7 @@ class Appointment extends Model
         'view',
         'status',
         'worker_id',
+        'type',
 
         'registerUser_id',
         'registerRole',

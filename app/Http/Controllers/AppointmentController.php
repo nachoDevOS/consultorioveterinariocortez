@@ -163,14 +163,15 @@ class AppointmentController extends Controller
             $appointment = Appointment::findOrFail($id);
             $appointment->update([
                 'worker_id' => $request->worker_id,
+                'type' => $request->type,
                 'status'=> 'Asignado'
             ]);
 
 
             // Usar updateOrCreate para simplificar la lógica de asignación
-            AppointmentWorker::updateOrCreate(
-                ['appointment_id' => $id],
+            AppointmentWorker::create(
                 [
+                    'appointment_id' => $id,
                     'worker_id' => $request->worker_id,
                     'observation' => $request->observation
                 ]
@@ -193,11 +194,13 @@ class AppointmentController extends Controller
                     $appointmentTime = \Carbon\Carbon::parse($appointment->time)->format('h:i A');
 
                     $message = "¡Hola, {$clientName}! 👋\n\n" .
-                               "¡Tu cita en *{$clinicName}* ha sido *CONFIRMADA*!\n\n" .
-                               "El Dr(a). *{$workerName}* ha sido asignado para atender a *{$petName}*.\n\n" .
+                               "¡Excelentes noticias! ✨ Tu cita en *{$clinicName}* para el cuidado de *{$petName}* ha sido *CONFIRMADA*.\n\n" .
+                               "El Dr(a). *{$workerName}*, uno de nuestros especialistas, estará esperando con mucho cariño para atender a tu fiel amigo(a).\n\n" .
+                               "Aquí están los detalles de tu cita:\n" .
                                "🗓️ *Fecha:* {$appointmentDate}\n" .
                                "⏰ *Hora:* {$appointmentTime}\n\n" .
-                               "¡Te esperamos para cuidar de tu mascota! 🐾";
+                               "Estamos muy contentos de que confíes en nosotros para el bienestar de *{$petName}*. ¡Nos vemos pronto!\n\n" .
+                               "Atentamente,\nEl equipo de *{$clinicName}* 🐾";
 
                     Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
                         'phone' => '+591' . $clientPhone,
