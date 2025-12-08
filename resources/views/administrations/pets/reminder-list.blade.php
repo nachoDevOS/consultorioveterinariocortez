@@ -2,9 +2,9 @@
     <table class="table table-hover" id="dataTable">
         <thead>
             <tr>
-                <th>N&deg;</th>
-                <th>Descripción</th>
-                <th>Fecha y hora</th>
+                <th style="text-align: center; width: 10%">Id</th>
+                <th style="text-align: center">Descripción</th>
+                <th style="text-align: center; width: 30%">Fecha y hora</th>
                 <th style="width: 5%">Acciones</th>
             </tr>
         </thead>
@@ -13,7 +13,7 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->observation }}</td>
-                    <td>{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }} {{ $item->time }}</td>
+                    <td style="text-align: center">{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }} {{ $item->time }}</td>
                  
                     <td class="no-sort no-click bread-actions">
                         {{-- <a href="#" title="Editar" class="btn btn-sm btn-info edit">
