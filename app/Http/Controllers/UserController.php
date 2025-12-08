@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Person;
 use App\Models\User;
+use App\Models\Worker;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -47,14 +48,15 @@ class UserController extends Controller
         {
             return redirect()->route('voyager.users.index')->with(['message' => 'El correo ya existe.', 'alert-type' => 'warning    ']);
         }
-        $person = Person::where('deleted_at', null)->where('status', 1)->where('id', $request->person_id)->first();
+        $worker = Worker::where('deleted_at', null)->where('status', 1)->where('id', $request->worker_id)->first();
     
         DB::beginTransaction();
         try {
             
             User::create([
-                'person_id' => $request->person_id,
-                'name' =>  $person->first_name,
+                'worker_id' => $request->worker_id,
+                'name' =>  $worker->first_name . ' ' . ($worker->middle_name !=null? $worker->middle_name.' ':null). $worker->paternal_surname . ' ' . $worker->maternal_surname,
+                'status' => 1,
                 'role_id' => $request->role_id,
                 'email' => $request->email,
                 'avatar' => 'users/default.png',

@@ -144,7 +144,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="panel panel panel-bordered panel-warning">
+                    {{-- <div class="panel panel panel-bordered panel-warning">
                         <div class="panel-body">
                             <div class="form-group">
                                 @if(isset($dataTypeContent->avatar))
@@ -153,7 +153,7 @@
                                 <input type="file" data-name="avatar" name="avatar">
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

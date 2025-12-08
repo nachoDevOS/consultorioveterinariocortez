@@ -35,7 +35,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="full_name">Celular</label>
-                            <input type="text" name="phone" class="form-control" placeholder="76558214">
+                            <input type="text" name="phone" class="form-control" placeholder="76558214" required>
                         </div>
                     </div>
                     <div class="row">

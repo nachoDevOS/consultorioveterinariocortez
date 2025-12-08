@@ -99,7 +99,7 @@ class HomeController extends Controller
         $notificationMessage .= "\n\n*Contacto Directo:*\n" .
             "Haz clic para contactar al cliente: https://wa.me/591{$request->phone}\n\n" .
             "*Gestionar Cita:*\n" .
-            "https://veterinaria.soluciondigital.dev/admin/appointments";
+            "https://consultorioveterinariocortez.com/admin/appointments";
         $servidor = setting('solucion-digital.servidorWhatsapp');
         $id = setting('solucion-digital.sessionWhatsapp');
 
