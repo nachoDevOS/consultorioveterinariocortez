@@ -9,7 +9,7 @@
                     <th>Lote</th>
                     <th class="text-right">Cantidad</th>
                     <th>Doctor(a)</th>
-                    <th>Registrado por</th>
+                    {{-- <th>Registrado por</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -25,11 +25,11 @@
                     <td>{{ $sale->itemStock->lote ?? 'N/A' }}</td>
                     <td class="text-right">{{ $sale->quantity }}</td>
                     <td>{{ $sale->anamnesisForm->doctor->name ?? 'N/A' }}</td>
-                    <td>{{ $sale->registerUser->name ?? 'N/A' }}</td>
+                    {{-- <td>{{ $sale->registerUser->name ?? 'N/A' }}</td> --}}
                 </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="6">
                             <h5 class="text-center" style="margin-top: 20px; margin-bottom: 20px;">
                                 <i class="fa-solid fa-box-open" style="font-size: 50px;"></i>
                                 <br><br>
