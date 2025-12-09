@@ -40,11 +40,16 @@
                         action: 'submit'
                     }).then(function(token) {
                         // Add your logic to submit to your backend server here.
+                        $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
+                        $('.btn-submit').attr('disabled', true);
+
                         $('#appointment-form').prepend('<input type="hidden" name="g_recaptcha_response" value="' + token + '">');
                         $('#appointment-form').prepend('<input type="hidden" name="action" value="validar_appointment_form">');
                         // Deshabilitar el botón y mostrar un mensaje de envío
                         $(this).prop('disabled', true).html('Enviando... <i class="fas fa-spinner fa-spin"></i>');
                         // Enviar el formulario
+
+
                         $('#appointment-form')[0].submit();
                     });
                 });
@@ -269,7 +274,7 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="button" class="btn btn-primary w-100 btn-submit1" id="btn-submit" >Solicitar Cita</button>
+                            <button type="button" class="btn btn-primary w-100 btn-submit" id="btn-submit" >Solicitar Cita</button>
                         </form>
                     </div>
                 </div>
