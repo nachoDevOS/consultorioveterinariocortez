@@ -28,6 +28,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
+    <style>
+        /* Mueve la insignia de reCAPTCHA hacia arriba para que no se superponga con el botón de WhatsApp */
+        .grecaptcha-badge {
+            bottom: 100px !important;
+        }
+    </style>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     {{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
     <script src="https://www.google.com/recaptcha/api.js?render={{ setting('system.reCaptchaKeySite') }}"></script>
