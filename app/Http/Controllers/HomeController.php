@@ -39,7 +39,7 @@ class HomeController extends Controller
 
             // 2. Validación de los datos del formulario
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:255', // Cambiado a 'nameClient' para consistencia
                 'phone' => 'required|string|digits:8',
                 'email' => 'nullable|email',
                 'pet_race' => 'required|exists:races,id',
@@ -55,6 +55,19 @@ class HomeController extends Controller
                 'longitude' => 'required|numeric',
                 'service' => 'required|exists:services,id',
                 'terms' => 'accepted'
+            ], [
+                'name.required' => 'Por favor, introduce tu nombre.',
+                'phone.required' => 'Tu número de teléfono es necesario para contactarte.',
+                'phone.digits' => 'El número de teléfono debe tener 8 dígitos.',
+                'pet_type.required' => 'Por favor, selecciona la especie de tu mascota.',
+                'pet_gender.required' => 'Por favor, selecciona el género de tu mascota.',
+                'pet_age.required' => 'Por favor, dinos la edad de tu mascota.',
+                'pet_race.required' => 'Por favor, selecciona la raza de tu mascota.',
+                'pet_name.required' => 'Por favor, dinos el nombre de tu mascota.',
+                'appointment_date.required' => 'Necesitamos saber la fecha que deseas para la cita.',
+                'appointment_date.after_or_equal' => 'La fecha de la cita no puede ser un día que ya pasó.',
+                'appointment_time.required' => 'Por favor, selecciona la hora de la cita.',
+                'terms.accepted' => 'Debes aceptar los términos y condiciones para continuar.'
             ]);
             
 
