@@ -27,6 +27,26 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    {{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X"></script>
+    <script>
+        $(document).ready(function() {
+            $('#btn-submit').click(function(){
+                grecaptcha.ready(function() {
+                    grecaptcha.execute('6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X', {
+                        action: 'submit'
+                    }).then(function(token) {
+                        // Add your logic to submit to your backend server here.
+                        $('#appointment-form').prepend('<input type="hidden" name="token" value="' + token + '">');
+                        $('#appointment-form').prepend('<input type="hidden" name="action" value="submit">');
+                        $('#appointment-form').submit();
+                    });
+                });
+            });
+        });
+
+    </script>
 </head>
 <body>
     <!-- Navbar -->
@@ -244,7 +264,7 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 btn-submit">Solicitar Cita</button>
+                            <button type="button" class="btn btn-primary w-100 btn-submit1 g-recaptcha" id="btn-submit" data-sitekey="6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X" data-callback='onSubmit' data-action='submit'>Solicitar Cita</button>
                         </form>
                     </div>
                 </div>
@@ -369,12 +389,17 @@
         <span class="whatsapp-text">¡Chatea con nosotros!</span>
     </a>
 
+
+    
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
+
+        
 
 
         // Smooth scrolling for navigation links
@@ -614,12 +639,12 @@
         });
 
 
-        $(document).ready(function() {
-            $('#appointment-form').submit(function(e) {
-                $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
-                $('.btn-submit').attr('disabled', true);
-            });
-        });
+        // $(document).ready(function() {
+        //     $('#appointment-form1').submit(function(e) {
+        //         $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
+        //         $('.btn-submit').attr('disabled', true);
+        //     });
+        // });
 
     </script>
 </body>

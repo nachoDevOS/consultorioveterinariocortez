@@ -21,6 +21,8 @@ class HomeController extends Controller
     // Nuevo método para guardar la cita
     public function storeAppointment(Request $request)
     {
+
+        return $request;
         // Validación de los datos del formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
