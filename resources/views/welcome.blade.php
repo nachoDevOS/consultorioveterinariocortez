@@ -680,10 +680,16 @@
                     if (this.classList.contains('is-invalid')) {
                         this.classList.remove('is-invalid');
 
-                        // Adicional: Buscar y ocultar el mensaje de error hermano.
-                        let feedback = this.parentElement.querySelector('.invalid-feedback');
-                        if (!feedback) { // Para casos como el teléfono dentro de un input-group
-                            feedback = this.parentElement.parentElement.querySelector('.invalid-feedback');
+                        // Busca el contenedor padre más cercano que también contiene el mensaje de error.
+                        // Usamos .closest('.col-md-6, .mb-3') para cubrir tanto los campos en columnas como los de ancho completo.
+                        const parentContainer = this.closest('.col-md-6') || this.closest('.mb-3');
+                        if (parentContainer) {
+                            const feedback = parentContainer.querySelector('.invalid-feedback');
+                            if (feedback) {
+                                // Ocultamos el mensaje de error directamente.
+                                feedback.style.display = 'none'; // Oculta el elemento
+                                feedback.classList.remove('d-block'); // Elimina la clase que lo fuerza a mostrarse
+                            }
                         }
                     }
                 });
