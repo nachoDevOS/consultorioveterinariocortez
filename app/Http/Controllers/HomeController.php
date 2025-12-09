@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class HomeController extends Controller
 {
@@ -129,6 +130,9 @@ class HomeController extends Controller
             DB::commit();
             // Redirigir de vuelta a la página anterior con un mensaje de éxito
             return redirect('/')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.'); 
+        } catch (ValidationException $e) {
+            // Re-lanzar la excepción de validación para que Laravel la maneje automáticamente.
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::error('Error al guardar la cita: '.$th->getMessage());
