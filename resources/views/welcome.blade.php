@@ -369,13 +369,13 @@
         <span class="whatsapp-text">¡Chatea con nosotros!</span>
     </a>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
 
-   
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -615,7 +615,7 @@
 
 
         $(document).ready(function() {
-            $('.form-edit-add').submit(function(e) {
+            $('#appointment-form').submit(function(e) {
                 $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
                 $('.btn-submit').attr('disabled', true);
             });
