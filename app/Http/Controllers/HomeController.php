@@ -22,55 +22,44 @@ class HomeController extends Controller
     // Nuevo método para guardar la cita
     public function storeAppointment(Request $request)
     {
-        // Validación de los datos del formulario
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|digits:8',
-            'email' => 'nullable|email',
-            'pet_race' => 'nullable|exists:races,id',
-            // Se cambia a 'required' para que la raza sea obligatoria
-            'pet_race' => 'required|exists:races,id',
-            'pet_name' => 'required|string|max:255',
-            'pet_type' => 'required|exists:animals,id', // Valida que el ID de la especie exista en la tabla 'animals'
-            'pet_gender' => 'required|string|in:Macho,Hembra,Desconocido',
-            'pet_age' => 'required|string|max:100',
-            'appointment_date' => 'required|date|after_or_equal:today',
-            'appointment_time' => 'required|date_format:H:i',
-            'pet_photo' => 'nullable|image|max:2048', // Opcional, tipo imagen, máximo 2MB
-            'appointment_location' => 'required|string|max:500', // Dirección obtenida por geocodificación
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'service' => 'required|exists:services,id', // Validar que el ID del servicio exista
-            'terms' => 'accepted'
-        ]);
-
-        return ;
         DB::beginTransaction();
         try {
-
-            $token = $request->g_recaptcha_response;
-            // $secretKey = setting('solucion-digital.recaptchaSecretKey');
+            // 1. Validar reCAPTCHA primero
             $secretKey = '6LcsYCYsAAAAAPT9_ET9HJh3dgOyb5MxODBB0WAZ';
-
-            $cu = curl_init();
-            curl_setopt($cu, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-            curl_setopt($cu, CURLOPT_POST, 1);
-            curl_setopt($cu, CURLOPT_POSTFIELDS, http_build_query(array('secret' => $secretKey, 'response' => $token)));
-            curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($cu);
-            curl_close($cu);
-
-            $responseData = json_decode($response, true);
-
-            if (!$responseData['success'] || $responseData['score'] < 0.5) {
-                return redirect()->back()->withErrors('Error de validación de reCAPTCHA. Por favor, inténtalo de nuevo.');
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $request->input('g_recaptcha_response'),
+                'remoteip' => $request->ip(),
+            ]);
+            
+            if (!$response->successful() || !$response->json('success') || $response->json('score') < 0.5) {
+                return redirect()->back()->withErrors(['recaptcha' => 'Error de validación de reCAPTCHA. Por favor, inténtalo de nuevo.'])->withInput();
             }
+
+            // 2. Validación de los datos del formulario
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|digits:8',
+                'email' => 'nullable|email',
+                'pet_race' => 'required|exists:races,id',
+                'pet_name' => 'required|string|max:255',
+                'pet_type' => 'required|exists:animals,id',
+                'pet_gender' => 'required|string|in:Macho,Hembra,Desconocido',
+                'pet_age' => 'required|string|max:100',
+                'appointment_date' => 'required|date|after_or_equal:today',
+                'appointment_time' => 'required|date_format:H:i',
+                'pet_photo' => 'nullable|image|max:2048',
+                'appointment_location' => 'required|string|max:500',
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
+                'service' => 'required|exists:services,id',
+                'terms' => 'accepted'
+            ]);
+            
 
             // Manejo de la subida de archivos (si existe)
             $photoPath = null;
             if ($request->hasFile('pet_photo')) {
-                // En una aplicación real, aquí guardarías el archivo en el sistema de almacenamiento
-                // y guardarías la ruta en la base de datos. Lo haremos ahora.
                 $photoPath = $request->file('pet_photo')->store('appointment', 'public');
             }
 
@@ -143,7 +132,7 @@ class HomeController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::error('Error al guardar la cita: '.$th->getMessage());
-            return redirect()->back()->withErrors('Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.');
+            return redirect()->back()->withErrors('Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.')->withInput();
         }
         // return redirect('/#cita')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
     }
