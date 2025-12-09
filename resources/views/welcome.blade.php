@@ -41,7 +41,7 @@
                     }).then(function(token) {
                         // Add your logic to submit to your backend server here.
                         $('#appointment-form').prepend('<input type="hidden" name="g_recaptcha_response" value="' + token + '">');
-                        $('#appointment-form').prepend('<input type="hidden" name="action" value="submit">');
+                        $('#appointment-form').prepend('<input type="hidden" name="action" value="validar_appointment_form">');
                         // Deshabilitar el botón y mostrar un mensaje de envío
                         $(this).prop('disabled', true).html('Enviando... <i class="fas fa-spinner fa-spin"></i>');
                         // Enviar el formulario
@@ -628,8 +628,12 @@
                         } else {
                             // Si no hay razas, mostrar "Seleccione..." y "Otras"
                             raceSelect.innerHTML = '<option value="" selected disabled>Seleccione una opción</option>';
+                            // Si no hay razas para la especie, se puede añadir una opción por defecto o manejarlo como prefieras.
+                            // Por ahora, se mostrará que no hay razas específicas.
+                            raceSelect.innerHTML = '<option value="" selected disabled>No hay razas específicas para esta especie</option>';
                             const otherOption = document.createElement('option');
                             otherOption.value = ""; // Valor vacío
+                            otherOption.value = "0"; // Un valor que no existirá en la BD para que la validación 'exists' falle si no se elige una raza válida.
                             otherOption.textContent = "Otras";
                             raceSelect.appendChild(otherOption);
                             raceSelect.disabled = false; // Habilitar para que se pueda enviar
