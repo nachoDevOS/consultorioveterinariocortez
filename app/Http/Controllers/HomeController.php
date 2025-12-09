@@ -67,7 +67,7 @@ class HomeController extends Controller
                 'appointment_date.required' => 'Necesitamos saber la fecha que deseas para la cita.',
                 'appointment_date.after_or_equal' => 'La fecha de la cita no puede ser un día que ya pasó.',
                 'appointment_time.required' => 'Por favor, selecciona la hora de la cita.',
-                'terms.accepted' => 'Debes aceptar los términos y condiciones para continuar.'
+                'terms.accepted' => 'Debes aceptar.'
             ]);
             
 

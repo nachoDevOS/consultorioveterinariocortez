@@ -269,7 +269,7 @@
                             
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input @error('terms') is-invalid @enderror" id="terms" name="terms" required>
-                                <label class="form-check-label" for="terms">Acepto los términos y condiciones <span class="text-danger">*</span></label>
+                                <label class="form-check-label" for="terms">Aceptar<span class="text-danger">*</span></label>
                                 @error('terms')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
