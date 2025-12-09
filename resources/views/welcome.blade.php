@@ -30,13 +30,13 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     {{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
-    <script src="https://www.google.com/recaptcha/api.js?render=6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{ setting('system.reCaptchaKeySite') }}"></script>
     <script>
         $(document).ready(function() {
             $('#btn-submit').on('click', function(e){
                 e.preventDefault();
                 grecaptcha.ready(function() {
-                    grecaptcha.execute('6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X', {
+                    grecaptcha.execute("{{ setting('system.reCaptchaKeySite') }}", {
                         action: 'submit'
                     }).then(function(token) {
                         // Add your logic to submit to your backend server here.
