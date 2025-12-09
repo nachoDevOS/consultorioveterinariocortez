@@ -375,12 +375,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
 
-        $(document).ready(function() {
-            $('.form-edit-add').submit(function(e) {
-                $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
-                $('.btn-submit').attr('disabled', true);
-            });
-        });
+   
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -616,6 +611,14 @@
                         raceSelect.innerHTML = '<option value="" selected disabled>Error al cargar razas</option>';
                     });
             }
+        });
+
+
+        $(document).ready(function() {
+            $('.form-edit-add').submit(function(e) {
+                $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
+                $('.btn-submit').attr('disabled', true);
+            });
         });
 
     </script>
