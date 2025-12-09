@@ -108,7 +108,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
                     <div class="form-container">
-                        <form id="appointment-form" action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="appointment-form" class="form-edit-add" action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -244,7 +244,7 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Solicitar Cita</button>
+                            <button type="submit" class="btn btn-primary w-100 btn-submit">Solicitar Cita</button>
                         </form>
                     </div>
                 </div>
@@ -374,6 +374,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
+
+        $(document).ready(function() {
+            $('.form-edit-add').submit(function(e) {
+                $('.btn-submit').html('Enviando... <i class="fa fa-spinner fa-spin"></i>');
+                $('.btn-submit').attr('disabled', true);
+            });
+        });
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
