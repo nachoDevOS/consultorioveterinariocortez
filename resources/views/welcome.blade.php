@@ -679,6 +679,12 @@
                     // Si el campo tiene la clase de error 'is-invalid', la removemos
                     if (this.classList.contains('is-invalid')) {
                         this.classList.remove('is-invalid');
+
+                        // Adicional: Buscar y ocultar el mensaje de error hermano.
+                        let feedback = this.parentElement.querySelector('.invalid-feedback');
+                        if (!feedback) { // Para casos como el teléfono dentro de un input-group
+                            feedback = this.parentElement.parentElement.querySelector('.invalid-feedback');
+                        }
                     }
                 });
             });

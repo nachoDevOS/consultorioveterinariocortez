@@ -26,7 +26,7 @@ class HomeController extends Controller
         DB::beginTransaction();
         try {
             // 1. Validar reCAPTCHA primero
-            $secretKey = '6LcsYCYsAAAAAPT9_ET9HJh3dgOyb5MxODBB0WAZ';
+            $secretKey = setting('system.reCaptchaKeySecret');
             $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                 'secret' => $secretKey,
                 'response' => $request->input('g_recaptcha_response'),
