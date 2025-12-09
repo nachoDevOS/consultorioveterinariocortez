@@ -34,7 +34,7 @@ class HomeController extends Controller
             ]);
             
             if (!$response->successful() || !$response->json('success') || $response->json('score') < 0.5) {
-                return redirect()->back()->withErrors(['recaptcha' => 'Error de validación de reCAPTCHA. Por favor, inténtalo de nuevo.'])->withInput();
+                return redirect('/#cita')->withErrors(['recaptcha' => 'Error de validación de reCAPTCHA. Por favor, inténtalo de nuevo.'])->withInput();
             }
 
             // 2. Validación de los datos del formulario
@@ -145,13 +145,13 @@ class HomeController extends Controller
             return redirect('/')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.'); 
         } catch (ValidationException $e) {
             // Re-lanzar la excepción de validación para que Laravel la maneje automáticamente.
-            throw $e;
+            return redirect('/#cita')->withErrors($e->validator)->withInput();
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::error('Error al guardar la cita: '.$th->getMessage());
-            return redirect()->back()->withErrors('Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.')->withInput();
+            return redirect('/#cita')->withErrors('Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.')->withInput();
         }
-        // return redirect('/#cita')->with('success', '¡Gracias! Tu solicitud de cita ha sido enviada. Nos pondremos en contacto contigo pronto.');
+
     }
 
     /**
