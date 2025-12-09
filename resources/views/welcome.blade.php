@@ -269,7 +269,7 @@
                             
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input @error('terms') is-invalid @enderror" id="terms" name="terms" required>
-                                <label class="form-check-label" for="terms">Aceptar<span class="text-danger">*</span></label>
+                                <label class="form-check-label" for="terms">Aceptar <span class="text-danger">*</span></label>
                                 @error('terms')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -500,7 +500,7 @@
             }
 
             function initializeMap(lat, lng) {
-                // 1. Inicializar el mapa
+                // 1. Initialize the map
                 const map = L.map('map', { maxZoom: 18 }).setView([lat, lng], 15);
 
                 // 2. Definir las capas de mapa usando Mapbox
@@ -521,10 +521,10 @@
                 const baseMaps = { "Satélite": mapboxSatellite, "Calles": mapboxStreets };
                 L.control.layers(baseMaps).addTo(map);
 
-                // 3. Crear un marcador arrastrable en la posición inicial
+                // 3. Create a draggable marker at the initial position
                 let marker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
-                // 4. Actualizar la posición inicial
+                // 4. Update the initial position
                 updateMarkerPosition(lat, lng);
 
                 // 5. Eventos del mapa y marcador
@@ -541,13 +541,13 @@
             }
 
             // --- Lógica de Geolocalización ---
-            const defaultLat = -14.8203618;
-            const defaultLng = -64.897594;
+            const defaultLat = -14.8203618; // Default latitude for Trinidad, Bolivia
+            const defaultLng = -64.897594;  // Default longitude for Trinidad, Bolivia
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        // Éxito: El usuario compartió su ubicación
+                        // Success: User shared their location
                         const userLat = position.coords.latitude;
                         const userLng = position.coords.longitude;
                         initializeMap(userLat, userLng);
@@ -555,7 +555,7 @@
                     },
                     () => {
                         // Error o denegado: Usar ubicación por defecto
-                        initializeMap(defaultLat, defaultLng);
+                        initializeMap(defaultLat, defaultLng); // Fallback to default location
                         Toast.fire({ icon: 'warning', title: 'No se pudo obtener tu ubicación. Mostrando ubicación por defecto.' });
                     },
                     {
@@ -564,7 +564,7 @@
                         maximumAge: 0
                     }
                 );
-            } else {
+            } else { // Browser does not support geolocation
                 // El navegador no soporta geolocalización
                 initializeMap(defaultLat, defaultLng);
                 Toast.fire({ icon: 'error', title: 'Tu navegador no soporta geolocalización.' });
@@ -593,61 +593,79 @@
             L.marker([contactLat, contactLng]).addTo(contactMap)
                 .bindPopup('<b>{{setting("site.title")}}</b><br>{{setting("site.address")}}')
                 .openPopup();
-        });
 
-        // --- Lógica para cargar Razas dinámicamente ---
-        document.getElementById('pet-type').addEventListener('change', function() {
-            const animalId = this.value;
+            // --- Dynamic Race Loading Logic ---
+            const petTypeSelect = document.getElementById('pet-type');
+            const oldPetType = @json(old('pet_type'));
+            const oldPetRace = @json(old('pet_race'));
             const raceSelect = document.getElementById('pet_race');
 
             // Limpiar y deshabilitar el select de razas mientras se carga
             raceSelect.innerHTML = '<option value="" selected disabled>Cargando razas...</option>';
             raceSelect.disabled = true;
 
-            if (animalId) {
-                // Hacer la petición AJAX para obtener las razas
-                fetch(`{{ url('/api/races') }}/${animalId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('La respuesta de la red no fue exitosa');
-                        }
-                        return response.json();
-                    })
-                    .then(races => {
-                        raceSelect.innerHTML = '<option value="" selected disabled>Seleccione una raza</option>';
-                        if (races.length > 0) {
-                            races.forEach(race => {
-                                const option = document.createElement('option');
-                                option.value = race.id;
-                                option.textContent = race.name;
-                                raceSelect.appendChild(option);
-                            });
+            // Function to load races based on animalId and optionally select a race
+            function loadRaces(animalId, selectedRaceId = null) {
+                raceSelect.innerHTML = '<option value="" selected disabled>Cargando razas...</option>';
+                raceSelect.disabled = true;
 
-                            // Añadir la opción "Otras" al final
-                            const otherOption = document.createElement('option');
-                            otherOption.value = ""; // Valor vacío para no enviar ID
-                            otherOption.textContent = "Otras";
-                            raceSelect.appendChild(otherOption);
+                if (animalId) {
+                    fetch(`{{ url('/api/races') }}/${animalId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('La respuesta de la red no fue exitosa');
+                            }
+                            return response.json();
+                        })
+                        .then(races => {
+                            raceSelect.innerHTML = '<option value="" selected disabled>Seleccione una raza</option>';
+                            if (races.length > 0) {
+                                races.forEach(race => {
+                                    const option = document.createElement('option');
+                                    option.value = race.id;
+                                    option.textContent = race.name;
+                                    if (selectedRaceId && String(race.id) === String(selectedRaceId)) { // Ensure string comparison
+                                        option.selected = true;
+                                    }
+                                    raceSelect.appendChild(option);
+                                });
 
-                            raceSelect.disabled = false; // Habilitar el select
-                        } else {
-                            // Si no hay razas, mostrar "Seleccione..." y "Otras"
-                            raceSelect.innerHTML = '<option value="" selected disabled>Seleccione una opción</option>';
-                            // Si no hay razas para la especie, se puede añadir una opción por defecto o manejarlo como prefieras.
-                            // Por ahora, se mostrará que no hay razas específicas.
-                            raceSelect.innerHTML = '<option value="" selected disabled>No hay razas específicas para esta especie</option>';
-                            const otherOption = document.createElement('option');
-                            otherOption.value = ""; // Valor vacío
-                            otherOption.value = "0"; // Un valor que no existirá en la BD para que la validación 'exists' falle si no se elige una raza válida.
-                            otherOption.textContent = "Otras";
-                            raceSelect.appendChild(otherOption);
-                            raceSelect.disabled = false; // Habilitar para que se pueda enviar
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error al cargar las razas:', error);
-                        raceSelect.innerHTML = '<option value="" selected disabled>Error al cargar razas</option>';
-                    });
+                                const otherOption = document.createElement('option');
+                                otherOption.value = "0"; // Consistent value for "Otras"
+                                otherOption.textContent = "Otras";
+                                if (selectedRaceId && String(selectedRaceId) === "0") {
+                                    otherOption.selected = true;
+                                }
+                                raceSelect.appendChild(otherOption);
+
+                                raceSelect.disabled = false;
+                            } else {
+                                raceSelect.innerHTML = '<option value="" selected disabled>No hay razas específicas para esta especie</option>';
+                                const otherOption = document.createElement('option');
+                                otherOption.value = "0";
+                                otherOption.textContent = "Otras";
+                                if (selectedRaceId && String(selectedRaceId) === "0") {
+                                    otherOption.selected = true;
+                                }
+                                raceSelect.appendChild(otherOption);
+                                raceSelect.disabled = false;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al cargar las razas:', error);
+                            raceSelect.innerHTML = '<option value="" selected disabled>Error al cargar razas</option>';
+                        });
+                }
+            }
+
+            // Event listener for pet-type change
+            petTypeSelect.addEventListener('change', function() {
+                loadRaces(this.value);
+            });
+
+            // On page load, if old('pet_type') exists, load races and try to select old('pet_race')
+            if (oldPetType) {
+                loadRaces(oldPetType, oldPetRace);
             }
         });
 
