@@ -667,6 +667,21 @@
             if (oldPetType) {
                 loadRaces(oldPetType, oldPetRace);
             }
+
+            // --- Lógica para limpiar errores de validación al interactuar con los campos ---
+            const formInputs = document.querySelectorAll('#appointment-form .form-control, #appointment-form .form-select, #appointment-form .form-check-input');
+
+            formInputs.forEach(input => {
+                // Escuchar eventos 'input' para campos de texto/textarea y 'change' para selects/checkboxes
+                const eventType = (input.tagName.toLowerCase() === 'select' || input.type === 'checkbox' || input.type === 'radio') ? 'change' : 'input';
+
+                input.addEventListener(eventType, function() {
+                    // Si el campo tiene la clase de error 'is-invalid', la removemos
+                    if (this.classList.contains('is-invalid')) {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            });
         });
 
 
