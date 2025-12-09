@@ -23,6 +23,8 @@ class HomeController extends Controller
     {
 
         return $request;
+        $token = $request->g_recaptcha_response;
+        $secretKey = setting('solucion-digital.recaptchaSecretKey');
         // Validación de los datos del formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',

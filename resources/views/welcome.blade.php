@@ -28,19 +28,24 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     {{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
     <script src="https://www.google.com/recaptcha/api.js?render=6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X"></script>
     <script>
         $(document).ready(function() {
-            $('#btn-submit').click(function(){
+            $('#btn-submit').on('click', function(e){
+                e.preventDefault();
                 grecaptcha.ready(function() {
                     grecaptcha.execute('6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X', {
                         action: 'submit'
                     }).then(function(token) {
                         // Add your logic to submit to your backend server here.
-                        $('#appointment-form').prepend('<input type="hidden" name="token" value="' + token + '">');
+                        $('#appointment-form').prepend('<input type="hidden" name="g_recaptcha_response" value="' + token + '">');
                         $('#appointment-form').prepend('<input type="hidden" name="action" value="submit">');
-                        $('#appointment-form').submit();
+                        // Deshabilitar el botón y mostrar un mensaje de envío
+                        $(this).prop('disabled', true).html('Enviando... <i class="fas fa-spinner fa-spin"></i>');
+                        // Enviar el formulario
+                        $('#appointment-form')[0].submit();
                     });
                 });
             });
@@ -128,7 +133,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
                     <div class="form-container">
-                        <form id="appointment-form" class="form-edit-add" action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="appointment-form" class="form-edit-add1" action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -264,7 +269,7 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="button" class="btn btn-primary w-100 btn-submit1 g-recaptcha" id="btn-submit" data-sitekey="6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X" data-callback='onSubmit' data-action='submit'>Solicitar Cita</button>
+                            <button type="button" class="btn btn-primary w-100 btn-submit1" id="btn-submit" >Solicitar Cita</button>
                         </form>
                     </div>
                 </div>
@@ -392,7 +397,6 @@
 
     
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
