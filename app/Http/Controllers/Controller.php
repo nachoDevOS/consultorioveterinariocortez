@@ -53,5 +53,46 @@ class Controller extends BaseController
         return $cashier;
     }
 
+    public function cashierMoney($id, $user, $status)
+    {
+        $cashier = $this->cashier($id, $user, $status);
+
+
+        if($cashier){
+            $cashierIn = $cashier->movements->where('type', 'Ingreso')->where('deleted_at', NULL)->where('status', 'Aceptado')->sum('amount');
+
+            $paymentEfectivo = $cashier->sales->where('deleted_at', null)
+                ->flatMap(function($sale) {
+                    return $sale->saleTransactions->where('paymentType', 'Efectivo')->pluck('amount');
+                })                
+                ->sum();
+
+            $paymentQr = $cashier->sales->where('deleted_at', null)
+                ->flatMap(function($sale) {
+                    return $sale->saleTransactions->where('paymentType', 'Qr')->pluck('amount');
+                })
+                ->sum();
+
+            $cashierOut = $cashier->expenses->where('deleted_at', null)->sum('amount');
+
+            $amountCashier = ($cashierIn + $paymentEfectivo) - $cashierOut;
+        }
+
+        return response()->json([
+            'return' => $cashier?true:false,
+            'cashier' => $cashier?$cashier:null,
+            // // datos en valores
+            'paymentEfectivo' => $cashier?$paymentEfectivo:null,//Para obtener el total de dinero en efectivo recaudado en general
+            'paymentQr' => $cashier?$paymentQr:null, //Para obtener el total de dinero en QR recaudado en general
+            'amountCashier'=>$cashier?$amountCashier:null, //dinero disponible en caja para su uso 'solo dinero que hay en la caja disponible y cobro solo en efectivos'
+
+            // 'amountEgres' =>$cashier?$amountEgres:null, // dinero prestado de prenda y diario
+
+            'cashierOut'=>$cashier?$cashierOut:null, //Gastos Adicionales
+
+            'cashierIn'=>$cashier?$cashierIn:null// Dinero total abonado a las cajas
+        ]);
+    }
+
     
 }

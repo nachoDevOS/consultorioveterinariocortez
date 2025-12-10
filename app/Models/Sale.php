@@ -60,8 +60,8 @@ class Sale extends Model
         return $this->hasMany(SaleDetail::class, 'sale_id');
     }
 
-    // public function saleTransactions()
-    // {
-    //     return $this->hasMany(SaleTransaction::class, 'sale_id');
-    // }
+    public function saleTransactions()
+    {
+        return $this->hasMany(SaleTransaction::class, 'sale_id');
+    }
 }

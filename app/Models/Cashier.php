@@ -44,12 +44,16 @@ class Cashier extends Model
         return $this->belongsTo(User::class, 'user_id');//Para el cajero 
     }
 
-    // public function expenses(){
-    //     return $this->hasMany(Expense::class, 'cashier_id');
-    // }
+    public function expenses(){
+        return $this->hasMany(Expense::class, 'cashier_id');
+    }
 
     public function details(){
         return $this->hasMany(CashierDetail::class);
+    }
+
+    public function sales(){
+        return $this->hasMany(Sale::class, 'cashier_id')->withTrashed();
     }
 
     // public function salesTransactions(){

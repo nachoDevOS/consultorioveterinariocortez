@@ -1,27 +1,58 @@
 @extends('voyager::master')
 
 @section('page_header')
+
+    @php
+        $meses = [
+            '',
+            'Enero',
+            'Febrero',
+            'Marzo',
+            'Abril',
+            'Mayo',
+            'Junio',
+            'Julio',
+            'Agosto',
+            'Septiembre',
+            'Octubre',
+            'Noviembre',
+            'Diciembre',
+        ];
+    @endphp
+
     <div class="page-content container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
-                    <div class="panel-body">
+                    <div class="panel-body" style="overflow: visible;">
                         <div class="row">
                             <div class="col-md-8">
                                 <h2>Hola, {{ Auth::user()->name }}</h2>
-                                <p class="text-muted">Resumen de rendimiento - {{ now()->format('d F Y') }}</p>
+                                <p class="text-muted">Resumen de rendimiento -
+                                    {{ date('d') . ' de ' . $meses[intval(date('m'))] . ' ' . date('Y') }}</p>
                             </div>
                             <div class="col-md-4 text-right">
                                 <div class="btn-group">                              
                                     <div id="status" style="display: inline-block; margin-right: 10px;">
                                         <span>Obteniendo estado...</span>
                                     </div>
-                                    
-                                    {{-- <button type="button" class="btn btn-primary" id="refresh-dashboard">
-                                        <i class="voyager-refresh"></i> Actualizar
-                                    </button> --}}
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary" id="filter-button">
+                                        <i class="voyager-refresh"></i> Todo
+                                    </button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" id="filter-menu">
+                                        <li><a href="#" data-range="Todo">Todo</a></li>
+                                        <li><a href="#" data-range="Desayuno">Desayuno</a></li>
+                                        <li><a href="#" data-range="Almuerzo">Almuerzo</a></li>
+                                        <li><a href="#" data-range="Cena">Cena</a></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </div>
@@ -30,13 +61,66 @@
 @stop
 
 @section('content')
-    @php
-        $meses = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');       
-    @endphp
     
     <div class="page-content container-fluid">
         @include('voyager::alerts')
         @include('voyager::dimmers')
+
+        <!-- KPI Cards -->
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-bordered dashboard-kpi">
+                    <div class="panel-body">
+                        <div class="kpi-icon">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Ventas Total del Día</p>
+                            <h3 class="kpi-value">Bs. {{ number_format($global_index['amountDaytotal'], 2, ',', '.') }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-bordered dashboard-kpi">
+                    <div class="panel-body">
+                        <div class="kpi-icon">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Pedidos del Día</p>
+                            <h3 class="kpi-value">{{ $global_index['saleDaytotal'] }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-bordered dashboard-kpi">
+                    <div class="panel-body">
+                        <div class="kpi-icon">
+                            <i class="voyager-paw"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Mascotas</p>
+                            <h3 class="kpi-value">{{ $global_index['pet'] }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-bordered dashboard-kpi">
+                    <div class="panel-body">
+                        <div class="kpi-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Clientes</p>
+                            <h3 class="kpi-value">{{ $global_index['customer'] }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- KPI Cards -->
         {{-- <div class="row">
