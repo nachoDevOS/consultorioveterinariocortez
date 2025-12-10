@@ -102,7 +102,7 @@
                         </div>
                         <div class="kpi-content">
                             <p class="kpi-label">Mascotas</p>
-                            <h3 class="kpi-value">{{ $global_index['pet'] }}</h3>
+                            <h3 class="kpi-value">{{ $global_index['pet']}}</h3>
                         </div>
                     </div>
                 </div>
