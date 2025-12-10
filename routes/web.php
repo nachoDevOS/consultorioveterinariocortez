@@ -8,6 +8,7 @@ use App\Http\Controllers\AnamnesisFormController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\CashierController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ItemController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\RaceController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\WhatsappController;
 use App\Http\Controllers\WorkerController;
 use App\Models\Reminder;
@@ -47,6 +49,30 @@ Route::get('/info/{id?}', [ErrorController::class , 'error'])->name('errors');
 Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], function () {
     Voyager::routes();
 
+    Route::resource('cashiers', CashierController::class);
+    Route::get('cashiers/list/ajax', [CashierController::class, 'list'])->name('cashiers.list');
+    // Route::get('cashiers/{cashier}/amount', [CashierController::class, 'amount'])->name('cashiers.amount');//para abrir la vista de poder agregar dinero o aboinar mas dinero a la caja
+    // Route::post('cashiers/amount/store', [CashierController::class, 'amount_store'])->name('cashiers.amount.store');//para guardar el monto adicional de abonar dinero a la caja cuando este abierta
+    // Route::post('cashiers/amount/transfer/store', [CashierController::class, 'amountTransferStore'])->name('cashiers-amount-transfer.store');//para poder transferir dinero a otra caja de manera sensilla
+    // Route::delete('cashiers/{cashier_id}/amount/transfer/{transfer_id}/delete', [CashierController::class, 'cashierAmountTransferDetele'])->name('cashiers-amount-transfer.delete');//para poder eliminar la transferencia
+    // Route::get('cashiers/{cashier_id}/transfer/{transfer_id}/success', [CashierController::class, 'amountTransferSuccess'])->name('cashiers-transfer.success');//para poder aceptar la transferencia
+    // Route::get('cashiers/{cashier_id}/transfer/{transfer_id}/decline', [CashierController::class, 'amountTransferDecline'])->name('cashiers-transfer.decline');//para poder rechazar la transferencia
+    
+    // Route::post('cashiers/expense/store', [CashierController::class, 'expense_store'])->name('cashiers.expense.store'); // Agregar gasto
+    // Route::delete('cashiers/{cashier}/expense/{expense}/delete', [CashierController::class, 'cashierExpenseDelete'])->name('cashiers-expense.delete'); // Agregar gasto
+
+    Route::post('cashiers/{cashier}/change/status', [CashierController::class, 'change_status'])->name('cashiers.change.status');//*** Para que los cajeros Acepte o rechase el dinero dado por Boveda o gerente
+    Route::get('cashiers/{cashier}/close/', [CashierController::class, 'close'])->name('cashiers.close');//***para cerrar la caja el cajero vista 
+    Route::post('cashiers/{cashier}/close/store', [CashierController::class, 'close_store'])->name('cashiers.close.store'); //para que el cajerop cierre la caja 
+    Route::post('cashiers/{cashier}/close/revert', [CashierController::class, 'close_revert'])->name('cashiers.close.revert'); //para revertir el cajero para q su caja vuelva 
+    Route::get('cashiers/{cashier}/confirm_close', [CashierController::class, 'confirm_close'])->name('cashiers.confirm_close'); //Para confirmar el cierre de caja
+    Route::post('cashiers/{cashier}/confirm_close/store', [CashierController::class, 'confirm_close_store'])->name('cashiers.confirm_close.store');
+
+    Route::get('cashiers/print/open/{id?}', [CashierController::class, 'print_open'])->name('print.open');//para imprimir el comprobante cuando se abre una caja
+    Route::get('cashiers/print/close/{id?}', [CashierController::class, 'print_close'])->name('print.close');//Para imprimir cierre de caja
+    Route::get('cashiers/{id}/print', [CashierController::class, 'print'])->name('cashiers.print');//Para el cierre pendiente de caja por el cajero
+
+
     Route::get('appointments', [AppointmentController::class, 'index'])->name('voyager.appointments.index');
     Route::get('appointments/ajax/list', [AppointmentController::class, 'list']);
     Route::post('appointments', [AppointmentController::class, 'store'])->name('voyager.appointments.store');
@@ -55,6 +81,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::delete('appointments/{id}', [AppointmentController::class, 'destroy'])->name('voyager.appointments.destroy');
     Route::post('appointments/{id}/resend', [AppointmentController::class, 'resend'])->name('voyager.appointments.resend');
     Route::put('appointments/{id}/assign-worker', [AppointmentController::class, 'assignWorker'])->name('appointments.assign.worker');
+
+
+    Route::resource('sales', SaleController::class);
+    Route::get('sales/ajax/list', [SaleController::class, 'list']);
+    Route::get('sales/item/stock/ajax', [AjaxController::class, 'itemStockList']);//Para obtener los item que hay disponible en el inventario
+    Route::post('sales/{id}/payment', [SaleController::class, 'storePayment'])->name('sales-payment.store');
+    Route::delete('sales/{id}/payment/{payment}', [SaleController::class, 'destroyPayment'])->name('sales-payment.destroy');
+    Route::get('sales/{id}/payment/{payment}/prinf', [SaleController::class, 'prinfPayment'])->name('sales-payment.prinf');
+    Route::get('sales/{id}/prinf', [SaleController::class, 'prinf'])->name('sales.prinf');
 
 
     Route::get('people', [PersonController::class, 'index'])->name('voyager.people.index');
