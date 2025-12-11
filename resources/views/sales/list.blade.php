@@ -89,8 +89,8 @@
 
 
                     <td style="text-align: center; vertical-align: middle;">
-                        <i class="fa-solid fa-user"></i> <small>{{$item->register->name}}</small> <br>
-                        <b>{{date('d/m/Y h:m:s a', strtotime($item->dateSale))}}</b> <br>
+                        <i class="fa-solid fa-user"></i> <small>{{\Illuminate\Support\Str::words($item->register->name, 2, '')}}</small> <br>
+                        <b style="font-size: 12px">{{date('d/m/Y h:m:s a', strtotime($item->dateSale))}}</b> <br>
                         <small>{{\Carbon\Carbon::parse($item->dateSale)->diffForHumans()}}</small>
                     </td>
           
