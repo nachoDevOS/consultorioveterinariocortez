@@ -196,16 +196,28 @@ class SaleController extends Controller
                 ->with(['message' => 'Monto Incorrecto.', 'alert-type' => 'error']);
         }
 
+        $cashier = $this->cashier(null,'user_id = "'.Auth::user()->id.'"', 'status = "Abierta"');
+        if (!$cashier) {
+            return redirect()
+                ->route('sales.index')
+                ->with(['message' => 'Usted no cuenta con caja abierta.', 'alert-type' => 'warning']);
+        }
+        if($cashier->id != $sale->cashier_id){
+            return redirect()
+                ->route('sales.index')
+                ->with(['message' => 'No puede modificar ventas de otra caja.', 'alert-type' => 'warning']);
+        }
         DB::beginTransaction();
         try {
             // Devolver stock de detalles eliminados
             $existingDetailIds = collect($request->products)->pluck('detail_id')->filter();
-            $detailsToDelete = $sale->saleDetails()->whereNotIn('id', $existingDetailIds)->get();
+            $detailsToDelete = $sale->saleDetails()->whereIn('id', $existingDetailIds)->get();
+            
 
             foreach ($detailsToDelete as $detail) {
-                if ($sale->typeSale != 'Proforma') {
+                // if ($sale->typeSale != 'Proforma') {
                     $detail->itemStock()->increment('stock', $detail->quantity);
-                }
+                // }
                 $detail->delete();
             }
 
@@ -220,8 +232,8 @@ class SaleController extends Controller
 
             foreach ($request->products as $key => $value) {
                 $itemStock = ItemStock::findOrFail($value['id']);
-                $detail = $sale->saleDetails()->find($value['detail_id'] ?? 0);
-                $oldQuantity = $detail ? $detail->quantity : 0;
+                // $detail = $sale->saleDetails()->find($value['detail_id'] ?? 0);
+                // $oldQuantity = $detail ? $detail->quantity : 0;
 
                 $saleDetail = SaleDetail::updateOrCreate(
                     ['id' => $value['detail_id'] ?? 0, 'sale_id' => $sale->id],
@@ -235,8 +247,8 @@ class SaleController extends Controller
                 );
 
                 if ($sale->typeSale != 'Proforma') {
-                    $quantityDiff = $value['quantity'] - $oldQuantity;
-                    $itemStock->decrement('stock', $quantityDiff);
+                    // $quantityDiff = $value['quantity'] - $oldQuantity;
+                    $itemStock->decrement('stock', $value['quantity']);
                 }
             }
 
@@ -325,96 +337,6 @@ class SaleController extends Controller
 
 
 
-
-
-    public function prinfPayment($id, $payment)
-    {
-        $transaction = SaleTransaction::with(['transaction', 'sale.saleDetails'])
-            ->where('id', $payment)
-            ->where('deleted_at', null)
-            ->first();
-        // return $transaction;
-
-        return view('sales.prinf.transaction', compact('transaction'));
-    }
-
-    public function storePayment(Request $request, $id)
-    {
-        $this->custom_authorize('add_sales');
-        $user = Auth::user();
-        $sale = Sale::where('id', $id)->where('deleted_at', null)->first();
-
-        $cashier = Cashier::where('status', 'Abierta')->where('user_id', $user->id)->first();
-        if (!$cashier) {
-            return redirect()
-                ->route('sales.show', ['sale' => $id])
-                ->with(['message' => 'No cuenta con caja activa.', 'alert-type' => 'error']);
-        }
   
-        if ($sale->typeSale == 'Proforma') {
-            return redirect()
-                ->route('sales.show', ['sale' => $id])
-                ->with(['message' => 'Error.', 'alert-type' => 'error']);
-        }
-        $saleTransaction = SaleTransaction::where('sale_id', $sale->id)->where('deleted_at', null)->get();
-        $totalPayment = $saleTransaction->sum('amount');
-
-        $debt = $sale->amount - $totalPayment;
-
-        if (($request->amount_cash + $request->amount_qr) > $debt) {
-            return redirect()
-                ->route('sales.show', ['sale' => $id])
-                ->with(['message' => 'Error.', 'alert-type' => 'error']);
-        }
-
-        DB::beginTransaction();
-        try {
-            $transaction = Transaction::create([
-                    'type' => $request->payment_type,
-                    'status' => 'Completado',
-                ]);
-
-            
-            if($request->payment_type == 'Efectivo' && $request->amount_cash > 0)
-            {
-                SaleTransaction::create([
-                    'transaction_id' => $transaction->id,
-                    'sale_id' => $sale->id,
-                    'cashier_id' => $cashier->id,
-                    'branch_id' => $request->branch_id,
-                    'paymentType' => 'Efectivo',
-                    'amount' => $request->amount_cash,
-                    // 'observation' => $request->observation,
-                ]);
-            }
-            if($request->payment_type == 'Qr' && $request->amount_qr > 0)
-            {
-                SaleTransaction::create([
-                    'transaction_id' => $transaction->id,
-                    'sale_id' => $sale->id,
-                    'cashier_id' => $cashier->id,
-                    'branch_id' => $request->branch_id,
-                    'paymentType' => 'Qr',
-                    'amount' => $request->amount_qr,
-                    // 'observation' => $request->observation,
-                ]);
-            }
-
-                
-
-            if (($totalPayment + $request->amount_qr + $request->amount_cash) >= $sale->amount) {
-                $sale->update(['status' => 'Pagado']);
-            }
-            DB::commit();
-            return redirect()
-                ->route('sales.show', ['sale' => $id])
-                ->with(['message' => 'Registrado exitosamente.', 'alert-type' => 'success']);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return redirect()
-                ->route('sales.show', ['sale' => $id])
-                ->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
-        }
-    }
 
 }

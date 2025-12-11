@@ -88,9 +88,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::resource('sales', SaleController::class);
     Route::get('sales/ajax/list', [SaleController::class, 'list']);
     Route::get('sales/item/stock/ajax', [AjaxController::class, 'itemStockList']);//Para obtener los item que hay disponible en el inventario
-    Route::post('sales/{id}/payment', [SaleController::class, 'storePayment'])->name('sales-payment.store');
-    Route::delete('sales/{id}/payment/{payment}', [SaleController::class, 'destroyPayment'])->name('sales-payment.destroy');
-    Route::get('sales/{id}/payment/{payment}/prinf', [SaleController::class, 'prinfPayment'])->name('sales-payment.prinf');
+
+    // Route::delete('sales/{id}/payment/{payment}', [SaleController::class, 'destroyPayment'])->name('sales-payment.destroy');
+    // Route::get('sales/{id}/payment/{payment}/prinf', [SaleController::class, 'prinfPayment'])->name('sales-payment.prinf');
     Route::get('sales/{id}/prinf', [SaleController::class, 'prinf'])->name('sales.prinf');
 
 
