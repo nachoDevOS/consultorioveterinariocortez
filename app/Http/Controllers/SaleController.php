@@ -136,7 +136,7 @@ class SaleController extends Controller
                 'status' => $request->typeSale == 'Venta al Contado' ? 'Pagado' : (($amount_cash+$amount_qr) >= $request->amountTotalSale?'Pagado':'Pendiente'),
             ]);
 
-            if ($request->payment_type == 'Efectivo' || $request->payment_type == 'Ambos') {
+            if ($request->payment_type == 'Efectivo' || $request->payment_type == 'Efectivo y Qr') {
                 SaleTransaction::create([
                     'sale_id' => $sale->id,
                     'transaction_id' => $transaction->id,
@@ -144,7 +144,7 @@ class SaleController extends Controller
                     'paymentType' => 'Efectivo',
                 ]);
             }
-            if ($request->paymentType == 'Qr' || $request->paymentType == 'Ambos') {
+            if ($request->paymentType == 'Qr' || $request->paymentType == 'Efectivo y Qr') {
                 SaleTransaction::create([
                     'sale_id' => $sale->id,
                     'transaction_id' => $transaction->id,
@@ -186,6 +186,7 @@ class SaleController extends Controller
     public function update(Request $request, Sale $sale)
     {
         $this->custom_authorize('edit_sales');
+        return $request;
 
         $amount_cash = $request->amount_cash ? $request->amount_cash : 0;
         $amount_qr = $request->amount_qr ? $request->amount_qr : 0;
@@ -209,22 +210,31 @@ class SaleController extends Controller
         }
         DB::beginTransaction();
         try {
+            // Eliminar transacciones de pago antiguas
+            foreach ($sale->saleTransactions as $saleTransaction) {
+                if ($saleTransaction->transaction) {
+                    $saleTransaction->transaction->delete();
+                }
+                $saleTransaction->delete();
+            }
+
             // Devolver stock de detalles eliminados
             $existingDetailIds = collect($request->products)->pluck('detail_id')->filter();
-            $detailsToDelete = $sale->saleDetails()->whereIn('id', $existingDetailIds)->get();
+            $detailsToDelete = $sale->saleDetails()->whereNotIn('id', $existingDetailIds)->get();
             
-
+            return $detailsToDelete;
             foreach ($detailsToDelete as $detail) {
-                // if ($sale->typeSale != 'Proforma') {
+                if ($sale->typeSale != 'Proforma') {
                     $detail->itemStock()->increment('stock', $detail->quantity);
-                // }
+                }
                 $detail->delete();
             }
 
             $sale->update([
                 'person_id' => $request->person_id,
                 'amountReceived' => $request->amountReceived,
-                'amountChange' => $request->payment_type == 'Efectivo' ? $request->amountReceived - $request->amountTotalSale : 0,
+                'amountChange' => $request->payment_type == 'Efectivo' ? $request->amountReceived - $request->amountTotalSale : 0, // Ajustar si es necesario
+
                 'amount' => $request->amountTotalSale,
                 'observation' => $request->observation,
                 'status' => $request->typeSale == 'Venta al Contado' ? 'Pagado' : (($amount_cash + $amount_qr) >= $request->amountTotalSale ? 'Pagado' : 'Pendiente'),
@@ -232,8 +242,6 @@ class SaleController extends Controller
 
             foreach ($request->products as $key => $value) {
                 $itemStock = ItemStock::findOrFail($value['id']);
-                // $detail = $sale->saleDetails()->find($value['detail_id'] ?? 0);
-                // $oldQuantity = $detail ? $detail->quantity : 0;
 
                 $saleDetail = SaleDetail::updateOrCreate(
                     ['id' => $value['detail_id'] ?? 0, 'sale_id' => $sale->id],
@@ -247,9 +255,30 @@ class SaleController extends Controller
                 );
 
                 if ($sale->typeSale != 'Proforma') {
-                    // $quantityDiff = $value['quantity'] - $oldQuantity;
                     $itemStock->decrement('stock', $value['quantity']);
                 }
+            }
+
+            // Crear nuevas transacciones de pago
+            $transaction = Transaction::create([
+                'status' => 'Completado',
+            ]);
+
+            if ($request->payment_type == 'Efectivo' || $request->payment_type == 'Efectivo y Qr') {
+                SaleTransaction::create([
+                    'sale_id' => $sale->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $request->amountTotalSale - $amount_qr,
+                    'paymentType' => 'Efectivo',
+                ]);
+            }
+            if ($request->payment_type == 'Qr' || $request->payment_type == 'Efectivo y Qr') {
+                SaleTransaction::create([
+                    'sale_id' => $sale->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $amount_qr,
+                    'paymentType' => 'Qr',
+                ]);
             }
 
             DB::commit();
