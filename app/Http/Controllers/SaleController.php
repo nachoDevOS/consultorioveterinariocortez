@@ -72,11 +72,8 @@ class SaleController extends Controller
         // $branches = Branch::where('deleted_at', null)->get();
 
         $user = Auth::user();
-        $branches = Branch::where('deleted_at', null)
-            ->whereRaw($user->branch_id? "id = $user->branch_id" : 1)
-            ->get();
         $this->custom_authorize('add_sales');
-        return view('sales.edit-add', compact('branches'));
+        return view('sales.edit-add');
     }
 
     public function generarNumeroFactura($typeSale)

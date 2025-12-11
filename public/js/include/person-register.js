@@ -9,7 +9,7 @@ $(document).ready(function(){
         // $.post($(this).attr('action'), $(this).serialize(), function(data){
         $.post(form.attr('action'), $(this).serialize(), function(data){
             if(data.person.id){
-                toastr.success('Usuario creado', 'Éxito');
+                toastr.success('Persona registrada', 'Éxito');
                 // $(this).trigger('reset');
                 form[0].reset();
             }else{
