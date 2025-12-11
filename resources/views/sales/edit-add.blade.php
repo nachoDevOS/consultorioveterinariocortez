@@ -516,21 +516,21 @@
 
             // Logic for 'Venta al Contado' with 'Efectivo y Qr'
             if (typeSale === 'Venta al Contado' && paymentType === 'Efectivo y Qr') {
-                let activeInput = $(document.activeElement);
-                let otherInput;
-                if (activeInput.is('#amount_cash')) {
-                    otherInput = $('#amount_qr');
-                } else if (activeInput.is('#amount_qr')) {
-                    otherInput = $('#amount_cash');
-                }
+                if ($(document.activeElement).is('#amount_cash') || $(document.activeElement).is('#amount_qr')) {
+                    let activeInput = $(document.activeElement);
+                    let otherInput;
+                    if (activeInput.is('#amount_cash')) {
+                        otherInput = $('#amount_qr');
+                    } else if (activeInput.is('#amount_qr')) {
+                        otherInput = $('#amount_cash');
+                    }
 
-                let currentVal = parseFloat(activeInput.val()) || 0;
-                if (currentVal > total) {
-                    currentVal = total;
-                    activeInput.val(currentVal.toFixed(2));
-                }
+                    let currentVal = parseFloat(activeInput.val()) || 0;
+                    if (currentVal > total) {
+                        currentVal = total;
+                        activeInput.val(currentVal.toFixed(2));
+                    }
 
-                if (otherInput && (cash + qr > total)) {
                     otherInput.val((total - currentVal).toFixed(2));
                 }
             }
@@ -578,11 +578,22 @@
             $('#change-message, #change-message-credito, #change-message-error, #change-message-error-credito').hide();
 
             if (typeSale === 'Venta al Contado') {
-                if (totalPaid >= total - EPSILON && total > 0) {
+                let paymentType = $('#select-payment_type').val();
+                if (paymentType === 'Efectivo y Qr') {
+                    if (Math.abs(totalPaid - total) < EPSILON && total > 0) {
+                        $('.btn-submit').prop('disabled', false);
+                        $('#change-message-error').hide();
+                    } else if (total > 0) {
+                        $('.btn-submit').prop('disabled', true);
+                        $('#change-message-error').show().find('small').text('La suma de Efectivo y Qr debe ser igual al total.');
+                    }
+                } else if (totalPaid >= total - EPSILON && total > 0) {
+                    $('.btn-submit').prop('disabled', false);
                     $('#change-message').show();
                     let change = totalPaid - total;
                     $('#change-amount').text(change > 0 ? change.toFixed(2) : '0.00');
                 } else if (total > 0) {
+                    $('.btn-submit').prop('disabled', true);
                     $('#change-message-error').show();
                 }
             } else if (typeSale === 'Venta al Credito') {
