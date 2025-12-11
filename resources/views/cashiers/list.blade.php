@@ -81,12 +81,12 @@
                                     })
                                     ->sum();
                                 $amountCashier = ($cashierIn + $paymentEfectivo) - $cashierOut;
-                            @endphp
+                            @endphp --}}
                             @if ($item->status=='Cerrada')
                                 <small>Monto de cierre:</small> <b>Bs. {{ number_format($item->amountClosed, 2, ',', '.') }}</b><br>
                                 <small>Monto faltante:</small> <b class="@if($item->amountMissing > 0) text-danger @endif">Bs. {{ number_format($item->amountMissing, 2, ',', '.') }}</b><br>
                                 <small>Monto Sobrante:</small> <b class="@if($item->amountLeftover > 0) text-success @endif">Bs. {{ number_format($item->amountLeftover, 2, ',', '.') }}</b><br>
-                            @endif --}}
+                            @endif
                         </td>
                         <td style="text-align: right; vertical-align: middle;">
                             <div class="btn-group" style="margin-right: 3px">
