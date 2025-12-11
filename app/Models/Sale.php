@@ -64,4 +64,5 @@ class Sale extends Model
     {
         return $this->hasMany(SaleTransaction::class, 'sale_id');
     }
+    
 }

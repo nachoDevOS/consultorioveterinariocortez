@@ -32,39 +32,31 @@ class SaleController extends Controller
 
         $search = request('search') ?? null;
         $paginate = request('paginate') ?? 10;
-        $typeSale = request('typeSale') ?? null;
+        // $status = request('status') ?? null;
+        // $typeSale = request('typeSale') ?? null;
 
         $data = Sale::with([
             'person',
             'register',
-            'branch',
             'saleDetails' => function ($q) {
                 $q->where('deleted_at', null);
             },
+            'saleDetails.itemStock.item',
             'saleTransactions' => function ($q) {
                 $q->where('deleted_at', null);
             },
         ])
-            ->withSum(
-                [
-                    'saleTransactions as amortization' => function ($query) {
-                        $query->where('deleted_at', null);
-                    },
-                ],
-                'amount',
-            )
             ->where(function ($query) use ($search) {
                 $query
                     ->OrWhereRaw($search ? "id = '$search'" : 1)
-                    ->OrWhereRaw($search ? "code like '%$search%'" : 1)
-                    ->OrWhereRaw($search ? "ticket like '%$search%'" : 1);
+                    ->OrWhereRaw($search ? "code like '%$search%'" : 1);
             })
             ->where('deleted_at', null)
-            ->whereRaw($typeSale ? "typeSale = '$typeSale'" : 1)
-            ->orderBy('status', 'DESC')
+            // ->whereRaw($typeSale ? "typeSale = '$typeSale'" : 1)
+            // ->whereRaw($status ? "status = '$status'" : 1)
             ->orderBy('id', 'DESC')
+            ->paginate($paginate);            
 
-            ->paginate($paginate);
         return view('sales.list', compact('data'));
     }
 
@@ -112,6 +104,9 @@ class SaleController extends Controller
         }
         DB::beginTransaction();
         try {
+            $transaction = Transaction::create([
+                'status' => 'Completado',
+            ]);
             $sale = Sale::create([
                 'person_id' => $request->person_id,
                 // 'branch_id' => $request->branch_id,
@@ -126,6 +121,23 @@ class SaleController extends Controller
                 'dateSale' => Carbon::now(),
                 'status' => $request->typeSale == 'Venta al Contado' ? 'Pagado' : (($amount_cash+$amount_qr) >= $request->amountTotalSale?'Pagado':'Pendiente'),
             ]);
+
+            if ($request->payment_type == 'Efectivo' || $request->payment_type == 'Ambos') {
+                SaleTransaction::create([
+                    'sale_id' => $sale->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $request->amountTotalSale - $amount_qr,
+                    'paymentType' => 'Efectivo',
+                ]);
+            }
+            if ($request->paymentType == 'Qr' || $request->paymentType == 'Ambos') {
+                SaleTransaction::create([
+                    'sale_id' => $sale->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $amount_qr,
+                    'paymentType' => 'Qr',
+                ]);
+            }
 
             foreach ($request->products as $key => $value) {
                 $itemStock = ItemStock::where('id', $value['id'])->first();

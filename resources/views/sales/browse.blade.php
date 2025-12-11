@@ -34,7 +34,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-sm-7">
+                            <div class="col-sm-9">
                                 <div class="dataTables_length" id="dataTable_length">
                                     <label>Mostrar <select id="select-paginate" class="form-control input-sm">
                                         <option value="10">10</option>
@@ -43,14 +43,6 @@
                                         <option value="100">100</option>
                                     </select> registros</label>
                                 </div>
-                            </div>
-                            <div class="col-sm-2" style="margin-bottom: 10px">
-                                <select id="typeSale" name="typeSale" class="form-control select2">
-                                    <option value="" selected>Todos</option>
-                                    <option value="Venta al Contado">Ventas al Contado</option>
-                                    <option value="Venta al Credito">Ventas al Credito</option>
-                                    <option value="Proforma">Proformas</option>
-                                </select>
                             </div>
                             <div class="col-sm-3" style="margin-bottom: 10px">
                                 <input type="text" id="input-search" placeholder="🔍 Buscar..." class="form-control">
