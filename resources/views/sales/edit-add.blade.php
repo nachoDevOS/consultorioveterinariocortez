@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Añadir Venta')
+@section('page_title', isset($sale) ? 'Editar Venta' : 'Añadir Venta')
 
 @section('page_header')
     <div class="container-fluid">
@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="fa-solid fa-cart-plus"></i> Añadir Venta
+                                <i class="fa-solid fa-cart-plus"></i> {{ isset($sale) ? 'Editar Venta' : 'Añadir Venta' }}
                             </h1>
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
@@ -27,8 +27,11 @@
 
 @section('content')
     <div class="page-content edit-add container-fluid">
-        <form class="form-edit-add" action="{{ route('sales.store') }}" method="post">
+        <form class="form-edit-add" action="{{ isset($sale) ? route('sales.update', ['sale' => $sale->id]) : route('sales.store') }}" method="post">
             @csrf
+            @if (isset($sale))
+                @method('PUT')
+            @endif
             <div class="row">
                 @if (setting('ventas.cashier_required') && !$cashier)
                     <div class="col-md-12" style="margin-bottom: 5px">
@@ -68,7 +71,36 @@
                                             </tr>
                                         </thead>
                                         <tbody id="table-body">
-                                            <tr id="tr-empty">
+                                            @if(isset($sale))
+                                                @foreach ($sale->saleDetails as $item)
+                                                    <tr class="tr-item" id="tr-item-{{$item->itemStock->id}}">
+                                                        <td class="td-item"></td>
+                                                        <td>
+                                                            <input type="hidden" name="products[{{$item->itemStock->id}}][id]" value="{{$item->itemStock->id}}"/>
+                                                            <input type="hidden" name="products[{{$item->itemStock->id}}][detail_id]" value="{{$item->id}}"/>
+                                                            <div style="display: flex; align-items: center;">
+                                                                <div style="flex-grow: 1; line-height: 1.5;">
+                                                                    <div style="font-size: 15px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                                                        <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> {!! $item->itemStock->item->nameGeneric !!} {!! $item->itemStock->item->nameTrade ? '<span style="color: #444; font-weight: normal;">| '.$item->itemStock->item->nameTrade.'</span>' : '' !!}
+                                                                    </div>
+                                                                    <div style="font-size: 12px; color: #555;">
+                                                                        {!! $item->itemStock->item->observation ? '<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">'.$item->itemStock->item->observation.'</span></div>' : '' !!}
+                                                                        <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> {{$item->itemStock->item->category->name}} | {{$item->itemStock->item->presentation->name}}</div>
+                                                                        <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> {{$item->itemStock->item->laboratory ? $item->itemStock->item->laboratory->name : 'SN'}}</div>
+                                                                        <div><i class="fa-solid fa-copyright" style="color: #9b59b6; width: 14px; text-align: center;"></i> <strong style="color: #444;">Marca:</strong> {{$item->itemStock->item->brand ? $item->itemStock->item->brand->name : 'SN'}}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td style="vertical-align: middle; text-align: center"><b class="text-success">{{$item->itemStock->stock + $item->quantity}}</b></td>
+                                                        <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$item->itemStock->id}}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-{{$item->itemStock->id}}" value="{{$item->price}}" onkeyup="getSubtotal({{$item->itemStock->id}})" onchange="getSubtotal({{$item->itemStock->id}})" required/></td>
+                                                        <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$item->itemStock->id}}][quantity]" step="1" min="1" max="{{$item->itemStock->stock + $item->quantity}}" style="text-align: right" class="form-control" id="input-quantity-{{$item->itemStock->id}}" value="{{$item->quantity}}" onkeyup="getSubtotal({{$item->itemStock->id}})" onchange="getSubtotal({{$item->itemStock->id}})" required/></td>
+                                                        <td class="text-right" style="vertical-align: middle;"><b class="label-subtotal" id="label-subtotal-{{$item->itemStock->id}}" style="font-size: 1.2em;">0.00</b></td>
+                                                        <td style="width: 5%"><button type="button" onclick="removeTr({{$item->itemStock->id}})" class="btn btn-link"><i class="voyager-trash text-danger"></i></button></td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                            <tr id="tr-empty" @if(isset($sale) && count($sale->saleDetails) > 0) style="display: none" @endif>
                                                 <td colspan="7" style="height: 320px">
                                                     <h4 class="text-center text-muted" style="margin-top: 50px">
                                                         <i class="glyphicon glyphicon-shopping-cart"
@@ -82,7 +114,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-12">
-                                <textarea name="observation" class="form-control" rows="2" placeholder="Observaciones"></textarea>
+                                <textarea name="observation" class="form-control" rows="2" placeholder="Observaciones">{{ isset($sale) ? $sale->observation : '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -94,7 +126,7 @@
                                 <div class="form-group col-md-12">
                                     <label for="person_id">Cliente</label>
                                     <div class="input-group">
-                                        <select name="person_id" id="select-person_id" class="form-control"></select>
+                                        <select name="person_id" id="select-person_id" class="form-control" @if(isset($sale) && $sale->person_id) data-id="{{$sale->person_id}}" data-text="{{$sale->person->first_name}} {{$sale->person->paternal_surname}}" @endif></select>
                                         <span class="input-group-btn">
                                             <button id="trash-person" class="btn btn-default" title="Quitar Cliente"
                                                 style="margin: 0px" type="button">
@@ -110,25 +142,25 @@
                                 </div>
                             @endif
 
-                            <input type="hidden" name="typeSale" id="typeSale" value="Venta al Contado">
+                            <input type="hidden" name="typeSale" id="typeSale" value="{{ isset($sale) ? $sale->typeSale : 'Venta al Contado' }}">
                             <div class="form-group col-md-12">
                                 <label for="payment_type">Método de pago</label>
                                 <select name="payment_type" id="select-payment_type" class="form-control" required>
                                     <option value="" disabled selected>--Seleccione una opción--</option>
-                                    <option value="Efectivo">Efectivo</option>
-                                    <option value="Qr">Qr/Transferencia</option>
-                                    <option value="Efectivo y Qr">Efectivo y Qr</option>
+                                    <option value="Efectivo" @if(isset($sale) && $sale->payment_type == 'Efectivo') selected @endif>Efectivo</option>
+                                    <option value="Qr" @if(isset($sale) && $sale->payment_type == 'Qr') selected @endif>Qr/Transferencia</option>                                    
+                                    <option value="Efectivo y Qr" @if(isset($sale) && ($sale->payment_type == 'Efectivo y Qr' || $sale->payment_type == 'Ambos')) selected @endif>Efectivo y Qr</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="amount_cash">Monto en Efectivo</label>
                                 <input type="number" name="amount_cash" id="amount_cash" class="form-control"
-                                    value="0" step="0.01" style="text-align: right" placeholder="0.00">
+                                    value="{{ isset($sale) ? $sale->amount_cash : 0 }}" step="0.01" style="text-align: right" placeholder="0.00">
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="amount_qr">Monto en Qr/Transferencia</label>
                                 <input type="number" name="amount_qr" id="amount_qr" class="form-control"
-                                    value="0" step="0.01" style="text-align: right" placeholder="0.00">
+                                    value="{{ isset($sale) ? $sale->amount_qr : 0 }}" step="0.01" style="text-align: right" placeholder="0.00">
                             </div>
                             <div class="form-group col-md-12">
                                 <input type="hidden" name="amountReceived" id="amountReceived" value="0">
@@ -151,7 +183,7 @@
                             </div>
                             <div class="form-group col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary btn-block btn-submit"
-                                    data-toggle="modal" data-target="#modal-confirm">Registrar <i
+                                    data-toggle="modal" data-target="#modal-confirm">{{ isset($sale) ? 'Actualizar' : 'Registrar' }} <i
                                         class="voyager-basket"></i></button>
                                 <a href="{{ route('sales.index') }}">Volver a la lista</a>
                             </div>
@@ -288,6 +320,7 @@
                                     <td class="td-item"></td>
                                     <td>
                                         <input type="hidden" name="products[${product.id}][id]" value="${product.id}"/>
+                                        <input type="hidden" name="products[${product.id}][detail_id]" value="0"/>
                                         <div style="display: flex; align-items: center;">
                                             <div style="flex-grow: 1; line-height: 1.5;">
                                                 <div style="font-size: 15px; font-weight: bold; color: #000; margin-bottom: 8px;">
@@ -345,6 +378,24 @@
             // Eventos que disparan la actualización de la lógica de pago
             $('#select-payment_type').on('change', updatePaymentLogic);
             $('#amount_cash, #amount_qr').on('keyup change', handleAmountInputs);
+
+            // Si estamos editando, inicializamos los valores
+            @if(isset($sale))
+                setNumber();
+                
+                // Calculamos el subtotal para cada producto existente al cargar la página
+                @foreach($sale->saleDetails as $item)
+                    getSubtotal({{$item->itemStock->id}});
+                @endforeach
+
+                let personId = $('#select-person_id').data('id');
+                if(personId){
+                    let personText = $('#select-person_id').data('text');
+                    var newOption = new Option(personText, personId, true, true);
+                    $('#select-person_id').append(newOption).trigger('change');
+                }
+            @endif
+
 
             // Inicializar la lógica de pago al cargar la página
             updatePaymentLogic();

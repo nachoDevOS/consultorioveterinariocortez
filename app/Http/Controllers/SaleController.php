@@ -63,12 +63,26 @@ class SaleController extends Controller
     public function create()
     {
         // $branches = Branch::where('deleted_at', null)->get();
-
+        $cashier = $this->cashier(null, 'user_id = "' . Auth::user()->id . '"', 'status = "Abierta"');
         $user = Auth::user();
         $this->custom_authorize('add_sales');
-        return view('sales.edit-add');
+        return view('sales.edit-add', compact('cashier'));
     }
 
+    public function edit(Sale $sale)
+    {
+        $this->custom_authorize('edit_sales');
+        $cashier = $this->cashier(null, 'user_id = "' . Auth::user()->id . '"', 'status = "Abierta"');
+        $sale->load([
+            'person',
+            'saleDetails.itemStock.item.category',
+            'saleDetails.itemStock.item.presentation',
+            'saleDetails.itemStock.item.laboratory',
+            'saleDetails.itemStock.item.brand'
+        ]);
+        return view('sales.edit-add', compact('sale', 'cashier'));
+    }
+    
     public function generarNumeroFactura($typeSale)
     {
         $prefix = $typeSale != 'Proforma' ? 'VTA-' : 'PRO-';
@@ -166,6 +180,71 @@ class SaleController extends Controller
             return redirect()
                 ->route('sales.index')
                 ->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function update(Request $request, Sale $sale)
+    {
+        $this->custom_authorize('edit_sales');
+
+        $amount_cash = $request->amount_cash ? $request->amount_cash : 0;
+        $amount_qr = $request->amount_qr ? $request->amount_qr : 0;
+
+        if (($amount_cash + $amount_qr) < $request->amountTotalSale) {
+            return redirect()
+                ->route('sales.edit', ['sale' => $sale->id])
+                ->with(['message' => 'Monto Incorrecto.', 'alert-type' => 'error']);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Devolver stock de detalles eliminados
+            $existingDetailIds = collect($request->products)->pluck('detail_id')->filter();
+            $detailsToDelete = $sale->saleDetails()->whereNotIn('id', $existingDetailIds)->get();
+
+            foreach ($detailsToDelete as $detail) {
+                if ($sale->typeSale != 'Proforma') {
+                    $detail->itemStock()->increment('stock', $detail->quantity);
+                }
+                $detail->delete();
+            }
+
+            $sale->update([
+                'person_id' => $request->person_id,
+                'amountReceived' => $request->amountReceived,
+                'amountChange' => $request->payment_type == 'Efectivo' ? $request->amountReceived - $request->amountTotalSale : 0,
+                'amount' => $request->amountTotalSale,
+                'observation' => $request->observation,
+                'status' => $request->typeSale == 'Venta al Contado' ? 'Pagado' : (($amount_cash + $amount_qr) >= $request->amountTotalSale ? 'Pagado' : 'Pendiente'),
+            ]);
+
+            foreach ($request->products as $key => $value) {
+                $itemStock = ItemStock::findOrFail($value['id']);
+                $detail = $sale->saleDetails()->find($value['detail_id'] ?? 0);
+                $oldQuantity = $detail ? $detail->quantity : 0;
+
+                $saleDetail = SaleDetail::updateOrCreate(
+                    ['id' => $value['detail_id'] ?? 0, 'sale_id' => $sale->id],
+                    [
+                        'itemStock_id' => $itemStock->id,
+                        'pricePurchase' => $itemStock->pricePurchase,
+                        'price' => $value['priceSale'],
+                        'quantity' => $value['quantity'],
+                        'amount' => $value['priceSale'] * $value['quantity'],
+                    ]
+                );
+
+                if ($sale->typeSale != 'Proforma') {
+                    $quantityDiff = $value['quantity'] - $oldQuantity;
+                    $itemStock->decrement('stock', $quantityDiff);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('sales.index')->with(['message' => 'Venta actualizada exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->route('sales.edit', ['sale' => $sale->id])->with(['message' => 'Ocurrió un error al actualizar: ' . $e->getMessage(), 'alert-type' => 'error']);
         }
     }
 
