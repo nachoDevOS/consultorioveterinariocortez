@@ -224,40 +224,29 @@ class SaleController extends Controller
         }
     }
 
+
     public function show($id)
     {
         $sale = Sale::with([
             'person',
             'register',
-            'branch',
+            'saleTransactions',
             'saleDetails' => function ($q) {
-                $q->where('deleted_at', null)
-                ->with(['itemStock.item.category']);
-
+                $q->where('deleted_at', null);
             },
-            'saleTransactions' => function ($q) {
-                $q->where('deleted_at', null)->orderBy('id', 'DESC');
+            'saleDetails.itemStock.item' => function ($q) {
+                $q->withTrashed();
             },
         ])
-            ->withSum(
-                [
-                    'saleTransactions as amortization' => function ($query) {
-                        $query->where('deleted_at', null);
-                    },
-                ],
-                'amount',
-            )
-            ->where('deleted_at', null)
             ->where('id', $id)
             ->first();
 
-        $user = Auth::user();
-        $branches = Branch::where('deleted_at', null)
-            ->whereRaw($user->branch_id? "id = $user->branch_id" : 1)
-            ->get();
-
-        return view('sales.read', compact('sale', 'branches'));
+        return view('sales.read', compact('sale'));
     }
+
+
+
+
 
     public function prinfPayment($id, $payment)
     {
