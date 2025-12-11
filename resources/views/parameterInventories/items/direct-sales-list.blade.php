@@ -16,8 +16,8 @@
             <tbody>
                 @forelse ($sales as $saleDetail)
                 <tr>
-                    <td style="text-align: center">{{ $saleDetail->id }}</td>
-                    {{-- <td>
+                    <td style="text-align: center">{{ $saleDetail->sale->id }}</td>
+                    <td>
                         @if ($saleDetail->sale->person)
                             {{ strtoupper($saleDetail->sale->person->first_name) }} {{ strtoupper($saleDetail->sale->person->paternal_surname) }}
                         @else
@@ -38,7 +38,7 @@
                         @else
                             <span class="text-muted">N/A</span>
                         @endif
-                    </td> --}}
+                    </td>
                 </tr>
                 @empty
                     <tr>

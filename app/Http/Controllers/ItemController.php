@@ -215,6 +215,9 @@ class ItemController extends Controller
                 'itemStock.item',
                 'sale.register'
             ])
+            ->whereHas('sale', function ($query) {
+                $query->where('deleted_at', null);
+            })
             ->whereIn('itemStock_id', $itemStockIds)
             ->orderBy('created_at', 'desc')
             ->paginate($paginate);
