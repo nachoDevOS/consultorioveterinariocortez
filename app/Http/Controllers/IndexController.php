@@ -133,8 +133,8 @@ class IndexController extends Controller
         $productSales = [];
 
         foreach ($allDetails as $detail) {
-            $itemId = $detail->itemSale->id;
-            $itemName = $detail->itemSale->name; // Ajusta según tu campo
+            $itemId = $detail->itemStock->id;
+            $itemName = $detail->itemStock->item->nameGeneric; // Ajusta según tu campo
             $quantity = $detail->quantity; // Ajusta según tu campo de cantidad
             
             if (!isset($productSales[$itemId])) {
