@@ -16,7 +16,11 @@
             <tbody>
                 @forelse ($sales as $saleDetail)
                 <tr>
-                    <td style="text-align: center">{{ $saleDetail->sale->id }}</td>
+                    <td style="text-align: center">
+                        <a href="{{ route('sales.show', ['sale' => $saleDetail->sale->id]) }}" target="_blank">
+                            {{ $saleDetail->sale->id }}
+                        </a>
+                    </td>
                     <td>
                         @if ($saleDetail->sale->person)
                             {{ strtoupper($saleDetail->sale->person->first_name) }} {{ strtoupper($saleDetail->sale->person->paternal_surname) }}
@@ -29,22 +33,18 @@
                     <td style="text-align: right">{{ number_format($saleDetail->price, 2, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($saleDetail->amount, 2, ',', '.') }}</td>
                     <td style="text-align: center">
-                        {{ \Carbon\Carbon::parse($saleDetail->sale->dateSale)->format('d/m/Y H:i') }}<br>
+                        {{ \Carbon\Carbon::parse($saleDetail->sale->dateSale)->isoFormat('DD/MM/Y HH:mm') }}<br>
                         <small>{{ \Carbon\Carbon::parse($saleDetail->sale->dateSale)->diffForHumans() }}</small>
                     </td>
                     <td>
-                        @if ($saleDetail->sale->register)
-                            {{ $saleDetail->sale->register->name }}
-                        @else
-                            <span class="text-muted">N/A</span>
-                        @endif
+                        {{ $saleDetail->sale->register->name ?? 'N/A' }}
                     </td>
                 </tr>
                 @empty
                     <tr>
                         <td colspan="8">
-                            <h5 class="text-center" style="margin-top: 50px; margin-bottom: 50px;">
-                                <i class="fa-solid fa-box-open" style="font-size: 30px;"></i>
+                            <h5 class="text-center" style="margin-top: 20px; margin-bottom: 20px;">
+                                <i class="fa-solid fa-box-open" style="font-size: 50px;"></i>
                                 <br><br>
                                 No hay ventas directas registradas para este producto.
                             </h5>

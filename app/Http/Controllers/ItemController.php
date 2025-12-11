@@ -206,19 +206,19 @@ class ItemController extends Controller
         $this->custom_authorize('read_items');
         $paginate = request('paginate') ?? 10;
 
-        // Obtenemos los IDs de los lotes (ItemStock) que pertenecen al producto actual
-        $itemStockIds = Item::findOrFail($id)->itemStocks()->pluck('id');
-
         // Buscamos en el historial de ventas (SaleDetail)
         $sales = SaleDetail::with([
                 'sale.person',
-                'itemStock.item',
+                'itemStock',
                 'sale.register'
             ])
             ->whereHas('sale', function ($query) {
                 $query->where('deleted_at', null);
             })
-            ->whereIn('itemStock_id', $itemStockIds)
+            // Filtramos directamente por el item_id a través de la relación con itemStock
+            ->whereHas('itemStock', function ($query) use ($id) {
+                $query->where('item_id', $id);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate($paginate);
 
