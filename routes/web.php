@@ -9,6 +9,7 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CashierController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ItemController;
@@ -72,6 +73,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
     Route::get('cashiers/print/close/{id?}', [CashierController::class, 'print_close'])->name('print.close');//Para imprimir cierre de caja
     Route::get('cashiers/{id}/print', [CashierController::class, 'print'])->name('cashiers.print');//Para el cierre pendiente de caja por el cajero
 
+    Route::resource('expeses', ExpenseController::class);
 
     Route::get('appointments', [AppointmentController::class, 'index'])->name('voyager.appointments.index');
     Route::get('appointments/ajax/list', [AppointmentController::class, 'list']);

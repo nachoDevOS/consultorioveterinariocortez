@@ -122,6 +122,289 @@
             </div>
         </div>
 
+        @if ($globalFuntion_cashier)
+            @if ($globalFuntion_cashier->status == 'Abierta' || $globalFuntion_cashier->status == 'Apertura Pendiente')
+
+                @if ($globalFuntion_cashier->status == 'Abierta')
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-bordered">
+                                <div class="panel-body">
+                              
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h2 id="h2"><i class="fa-solid fa-wallet"></i>
+                                                {{ $globalFuntion_cashier->title }}</h2>
+                                        </div>
+                                        @if ($globalFuntion_cashier->status == 'Abierta')
+                                            <div class="col-md-6 text-right">
+                                                <a href="#" data-toggle="modal" data-target="#modal-create-expense"
+                                                    title="Agregar Gastos" class="btn btn-success">Gastos <i
+                                                        class="fa-solid fa-money-bill-transfer"></i></a>
+                                                {{-- <a  href="#" data-toggle="modal" data-target="#modal_transfer_moneyCashier" title="Transferir Dinero" class="btn btn-success">Traspaso <i class="fa-solid fa-money-bill-transfer"></i></a> --}}
+
+                                                <a href="{{ route('cashiers.close', ['cashier' => $globalFuntion_cashier->id]) }}"
+                                                    class="btn btn-danger">Cerrar Caja <i class="voyager-lock"></i></a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6" style="margin-top: 50px">
+                                            <table width="100%" cellpadding="20">
+                                                <tr>
+                                                    <td><small>Dinero Asignado a Caja</small></td>
+                                                    <td class="text-right"><h4>{{ number_format($globalFuntion_cashierMoney['cashierIn'], 2, ',', '.') }} <small>Bs.</small></h4></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>Dinero disponible en Caja</small></td>
+                                                    <td class="text-right"><h4>{{ number_format($globalFuntion_cashierMoney['amountCashier'], 2, ',', '.') }} <small>Bs.</small></h4></td>
+                                                </tr>
+                                            </table>
+                                            <hr>
+                                            <table width="100%" cellpadding="20">
+                                                <tr>
+                                                    <td><small>Ventas Total de Caja</small></td>
+                                                    <td class="text-right"><h4>{{ number_format($globalFuntion_cashierMoney['paymentEfectivo']+$globalFuntion_cashierMoney['paymentQr'], 2, ',', '.') }} <small>Bs.</small></h4></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>Ventas "Efectivo"</small></td>
+                                                    <td class="text-right"><h4>{{ number_format($globalFuntion_cashierMoney['paymentEfectivo'], 2, ',', '.') }} <small>Bs.</small></h4></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>Ventas "Qr"</small></td>
+                                                    <td class="text-right"><h4>{{ number_format($globalFuntion_cashierMoney['paymentQr'], 2, ',', '.') }} <small>Bs.</small></h4></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>Gastos Realizados</small></td>
+                                                    <td class="text-right"><h4>{{ number_format($globalFuntion_cashierMoney['cashierOut'], 2, ',', '.') }} <small>Bs.</small></h4></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-3 col-md-offset-2" >
+                                            <canvas id="myChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @include('partials.modal-registerExpense')
+
+
+                @else
+                    <div class="row" id="rowCashierOpen">
+                        <div class="col-md-12">
+                            <div class="panel panel-bordered">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h2 id="h2"><i class="fa-solid fa-wallet"></i>
+                                                {{ $globalFuntion_cashier->title }}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6" style="margin-top: 50px">
+                                            <table class="table table-hover" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Corte</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Sub Total</th>
+                                                    </tr>
+                                                </thead>
+                                                @php
+                                                    $cash = [
+                                                        '200',
+                                                        '100',
+                                                        '50',
+                                                        '20',
+                                                        '10',
+                                                        '5',
+                                                        '2',
+                                                        '1',
+                                                        '0.5',
+                                                        '0.2',
+                                                        '0.1',
+                                                    ];
+                                                    $total = 0;
+                                                @endphp
+                                                <tbody>
+                                                    @foreach ($cash as $item)
+                                                        <tr>
+                                                            <td>
+                                                                <h4 style="margin: 0px"><img
+                                                                        src=" {{ url('images/cash/' . $item . '.jpg') }} "
+                                                                        alt="{{ $item }} Bs." width="70px">
+                                                                    {{ $item }} Bs. </h4>
+                                                            </td>
+                                                            <td>
+                                                                {{-- @php
+                                                                    $details = null;
+                                                                    if ($globalFuntion_cashier->vault_detail) {
+                                                                        $details = $globalFuntion_cashier->vault_detail->cash
+                                                                            ->where('cash_value', $item)
+                                                                            ->first();
+                                                                    }
+                                                                @endphp
+                                                                {{ $details ? $details->quantity : 0 }} --}}
+
+
+
+                                                                @php                                                    
+                                                                    // 1. Encontrar el detalle de cierre
+                                                                    $open_detail = $globalFuntion_cashier->details->where('type', 'Apertura')->first();
+                                                                    // 2. Encontrar el corte de billete específico dentro de los detalles del cierre
+                                                                    $cash_detail = $open_detail ? $open_detail->detailCashes->where('cash_value', $item)->first() : null;
+                                                                    $quantity = $cash_detail ? $cash_detail->quantity : 0;
+                                                                @endphp
+                                                                {{ $quantity }}
+                                                            </td>
+                                                            <td>
+                                                                {{ number_format($quantity * $item, 2, ',', '.') }}
+                                                                <input type="hidden" name="cash_value[]" value="{{ $item }}">
+                                                                <input type="hidden" name="quantity[]" value="{{ $quantity }}">
+                                                            </td>
+                                                            @php
+                                                                $total += $quantity * $item;
+                                                            @endphp
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <br>
+                                            <div class="alert alert-info">
+                                                <strong>Información:</strong>
+                                                <p>Si la cantidad de de cortes de billetes coincide con la cantidad
+                                                    entregada por parte del administrador(a) de vóbeda, acepta la apertura
+                                                    de caja, caso contrario puedes rechazar la apertura.</p>
+                                            </div>
+                                            <br>
+                                            <h2 id="h3" class="text-right">Total en caja: Bs.
+                                                {{ number_format($total, 2, ',', '.') }} </h2>
+                                            <br>
+                                            <div class="text-right">
+                                                <button type="button" data-toggle="modal"
+                                                    data-target="#refuse_cashier-modal" class="btn btn-danger">Rechazar 
+                                                    apertura <i class="voyager-x"></i></button>
+                                                <button type="button" data-toggle="modal" data-target="#open_cashier-modal"
+                                                    class="btn btn-success">Aceptar apertura <i
+                                                        class="voyager-key"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Aceptar apertura de caja --}}
+                    <form class="form-edit-add" action="{{ route('cashiers.change.status', ['cashier' => $globalFuntion_cashier->id]) }}"
+                        method="post">
+                        @csrf
+                        <input type="hidden" name="status" value="Abierta">
+                        <div class="modal fade" tabindex="-1" id="open_cashier-modal" role="dialog">
+                            <div class="modal-dialog modal-success">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span
+                                                aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title"><i class="fa-solid fa-wallet"></i> Aceptar apertura de caja
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-muted"></p>
+                                        <small>Esta a punto de aceptar que posee todos los cortes de billetes descritos en
+                                            la lista, ¿Desea continuar?</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success btn-submit">Si, aceptar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    {{-- Rechazar apertura de caja --}}
+                    <form class="form-edit-add" action="{{ route('cashiers.change.status', ['cashier' => $globalFuntion_cashier->id]) }}"
+                        method="post">
+                        @csrf
+                        <input type="hidden" name="status" value="Cerrada">
+                        <div class="modal modal-danger fade" tabindex="-1" id="refuse_cashier-modal" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title"><i class="fa-solid fa-wallet"></i> Rechazar apertura de
+                                            caja</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <small>Esta a punto de rechazar la apertura de caja, ¿Desea continuar?</small>
+                                        <p class="text-muted"></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-danger btn-submit">Si, rechazar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                @endif
+            @else
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-bordered">
+                            <div class="panel-body text-center">
+                                <h2>Tienes una caja esperando por confimación de cierre</h2>
+                                <a href="#" style="margin: 0px" data-toggle="modal"
+                                    data-target="#cashier-revert-modal" class="btn btn-success"><i
+                                        class="voyager-key"></i> Reabrir caja</a>
+                                <a href="{{ route('cashiers.print', $globalFuntion_cashier->id) }}" style="margin: 0px"
+                                    class="btn btn-danger" target="_blank"><i class="fa fa-print"></i> Imprimir</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form class="form-edit-add" action="{{ route('cashiers.close.revert', ['cashier' => $globalFuntion_cashier->id]) }}" method="post">
+                    @csrf
+                    <div class="modal fade" tabindex="-1" id="cashier-revert-modal" role="dialog">
+                        <div class="modal-dialog modal-success">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title"><i class="voyager-key"></i> Reabrir Caja</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="text-muted">Si reabre la caja deberá realizar el arqueo nuevamente, ¿Desea
+                                        continuar?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-success btn-submit">Si, reabrir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            @endif
+        @else
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered">
+                        <div class="panel-body">
+                            <h1 class="text-center">No tienes caja abierta</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- KPI Cards -->
         {{-- <div class="row">
             <div class="col-md-3">
