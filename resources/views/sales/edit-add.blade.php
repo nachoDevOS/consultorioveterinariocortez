@@ -110,16 +110,7 @@
                                 </div>
                             @endif
 
-                            <div class="form-group col-md-12">
-                                <label for="date">Tipo</label>
-                                <select class="form-control select2" name="typeSale" id="typeSale"
-                                    onchange="funtion_typeSale()" required>
-                                    <option value="" disabled selected>--Selecione una opción--</option>
-                                    <option value="Venta al Contado">Venta al Contado</option>
-                                    <option value="Venta al Credito">Venta al Credito</option>
-                                    <option value="Proforma">Proforma</option>
-                                </select>
-                            </div>
+                            <input type="hidden" name="typeSale" id="typeSale" value="Venta al Contado">
                             <div class="form-group col-md-12">
                                 <label for="payment_type">Método de pago</label>
                                 <select name="payment_type" id="select-payment_type" class="form-control" required>
@@ -352,7 +343,7 @@
             $('#change-message-credito, #change-message, #change-message-error, #change-message-error-credito').hide();
 
             // Eventos que disparan la actualización de la lógica de pago
-            $('#typeSale, #select-payment_type').on('change', updatePaymentLogic);
+            $('#select-payment_type').on('change', updatePaymentLogic);
             $('#amount_cash, #amount_qr').on('keyup change', handleAmountInputs);
 
             // Inicializar la lógica de pago al cargar la página
@@ -453,7 +444,7 @@
             $('#change-message-credito, #change-message, #change-message-error, #change-message-error-credito').hide();
 
             if (typeSale === 'Proforma') {
-                paymentSelect.prop('required', false);
+                // paymentSelect.prop('required', false);
             } 
             else if (typeSale === 'Venta al Contado') {
                 paymentSelect.prop('required', true).closest('.form-group').show();
