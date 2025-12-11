@@ -93,6 +93,8 @@ class SaleController extends Controller
     {
         $this->custom_authorize('add_sales');
 
+        return $request;
+
         $amount_cash = $request->amount_cash ? $request->amount_cash : 0;
         $amount_qr = $request->amount_qr ? $request->amount_qr : 0;
 

@@ -526,10 +526,12 @@
 
                 let currentVal = parseFloat(activeInput.val()) || 0;
                 if (currentVal > total) {
-                    activeInput.val(total.toFixed(2));
+                    currentVal = total;
+                    activeInput.val(currentVal.toFixed(2));
                 }
-                if (otherInput && (cash + qr > total + EPSILON)) {
-                    otherInput.val((total - activeInput.val()).toFixed(2));
+
+                if (otherInput && (cash + qr > total)) {
+                    otherInput.val((total - currentVal).toFixed(2));
                 }
             }
             
