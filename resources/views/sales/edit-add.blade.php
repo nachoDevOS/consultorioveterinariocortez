@@ -463,7 +463,7 @@
                         break;
                     case 'Efectivo y Qr':
                         $('#amount_cash').prop('readonly', false).val(0).attr('min', 0).attr('max', total.toFixed(2));
-                        $('#amount_qr').prop('readonly', true).val(total.toFixed(2)).attr('min', 0).attr('max', total.toFixed(2));
+                        $('#amount_qr').prop('readonly', false).val(0).attr('min', 0).attr('max', total.toFixed(2));
                         break;
                     default:
                         $('#amount_cash').prop('readonly', true).val(0);
@@ -516,13 +516,20 @@
 
             // Logic for 'Venta al Contado' with 'Efectivo y Qr'
             if (typeSale === 'Venta al Contado' && paymentType === 'Efectivo y Qr') {
-                if ($(document.activeElement).is('#amount_cash')) {
-                    if (cash > total) {
-                        $('#amount_qr').val(0);
-                    } else {
-                        let newQr = total - cash;
-                        $('#amount_qr').val(newQr.toFixed(2));
-                    }
+                let activeInput = $(document.activeElement);
+                let otherInput;
+                if (activeInput.is('#amount_cash')) {
+                    otherInput = $('#amount_qr');
+                } else if (activeInput.is('#amount_qr')) {
+                    otherInput = $('#amount_cash');
+                }
+
+                let currentVal = parseFloat(activeInput.val()) || 0;
+                if (currentVal > total) {
+                    activeInput.val(total.toFixed(2));
+                }
+                if (otherInput && (cash + qr > total + EPSILON)) {
+                    otherInput.val((total - activeInput.val()).toFixed(2));
                 }
             }
             
