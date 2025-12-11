@@ -364,7 +364,7 @@
         }
 
         function getSubtotal(id) {
-            let price = $(`#input-price-${id}`).val() ? parseFloat($(`#input-price-${id}`).val()) : 0;
+            let price = $(`#input-priceSale-${id}`).val() ? parseFloat($(`#input-priceSale-${id}`).val()) : 0;
             let quantity = $(`#input-quantity-${id}`).val() ? parseFloat($(`#input-quantity-${id}`).val()) : 0;
             let stock = parseFloat($(`#input-quantity-${id}`).attr('max')) || 0;
             if (quantity > stock) {
@@ -372,7 +372,6 @@
                 quantity = stock;
             }
             $(`#label-subtotal-${id}`).text((price * quantity).toFixed(2));
-            $(`#subTotal-${id}`).val((price * quantity).toFixed(2));
             getTotal();
         }
 
