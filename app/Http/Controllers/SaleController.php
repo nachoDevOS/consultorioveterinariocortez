@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ItemStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -93,44 +94,16 @@ class SaleController extends Controller
     {
         $this->custom_authorize('add_sales');
 
-        return $request;
-
         $amount_cash = $request->amount_cash ? $request->amount_cash : 0;
         $amount_qr = $request->amount_qr ? $request->amount_qr : 0;
 
-        if($request->typeSale == 'Venta al Contado' && ($amount_cash + $amount_qr) < $request->amountTotalSale)
+        if(($amount_cash + $amount_qr) < $request->amountTotalSale)
         {
             return redirect()
                 ->route('sales.create')
                 ->with(['message' => 'Monto Incorrecto.', 'alert-type' => 'error']);
         }
 
-        if($request->typeSale == 'Venta al Credito' && ($amount_cash + $amount_qr) > $request->amountTotalSale)
-        {
-            return redirect()
-                ->route('sales.create')
-                ->with(['message' => 'Monto Incorrecto.', 'alert-type' => 'error']);
-        }
-
-        // $user = Auth::user();
-        if ($request->typeSale != 'Proforma') {
-            foreach ($request->products as $key => $value) {
-                $item = ItemStock::where('deleted_at', null)->where('status', 1)->where('id', $key)// ->where('id', $value['id'])
-                ->first();
-                // return $value['quantity'];
-
-                if ($value['quantity'] > $item->stock) {
-                    return redirect()
-                        ->route('sales.create')
-                        ->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
-                }
-            }
-        }
-        if (!$request->branch_id) {
-                return redirect()
-                    ->route('sales.create')
-                    ->with(['message' => 'No se encuentra en una sucursal.', 'alert-type' => 'error']);
-        }
         $cashier = $this->cashier(null,'user_id = "'.Auth::user()->id.'"', 'status = "Abierta"');
         if (!$cashier) {
             return redirect()
@@ -141,65 +114,33 @@ class SaleController extends Controller
         try {
             $sale = Sale::create([
                 'person_id' => $request->person_id,
-                'branch_id' => $request->branch_id,
+                // 'branch_id' => $request->branch_id,
                 'cashier_id' => $cashier->id,
 
                 'code' => $this->generarNumeroFactura($request->typeSale),
                 'typeSale' => $request->typeSale,
-                'amountReceived' => $request->typeSale != 'Proforma' ? $request->amountReceived : null,
+                'amountReceived' => $request->amountReceived,
+                'amountChange' => $request->payment_type == 'Efectivo'? $request->amountReceived-$request->amountTotalSale : 0,
                 'amount' => $request->amountTotalSale,
                 'observation' => $request->observation,
                 'dateSale' => Carbon::now(),
                 'status' => $request->typeSale == 'Venta al Contado' ? 'Pagado' : (($amount_cash+$amount_qr) >= $request->amountTotalSale?'Pagado':'Pendiente'),
             ]);
-            if ($request->typeSale != 'Proforma') {
-                $transaction = Transaction::create([
-                    'type' => $request->payment_type,
-                    'status' => 'Completado',
-                ]);
 
-                // $cash = $request->amountPayment - $request->amountTotalSale;
-
-                if ($request->payment_type == 'Efectivo' || $request->payment_type == 'Efectivo y Qr') {
-                    SaleTransaction::create([
-                        'sale_id' => $sale->id,
-                        'branch_id' => $request->branch_id,
-
-                        'transaction_id' => $transaction->id,
-                        'cashier_id' => $cashier->id,
-                        'amount' => $request->typeSale == 'Venta al Contado' ? $request->amountTotalSale - $amount_qr:$amount_cash,
-                        'paymentType' => 'Efectivo',
-                    ]);
-                }
-                if ($request->payment_type == 'Qr' || $request->payment_type == 'Efectivo y Qr') {
-                    SaleTransaction::create([
-                        'sale_id' => $sale->id,
-                        'branch_id' => $request->branch_id,
-                        'transaction_id' => $transaction->id,
-                        'cashier_id' => $cashier->id,
-                        'amount' =>  $amount_qr,
-                        'paymentType' => 'Qr',
-                    ]);
-                }
-            }
             foreach ($request->products as $key => $value) {
                 $itemStock = ItemStock::where('id', $value['id'])->first();
 
-                $saleDetail = SaleDetail::create([
+                SaleDetail::create([
                     'sale_id' => $sale->id,
                     'itemStock_id' => $itemStock->id,
-                    'price' => $value['price'],
+                    'pricePurchase' => $itemStock->pricePurchase,
+                    'price' => $value['priceSale'],
                     'quantity' => $value['quantity'],
-                    'amount' => $value['subtotal'],
+                    'amount' => $value['priceSale'] * $value['quantity'],
                 ]);
 
                 if ($request->typeSale != 'Proforma') {
                     $itemStock->decrement('stock', $value['quantity']);
-                    // SaledetailItemstock::create([
-                    //     'saleDetail_id' => $saleDetail->id,
-                    //     'itemStock_id' => $item->id,
-                    //     'quantity' => $value['quantity'],
-                    // ]);
                 }
             }
 
@@ -395,4 +336,5 @@ class SaleController extends Controller
                 ->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
+
 }
