@@ -20,6 +20,14 @@ class Loggin
             return $response;
         }
 
+        if (Auth::check())
+        {
+            if (Auth::user()->id == 1)
+            {
+                return $response;
+            }
+        }
+
         // Crear una instancia del agente para analizar el User-Agent
         $agent = new Agent();
 
