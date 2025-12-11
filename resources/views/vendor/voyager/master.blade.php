@@ -438,6 +438,8 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
 <!-- Javascript Libs -->
 <script type="text/javascript" src="{{ voyager_asset('js/dataTable/dataTable.js') }}"></script>
 
+<script src="{{ asset('js/input-numberBlock.js') }}"></script>
+
 
 
 
