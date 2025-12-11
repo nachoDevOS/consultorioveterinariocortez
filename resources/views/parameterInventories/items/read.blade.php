@@ -152,6 +152,36 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h4>
+                                    <i class="fa-solid fa-cash-register"></i> Historial de Ventas Directas
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="dataTables_length" id="dataTable_length_direct_sales">
+                                    <label>Mostrar <select id="select-paginate-direct-sales" class="form-control input-sm">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select> registros</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="div-results-direct-sales" style="min-height: 120px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -226,9 +256,11 @@
 
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var countPageSales = 10;
+        var countPageDirectSales = 10;
         $(document).ready(() => {
             list();
             listSales();
+            listDirectSales();
 
             $('#status').change(function(){
                 list();
@@ -251,6 +283,11 @@
             $('#select-paginate-sales').change(function(){
                 countPageSales = $(this).val();               
                 listSales();
+            });
+
+            $('#select-paginate-direct-sales').change(function(){
+                countPageDirectSales = $(this).val();               
+                listDirectSales();
             });
         });
 
@@ -282,6 +319,20 @@
                 success: function(result){
                     $("#div-results-sales").html(result);
                     $('#div-results-sales').loading('toggle');
+                }
+            });
+        }
+
+        function listDirectSales(page = 1){
+            $('#div-results-direct-sales').loading({message: 'Cargando...'});
+            let url = '{{ url("admin/items/".$item->id."/direct-sales/ajax/list") }}';
+
+            $.ajax({
+                url: `${url}?paginate=${countPageDirectSales}&page=${page}&ajax=true`,
+                type: 'get',
+                success: function(result){
+                    $("#div-results-direct-sales").html(result);
+                    $('#div-results-direct-sales').loading('toggle');
                 }
             });
         }

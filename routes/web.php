@@ -159,6 +159,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], functi
 
     Route::get('item/stock/ajax', [AjaxController::class, 'itemStockList']);//
     Route::get('items/{id}/sales/ajax/list', [ItemController::class, 'listSales']);
+    Route::get('items/{id}/direct-sales/ajax/list', [ItemController::class, 'listDirectSales']);
 
     Route::post('items/{id}/stock', [ItemController::class, 'storeStock'])->name('items-stock.store');
     Route::delete('items/{id}/stock/{stock}', [ItemController::class, 'destroyStock'])->name('items-stock.destroy');

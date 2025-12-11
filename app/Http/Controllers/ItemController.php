@@ -8,6 +8,7 @@ use App\Models\ItemStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\SaleDetail;
 
 class ItemController extends Controller
 {
@@ -200,6 +201,26 @@ class ItemController extends Controller
         return view('parameterInventories.items.sales-list', compact('sales'));
     }
 
+    public function listDirectSales($id)
+    {
+        $this->custom_authorize('read_items');
+        $paginate = request('paginate') ?? 10;
+
+        // Obtenemos los IDs de los lotes (ItemStock) que pertenecen al producto actual
+        $itemStockIds = Item::findOrFail($id)->itemStocks()->pluck('id');
+
+        // Buscamos en el historial de ventas (SaleDetail)
+        $sales = SaleDetail::with([
+                'sale.person',
+                'itemStock.item',
+                'sale.register'
+            ])
+            ->whereIn('itemStock_id', $itemStockIds)
+            ->orderBy('created_at', 'desc')
+            ->paginate($paginate);
+
+        return view('parameterInventories.items.direct-sales-list', compact('sales'));
+    }
 
     public function storeStock(Request $request, $id)
     {
