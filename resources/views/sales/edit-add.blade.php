@@ -63,8 +63,7 @@
                                             <tr>
                                                 <th style="width: 5%">N&deg;</th>
                                                 <th style="">Detalles</th>
-                                                <th style="text-align: center; width:10%">Stock</th>
-                                                <th style="text-align: center; width:12%">Precio</th>
+                                                <th style="text-align: center; width:13%">Precio</th>
                                                 <th style="text-align: center; width:12%">Cantidad</th>
                                                 <th style="text-align: center; width:12%">Subtotal</th>
                                                 <th style="width: 5%"></th>
@@ -84,6 +83,7 @@
                                                                         <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> {!! $item->itemStock->item->nameGeneric !!} {!! $item->itemStock->item->nameTrade ? '<span style="color: #444; font-weight: normal;">| '.$item->itemStock->item->nameTrade.'</span>' : '' !!}
                                                                     </div>
                                                                     <div style="font-size: 12px; color: #555;">
+                                                                        <div><i class="fa-solid fa-boxes-stacked" style="color: #{{ $item->itemStock->stock + $item->quantity > 10 ? '27ae60' : ($item->itemStock->stock + $item->quantity > 0 ? 'f39c12' : 'c0392b') }}; width: 14px; text-align: center;"></i> <strong style="color: #444;">Stock:</strong> <b class="text-{{ $item->itemStock->stock + $item->quantity > 10 ? 'success' : ($item->itemStock->stock + $item->quantity > 0 ? 'warning' : 'danger') }}">{{$item->itemStock->stock + $item->quantity}}</b></div>
                                                                         {!! $item->itemStock->item->observation ? '<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">'.$item->itemStock->item->observation.'</span></div>' : '' !!}
                                                                         <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> {{$item->itemStock->item->category->name}} | {{$item->itemStock->item->presentation->name}}</div>
                                                                         <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> {{$item->itemStock->item->laboratory ? $item->itemStock->item->laboratory->name : 'SN'}}</div>
@@ -92,7 +92,6 @@
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td style="vertical-align: middle; text-align: center"><b class="text-success">{{$item->itemStock->stock + $item->quantity}}</b></td>
                                                         <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$item->itemStock->id}}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-{{$item->itemStock->id}}" value="{{$item->price}}" onkeyup="getSubtotal({{$item->itemStock->id}})" onchange="getSubtotal({{$item->itemStock->id}})" required/></td>
                                                         <td style="vertical-align: middle; padding: 5px;"><input type="number" name="products[{{$item->itemStock->id}}][quantity]" step="1" min="1" max="{{$item->itemStock->stock + $item->quantity}}" style="text-align: right" class="form-control" id="input-quantity-{{$item->itemStock->id}}" value="{{$item->quantity}}" onkeyup="getSubtotal({{$item->itemStock->id}})" onchange="getSubtotal({{$item->itemStock->id}})" required/></td>
                                                         <td class="text-right" style="vertical-align: middle;"><b class="label-subtotal" id="label-subtotal-{{$item->itemStock->id}}" style="font-size: 1.2em;">0.00</b></td>
@@ -101,7 +100,7 @@
                                                 @endforeach
                                             @endif
                                             <tr id="tr-empty" @if(isset($sale) && count($sale->saleDetails) > 0) style="display: none" @endif>
-                                                <td colspan="7" style="height: 320px">
+                                                <td colspan="6" style="height: 320px">
                                                     <h4 class="text-center text-muted" style="margin-top: 50px">
                                                         <i class="glyphicon glyphicon-shopping-cart"
                                                             style="font-size: 50px"></i> <br><br>
@@ -327,6 +326,7 @@
                                                     <i class="fa-solid fa-pills" style="color: #22A7F0;"></i> ${product.item.nameGeneric} ${product.item.nameTrade ? `<span style="color: #444; font-weight: normal;">| ${product.item.nameTrade}</span>` : ''}
                                                 </div>
                                                 <div style="font-size: 12px; color: #555;">
+                                                    <div><i class="fa-solid fa-boxes-stacked" style="color: #${product.stock > 10 ? '27ae60' : (product.stock > 0 ? 'f39c12' : 'c0392b')}; width: 14px; text-align: center;"></i> <strong style="color: #444;">Stock:</strong> <b class="text-${product.stock > 10 ? 'success' : (product.stock > 0 ? 'warning' : 'danger')}">${product.stock}</b></div>
                                                     ${product.item.observation ? `<div style="font-size: 14px; margin-top: 5px;"><i class="fa-solid fa-clipboard-list" style="color: #f39c12; width: 14px; text-align: center;"></i> <strong style="color: #222;">Detalle:</strong> <span style="font-weight: bold; color: #222;">${product.item.observation}</span></div>` : ''}
                                                     <div style="margin-top: 5px;"><i class="fa-solid fa-tags" style="color: #2ecc71; width: 14px; text-align: center;"></i> <strong style="color: #444;">Categoría:</strong> ${product.item.category.name} | ${product.item.presentation.name}</div>
                                                     <div><i class="fa-solid fa-flask" style="color: #3498db; width: 14px; text-align: center;"></i> <strong style="color: #444;">Laboratorio:</strong> ${product.item.laboratory ? product.item.laboratory.name : 'SN'}</div>
@@ -334,9 +334,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td style="vertical-align: middle; text-align: center">
-                                        <b class="text-${product.stock > 10 ? 'success' : (product.stock > 0 ? 'warning' : 'danger')}">${product.stock}</b>
                                     </td>
                                     <td style="vertical-align: middle; padding: 5px;">
                                         <input type="number" name="products[${product.id}][priceSale]" step="0.01" min="0.1" style="text-align: right" class="form-control" id="input-priceSale-${product.id}" value="${product.priceSale || 0}" onkeyup="getSubtotal(${product.id})" onchange="getSubtotal(${product.id})" required/>

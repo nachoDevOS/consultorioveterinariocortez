@@ -186,7 +186,6 @@ class SaleController extends Controller
     public function update(Request $request, Sale $sale)
     {
         $this->custom_authorize('edit_sales');
-        return $request;
 
         $amount_cash = $request->amount_cash ? $request->amount_cash : 0;
         $amount_qr = $request->amount_qr ? $request->amount_qr : 0;
@@ -219,10 +218,11 @@ class SaleController extends Controller
             }
 
             // Devolver stock de detalles eliminados
-            $existingDetailIds = collect($request->products)->pluck('detail_id')->filter();
-            $detailsToDelete = $sale->saleDetails()->whereNotIn('id', $existingDetailIds)->get();
+            // Asegurarse de que los IDs son enteros para que whereNotIn funcione correctamente
+            $existingDetailIds = collect($request->products)->pluck('detail_id')->filter()->map(fn($id) => (int)$id)->all();
+            $detailsToDelete = $sale->saleDetails()->whereIn('id', $existingDetailIds)->get();
+
             
-            return $detailsToDelete;
             foreach ($detailsToDelete as $detail) {
                 if ($sale->typeSale != 'Proforma') {
                     $detail->itemStock()->increment('stock', $detail->quantity);
@@ -315,21 +315,30 @@ class SaleController extends Controller
     public function destroy($id)
     {
         $sale = Sale::with([
-            'saleDetails' => function ($q) {
-                $q->where('deleted_at', null)->with(['saledetailItemstock']);
-            },
-        ])
+                'saleDetails' => function ($q) {
+                    $q->where('deleted_at', null);
+                },
+            ])
             ->where('id', $id)
             ->first();
 
+        $cashier = $this->cashier(null,'user_id = "'.Auth::user()->id.'"', 'status = "Abierta"');
+        if (!$cashier) {
+            return redirect()
+                ->route('sales.index')
+                ->with(['message' => 'Usted no cuenta con caja abierta.', 'alert-type' => 'warning']);
+        }
+        if($cashier->id != $sale->cashier_id){
+            return redirect()
+                ->route('sales.index')
+                ->with(['message' => 'No puede modificar ventas de otra caja.', 'alert-type' => 'warning']);
+        }
+
         DB::beginTransaction();
         try {
-            foreach ($sale->saleDetails as $detail) {
-                foreach ($detail->saledetailItemstock as $item) {
-                    $itemStock = ItemStock::where('id', $item->itemStock_id)->first();
-                    $itemStock->increment('stock', $item->quantity);
-                    $itemStock->delete();
-                }
+            foreach ($sale->saleDetails as $item) {
+                $itemStock = ItemStock::where('id', $item->itemStock_id)->first();
+                $itemStock->increment('stock', $item->quantity);
             }
             $sale->delete();
             DB::commit();

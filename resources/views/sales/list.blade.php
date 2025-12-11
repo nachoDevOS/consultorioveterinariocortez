@@ -37,12 +37,12 @@
                             Sin Datos 
                         @endif                        
                     </td>
-                    <td style="text-align: right; vertical-align: middle;">
+                    <td style="text-align: center; vertical-align: middle;">
                         @php
                             $paymentQr = $item->saleTransactions->where('paymentType', 'Qr')->sum('amount') > 0;
                             $paymentEfectivo = $item->saleTransactions->where('paymentType', 'Efectivo')->sum('amount') > 0;
                         @endphp
-                        <b style="font-size: 16px;">Bs. {{ number_format($item->amount, 2, ',', '.') }}</b><br>
+                        <b style="font-size: 16px;">{{ number_format($item->amount, 2, ',', '.') }}</b><br>
                         @if ($paymentEfectivo && $paymentQr)
                             <span class="label label-info" style="font-size: 10px; background-color: #5bc0de;">Ambos</span>
                         @elseif ($paymentEfectivo)
