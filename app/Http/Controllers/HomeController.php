@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
+use App\Jobs\WhatsappJob;
 
 class HomeController extends Controller
 {
@@ -128,16 +129,21 @@ class HomeController extends Controller
                 "Haz clic para contactar al cliente: https://wa.me/591{$request->phone}\n\n" .
                 "*Gestionar Cita:*\n" .
                 "https://consultorioveterinariocortez.com/admin/appointments";
+
             $servidor = setting('solucion-digital.servidorWhatsapp');
             $id = setting('solucion-digital.sessionWhatsapp');
 
-            if(setting('redes-sociales.whatsapp') && setting('solucion-digital.servidorWhatsapp') && setting('solucion-digital.sessionWhatsapp'))
-            {
-                Http::post($servidor.'/send?id='.$id.'&token='.null, [
-                        'phone' => '+591'.setting('redes-sociales.whatsapp'),
-                        'text' => $notificationMessage,
-                    ]);
-            }
+
+            WhatsappJob::dispatch($servidor, $id, '+591'.setting('redes-sociales.whatsapp'), $notificationMessage, 'Cita Nueva');
+
+            // if(setting('redes-sociales.whatsapp') && setting('solucion-digital.servidorWhatsapp') && setting('solucion-digital.sessionWhatsapp'))
+            // {
+            //     Http::post($servidor.'/send?id='.$id.'&token='.null, [
+            //             'phone' => '+591'.setting('redes-sociales.whatsapp'),
+            //             'text' => $notificationMessage,
+            //         ]);
+            // }
+            // return 1;
 
 
             DB::commit();
@@ -148,6 +154,7 @@ class HomeController extends Controller
             return redirect('/#cita')->withErrors($e->validator)->withInput();
         } catch (\Throwable $th) {
             DB::rollBack();
+            return 0;
             Log::error('Error al guardar la cita: '.$th->getMessage());
             return redirect('/#cita')->withErrors('Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.')->withInput();
         }

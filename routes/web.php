@@ -15,6 +15,7 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MicroServiceController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RaceController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\RoleController;
@@ -46,6 +47,8 @@ Route::get('/api/races/{animal}', [HomeController::class, 'getRaces'])->name('ap
 
 Route::get('/info/{id?}', [ErrorController::class , 'error'])->name('errors');
 // Route::get('/development', [ErrorController::class , 'error503'])->name('development');
+
+Route::get('/reminder/notificate', [PublicController::class, 'reminderNotificate']);
 
 Route::group(['prefix' => 'admin', 'middleware' => ['loggin', 'system']], function () {
     Voyager::routes();
