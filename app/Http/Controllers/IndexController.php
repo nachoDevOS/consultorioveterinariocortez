@@ -7,6 +7,7 @@ use App\Models\Sale;
 use App\Models\Cashier;
 use App\Models\Person;
 use App\Models\Pet;
+use App\Models\Reminder;
 use Carbon\Carbon;
 use DateTime;
 
@@ -203,10 +204,8 @@ class IndexController extends Controller
                 })
                 ->sum('amount');
 
-        $saleDaytotal = $sales->where('deleted_at', null)
-                ->filter(function ($sale) {
-                    return $sale->created_at->format('Y-m-d') === date('Y-m-d');
-                })
+        $reminder = Reminder::where('deleted_at', null)
+                ->whereDate('date', '>=', date('Y-m-d'))
                 ->count();
 
         // calculamos el total de las ventas a mes
@@ -239,7 +238,7 @@ class IndexController extends Controller
             'monthInteractive' => $monthInteractive,
             'sales'=> $sales,
             'amountDaytotal'=> $amountDaytotal,
-            'saleDaytotal'=>$saleDaytotal,
+            'reminder'=>$reminder,
             'customer' => $people,
             'pet' => $pet,
             'productTop5Day' => $productTop5Day,

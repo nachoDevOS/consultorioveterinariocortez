@@ -37,7 +37,7 @@
                                         <span>Obteniendo estado...</span>
                                     </div>
                                 </div>
-                                <div class="btn-group">
+                                {{-- <div class="btn-group">
                                     <button type="button" class="btn btn-primary" id="filter-button">
                                         <i class="voyager-refresh"></i> Todo
                                     </button>
@@ -50,7 +50,7 @@
                                         <li><a href="#" data-range="Almuerzo">Almuerzo</a></li>
                                         <li><a href="#" data-range="Cena">Cena</a></li>
                                     </ul>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -85,11 +85,11 @@
                 <div class="panel panel-bordered dashboard-kpi">
                     <div class="panel-body">
                         <div class="kpi-icon">
-                            <i class="fa-solid fa-receipt"></i>
+                            <i class="fa-regular fa-bell"></i>
                         </div>
                         <div class="kpi-content">
-                            <p class="kpi-label">Pedidos del Día</p>
-                            <h3 class="kpi-value">{{ $global_index['saleDaytotal'] }}</h3>
+                            <p class="kpi-label">Recordatorios Pendientes</p>
+                            <h3 class="kpi-value">{{ $global_index['reminder'] }}</h3>
                         </div>
                     </div>
                 </div>
@@ -458,68 +458,9 @@
             
         </div>
 
-        <!-- KPI Cards -->
-        {{-- <div class="row">
-            <div class="col-md-3">
-                <div class="panel panel-bordered dashboard-kpi">
-                    <div class="panel-body text-center">
-                        <div class="kpi-icon">
-                            <i class="voyager-dollar"></i>
-                        </div>
-                        <h3 class="kpi-value">$24,580</h3>
-                        <p class="kpi-label">Ventas Totales</p>
-                        <div class="kpi-trend trend-up">
-                            <i class="voyager-up"></i> 12.5%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered dashboard-kpi">
-                    <div class="panel-body text-center">
-                        <div class="kpi-icon">
-                            <i class="voyager-bag"></i>
-                        </div>
-                        <h3 class="kpi-value">328</h3>
-                        <p class="kpi-label">Pedidos Hoy</p>
-                        <div class="kpi-trend trend-up">
-                            <i class="voyager-up"></i> 5.2%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered dashboard-kpi">
-                    <div class="panel-body text-center">
-                        <div class="kpi-icon">
-                            <i class="voyager-person"></i>
-                        </div>
-                        <h3 class="kpi-value">42</h3>
-                        <p class="kpi-label">Nuevos Clientes</p>
-                        <div class="kpi-trend trend-down">
-                            <i class="voyager-down"></i> 3.1%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered dashboard-kpi">
-                    <div class="panel-body text-center">
-                        <div class="kpi-icon">
-                            <i class="voyager-bar-chart"></i>
-                        </div>
-                        <h3 class="kpi-value">$78.50</h3>
-                        <p class="kpi-label">Ticket Promedio</p>
-                        <div class="kpi-trend trend-up">
-                            <i class="voyager-up"></i> 8.7%
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row">
-            <!-- Gráfico de ventas mensuales con controles -->
+            <!-- Gráfico de ventas mensuales -->
             <div class="col-md-6">
                 <div class="panel panel-bordered">
                     <div class="panel-heading">
@@ -527,10 +468,10 @@
                             <h3 class="panel-title">Ventas Mensuales</h3>
                             <div class="chart-controls">
                                 <select class="form-control chart-type-selector" data-chart="ventasMensualesChart">
-                                    <option value="bar">Barras</option>
+                                    <option value="bar" selected>Barras</option>
                                     <option value="line">Líneas</option>
                                 </select>
-                                <button class="btn btn-sm btn-default chart-export" data-chart="ventasMensualesChart">
+                                <button class="btn btn-sm btn-default chart-export" data-chart="ventasMensualesChart" title="Descargar">
                                     <i class="voyager-download"></i>
                                 </button>
                             </div>
@@ -540,278 +481,10 @@
                         <div class="chart-container">
                             <canvas id="ventasMensualesChart" height="250"></canvas>
                         </div>
-                        <div class="chart-summary">
-                            <div class="summary-item">
-                                <span class="summary-label">Total Mes:</span>
-                                <span class="summary-value">$2,580,000</span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="summary-label">Crecimiento:</span>
-                                <span class="summary-value trend-up">+12.5%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gráfico de productos más vendidos con filtros -->
-            <div class="col-md-6">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <div class="panel-title-container">
-                            <h3 class="panel-title">Productos Más Vendidos</h3>
-                            <div class="chart-controls">
-                                <select class="form-control chart-period-selector" data-chart="topProductosChart">
-                                    <option value="week">Esta semana</option>
-                                    <option value="month" selected>Este mes</option>
-                                    <option value="year">Este año</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <canvas id="topProductosChart" height="250"></canvas>
-                        </div>
-                        <div class="chart-legend-detailed">
-                            <div class="legend-item">
-                                <span class="legend-color" style="background-color: rgba(255, 99, 132, 0.7)"></span>
-                                <span class="legend-label">Hamburguesa</span>
-                                <span class="legend-value">1,200 unidades</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <!-- Gráfico de ventas por día de la semana interactivo -->
-            <div class="col-md-6">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <div class="panel-title-container">
-                            <h3 class="panel-title">Ventas por Día de la Semana</h3>
-                            <div class="chart-controls">
-                                <button class="btn btn-sm btn-default toggle-dataset" data-chart="ventasDiasChart">
-                                    <i class="voyager-eye"></i> Alternar Datos
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <canvas id="ventasDiasChart" height="250"></canvas>
-                        </div>
-                        <div class="chart-tooltip-info">
-                            <i class="voyager-info"></i> Haz clic en los elementos para ver detalles
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gráfico de comparación anual mejorado -->
-            <div class="col-md-6">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <div class="panel-title-container">
-                            <h3 class="panel-title">Comparación Anual</h3>
-                            <div class="chart-controls">
-                                <select class="form-control year-selector" data-chart="comparacionAnualChart">
-                                    <option value="2021">2021-2022</option>
-                                    <option value="2022" selected>2022-2023</option>
-                                    <option value="2023">2023-2024</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <canvas id="comparacionAnualChart" height="250"></canvas>
-                        </div>
-                        <div class="comparison-stats">
-                            <div class="stat-item">
-                                <span class="stat-year">2022</span>
-                                <span class="stat-total">$2,340,000</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-year">2023</span>
-                                <span class="stat-total">$2,580,000</span>
-                                <span class="stat-difference trend-up">+$240,000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nuevos gráficos agregados -->
-        <div class="row">
-            <!-- Gráfico de ventas en tiempo real -->
-            <div class="col-md-6">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <div class="panel-title-container">
-                            <h3 class="panel-title">Ventas en Tiempo Real - Hoy</h3>
-                            <div class="chart-controls">
-                                <button class="btn btn-sm btn-success" id="start-realtime">
-                                    <i class="voyager-play"></i> Iniciar
-                                </button>
-                                <button class="btn btn-sm btn-danger" id="stop-realtime">
-                                    <i class="voyager-pause"></i> Pausar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <canvas id="ventasTiempoRealChart" height="200"></canvas>
-                        </div>
-                        <div class="realtime-info">
-                            <span class="realtime-label">Actualizado:</span>
-                            <span class="realtime-time" id="lastUpdateTime">{{ now()->format('H:i:s') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gráfico de métricas de rendimiento -->
-            <div class="col-md-6">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Métricas de Rendimiento</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <canvas id="metricasRendimientoChart" height="200"></canvas>
-                        </div>
-                        <div class="metrics-radar-info">
-                            <div class="metric-score">
-                                <span class="score-value">85%</span>
-                                <span class="score-label">Puntuación General</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Gráfico de embudo de conversión -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Embudo de Conversión</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <canvas id="embudoConversionChart" height="150"></canvas>
-                        </div>
-                        <div class="funnel-stats">
-                            <div class="funnel-stage">
-                                <span class="stage-name">Visitantes</span>
-                                <span class="stage-value">10,000</span>
-                                <span class="stage-rate">100%</span>
-                            </div>
-                            <div class="funnel-stage">
-                                <span class="stage-name">Carrito</span>
-                                <span class="stage-value">2,500</span>
-                                <span class="stage-rate">25%</span>
-                            </div>
-                            <div class="funnel-stage">
-                                <span class="stage-name">Checkout</span>
-                                <span class="stage-value">1,200</span>
-                                <span class="stage-rate">12%</span>
-                            </div>
-                            <div class="funnel-stage">
-                                <span class="stage-name">Completado</span>
-                                <span class="stage-value">980</span>
-                                <span class="stage-rate">9.8%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabla de últimos pedidos -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Pedidos Recientes</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th># Pedido</th>
-                                        <th>Cliente</th>
-                                        <th>Fecha</th>
-                                        <th>Total</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#12345</td>
-                                        <td>Juan Pérez</td>
-                                        <td>20 Nov 2023</td>
-                                        <td>$125.80</td>
-                                        <td><span class="label label-success">Completado</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12344</td>
-                                        <td>María García</td>
-                                        <td>20 Nov 2023</td>
-                                        <td>$89.50</td>
-                                        <td><span class="label label-warning">Procesando</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12343</td>
-                                        <td>Carlos López</td>
-                                        <td>19 Nov 2023</td>
-                                        <td>$210.00</td>
-                                        <td><span class="label label-success">Completado</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12342</td>
-                                        <td>Ana Martínez</td>
-                                        <td>19 Nov 2023</td>
-                                        <td>$56.90</td>
-                                        <td><span class="label label-danger">Cancelado</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12341</td>
-                                        <td>Pedro Sánchez</td>
-                                        <td>18 Nov 2023</td>
-                                        <td>$178.30</td>
-                                        <td><span class="label label-success">Completado</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
     </div>
 
 
