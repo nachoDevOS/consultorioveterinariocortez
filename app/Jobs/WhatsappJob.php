@@ -53,7 +53,7 @@ class WhatsappJob implements ShouldQueue
                     $this->bd($this->server, $this->session, $this->phone, $this->message, $this->type, 'Servidor Fuera de Línea');
             }
         }
-        // sleep(rand(15, 25));
+        sleep(rand(15, 25));
     }
 
     public function bd($server, $session ,$phone, $message, $type, $status)

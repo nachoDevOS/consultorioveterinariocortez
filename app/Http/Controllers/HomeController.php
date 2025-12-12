@@ -98,6 +98,7 @@ class HomeController extends Controller
                 // Los campos 'status' y 'view' ya tienen valores por defecto en la migración.
             ]);
 
+
             // Obtener detalles para la notificación
             $serviceName = Service::find($request->service)->name;
             $animalType = Animal::find($request->pet_type)->name;
@@ -134,16 +135,10 @@ class HomeController extends Controller
             $id = setting('solucion-digital.sessionWhatsapp');
 
 
-            WhatsappJob::dispatch($servidor, $id, '+591'.setting('redes-sociales.whatsapp'), $notificationMessage, 'Cita Nueva');
-
-            // if(setting('redes-sociales.whatsapp') && setting('solucion-digital.servidorWhatsapp') && setting('solucion-digital.sessionWhatsapp'))
-            // {
-            //     Http::post($servidor.'/send?id='.$id.'&token='.null, [
-            //             'phone' => '+591'.setting('redes-sociales.whatsapp'),
-            //             'text' => $notificationMessage,
-            //         ]);
-            // }
-            // return 1;
+            if($request->phone && $servidor && $id)
+            {
+                WhatsappJob::dispatch($servidor, $id, '+591'.setting('redes-sociales.whatsapp'), $notificationMessage, 'Cita Nueva');
+            }
 
 
             DB::commit();
