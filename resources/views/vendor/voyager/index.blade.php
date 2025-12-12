@@ -692,6 +692,10 @@
         $(document).ready(function () {
             const serverUrl = "{{ setting('whatsapp.servidores') }}";
             const sessionId = "{{ setting('whatsapp.session') }}";
+            let isWhatsappOnline = false; // Variable para rastrear el estado
+
+            // Si no hay servidor configurado, no hacemos nada.
+            if (!serverUrl || !sessionId) return;
 
             // --- Helper Functions ---
             function updateStatus(status, message) {
@@ -699,6 +703,7 @@
                 switch (status) {
                     case 'online':
                         html = '<button class="btn btn-success">WhatsApp en línea</button>';
+                        isWhatsappOnline = true;
                         break;
                     case 'offline':
                         html = `<button type="button" class="btn btn-danger btn-offline" onclick="login()">${message || 'WhatsApp Fuera de línea'}</button>`;
@@ -708,6 +713,7 @@
                         break;
                     case 'server_offline':
                         html = '<b class="text-danger">Servidor fuera de línea</b>';
+                        isWhatsappOnline = false;
                         break;
                     default:
                         html = '<span>Obteniendo estado...</span>';
@@ -724,6 +730,11 @@
             // --- Socket.io Event Listeners ---
             const socket = io(serverUrl);
 
+            socket.on('connect_error', (err) => {
+                handleFetchError(err, 'socket connect_error');
+                updateStatus('server_offline');
+            });
+
             socket.on('login', data => {
                 updateStatus('online');
                 $('#qr_modal').modal('hide');
@@ -731,15 +742,18 @@
             });
 
             socket.on('qr', data => {
-                $('#qr_modal').modal('show');
-                new QRious({
-                    element: document.querySelector("#qr_code"),
-                    value: data.qr,
-                    size: 450,
-                    backgroundAlpha: 0,
-                    foreground: "#000000",
-                    level: "H",
-                });
+                // Solo mostrar el QR si no estamos ya en línea
+                if (!isWhatsappOnline) {
+                    $('#qr_modal').modal('show');
+                    new QRious({
+                        element: document.querySelector("#qr_code"),
+                        value: data.qr,
+                        size: 450,
+                        backgroundAlpha: 0,
+                        foreground: "#000000",
+                        level: "H",
+                    });
+                }
             });
 
             socket.on('logout', data => {
@@ -762,7 +776,11 @@
                     const res = await response.json();
 
                     if (res.success) {
-                        updateStatus(res.status == 1 ? 'online' : 'offline');
+                        if (res.status == 1) {
+                            updateStatus('online');
+                        } else {
+                            updateStatus('offline');
+                        }
                     } else {
                         console.warn('El servidor respondió, pero no se pudo obtener el estado.');
                     }
@@ -772,25 +790,23 @@
             }
 
             checkInitialStatus();
-        });
 
-        // --- Global function for login button ---
-        async function login() {
-            const serverUrl = "{{ setting('whatsapp.servidores') }}";
-            const sessionId = "{{ setting('whatsapp.session') }}";
-            $('#status').html('<span>Iniciando sesión...</span>');
-            try {
-                const response = await fetch(`${serverUrl}/login?id=${sessionId}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const res = await response.json();
-                if (!res.success) {
-                    console.error('Error al intentar iniciar sesión:', res);
+            // --- Global function for login button ---
+            window.login = async function() {
+                $('#status').html('<span>Iniciando sesión...</span>');
+                try {
+                    const response = await fetch(`${serverUrl}/login?id=${sessionId}`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const res = await response.json();
+                    if (!res.success) {
+                        console.error('Error al intentar iniciar sesión:', res);
+                    }
+                } catch (error) {
+                    console.error('Error en login():', error);
+                    $('#status').html('<b class="text-danger">Error al conectar</b>');
                 }
-            } catch (error) {
-                console.error('Error en login():', error);
-                $('#status').html('<b class="text-danger">Error al conectar</b>');
             }
-        }
+        });
     </script>
 
 
