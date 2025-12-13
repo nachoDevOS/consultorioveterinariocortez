@@ -294,6 +294,39 @@ class SettingsTableSeeder extends Seeder
                 'order' => 19,
                 'group' => 'System',
             ),
+            25 => 
+            array (
+                'id' => 29,
+                'key' => 'system.reCaptchaKeySite',
+                'display_name' => 'reCAPTCHA Clave Sitio',
+                'value' => '6LcsYCYsAAAAAJSG5_fy8OGwr5C075ZvXc6R0d2X',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 20,
+                'group' => 'System',
+            ),
+            26 => 
+            array (
+                'id' => 30,
+                'key' => 'system.reCaptchaKeySecret',
+                'display_name' => 'reCAPTCHA Clave Secreta',
+                'value' => '6LcsYCYsAAAAAPT9_ET9HJh3dgOyb5MxODBB0WAZ',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 21,
+                'group' => 'System',
+            ),
+            27 => 
+            array (
+                'id' => 31,
+                'key' => 'admin.customer',
+                'display_name' => 'Venta a Clientes',
+                'value' => '1',
+                'details' => '{"on": "Activo","off": "Inactivo","checked": true}',
+                'type' => 'checkbox',
+                'order' => 22,
+                'group' => 'Admin',
+            ),
         ));
         
         

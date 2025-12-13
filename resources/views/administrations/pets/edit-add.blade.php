@@ -40,7 +40,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="name">Nombre</label>
+                                    <label for="name">Nombre de la Mascota</label>
                                     <input type="text" class="form-control" name="name" placeholder="Nombre de la mascota" value="{{ old('name', $pet->name ?? '') }}" required>
                                 </div>
                                 <div class="form-group col-md-6">

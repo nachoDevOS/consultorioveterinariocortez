@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\WhatsappJob;
 use App\Models\Worker;
 use App\Models\Appointment;
 use App\Models\AppointmentWorker;
@@ -134,11 +135,9 @@ class AppointmentController extends Controller
             $servidor = setting('whatsapp.servidores');
             $sessionId = setting('whatsapp.session');
 
-            if ($servidor && $sessionId) {
-                Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
-                    'phone' => '+591' . $request->phone_number,
-                    'text' => $message,
-                ]);
+            if($request->phone_number && $servidor && $sessionId)
+            {
+                WhatsappJob::dispatch($servidor, $sessionId, '+591'.$request->phone_number, $message, 'Reenvio de Cita');
             }
 
             return redirect()->back()->with(['message' => 'La cita ha sido reenviada por WhatsApp exitosamente.', 'alert-type' => 'success']);
@@ -181,43 +180,41 @@ class AppointmentController extends Controller
             $worker = Worker::findOrFail($request->worker_id);
             $clientPhone = $appointment->phoneClient;
 
-            if ($clientPhone) {
-                $servidor = setting('whatsapp.servidores');
-                $sessionId = setting('whatsapp.session');
 
-                if ($servidor && $sessionId) {
-                    $clientName = ucwords(strtolower($appointment->nameClient));
-                    $petName = ucwords(strtolower($appointment->nameAnimal));
-                    $workerName = ucwords(strtolower($worker->first_name.' '.$worker->paternal_surname));
-                    $clinicName = setting('admin.title');
-                    $appointmentDate = \Carbon\Carbon::parse($appointment->date)->format('d/m/Y');
-                    $appointmentTime = \Carbon\Carbon::parse($appointment->time)->format('h:i A');
+            $servidor = setting('whatsapp.servidores');
+            $sessionId = setting('whatsapp.session');
 
-                    $detailsMessage = '';
-                    if ($request->type == 'Domicilio') {
-                        $detailsMessage = "El Dr(a). *{$workerName}*, uno de nuestros especialistas, pasará por tu domicilio para atender con mucho cariño a tu fiel amigo(a).\n\n";
-                    } else { // Asumimos 'Consultorio' o cualquier otro caso
-                        $detailsMessage = "El Dr(a). *{$workerName}*, uno de nuestros especialistas, estará esperando con mucho cariño en nuestras instalaciones para atender a tu fiel amigo(a).\n\n";
-                    }
+            $clientName = ucwords(strtolower($appointment->nameClient));
+            $petName = ucwords(strtolower($appointment->nameAnimal));
+            $workerName = ucwords(strtolower($worker->first_name.' '.$worker->paternal_surname));
+            $clinicName = setting('admin.title');
+            $appointmentDate = \Carbon\Carbon::parse($appointment->date)->format('d/m/Y');
+            $appointmentTime = \Carbon\Carbon::parse($appointment->time)->format('h:i A');
 
-                    $message = "¡Hola, {$clientName}! 👋\n\n" .
-                               "¡Excelentes noticias! ✨ Tu cita en *{$clinicName}* para el cuidado de *{$petName}* ha sido *CONFIRMADA*.\n\n" .
-                               $detailsMessage .
-                               "Aquí están los detalles de tu cita:\n" .
-                               "🗓️ *Fecha:* {$appointmentDate}\n" .
-                               "⏰ *Hora:* {$appointmentTime}\n\n" .
-                               "Estamos muy contentos de que confíes en nosotros para el bienestar de *{$petName}*. ¡Nos vemos pronto!\n\n" .
-                               "Atentamente,\nEl equipo de *{$clinicName}* 🐾";
-
-
-                    Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
-                        'phone' => '+591' . $clientPhone,
-                        'text' => $message,
-                    ]);
-                } else {
-                    Log::warning('Configuración de WhatsApp incompleta. No se pudo enviar la confirmación de asignación.');
-                }
+            $detailsMessage = '';
+            if ($request->type == 'Domicilio') {
+                $detailsMessage = "El Dr(a). *{$workerName}*, uno de nuestros especialistas, pasará por tu domicilio para atender con mucho cariño a tu fiel amigo(a).\n\n";
+            } else { // Asumimos 'Consultorio' o cualquier otro caso
+                $detailsMessage = "El Dr(a). *{$workerName}*, uno de nuestros especialistas, estará esperando con mucho cariño en nuestras instalaciones para atender a tu fiel amigo(a).\n\n";
             }
+
+            $message = "¡Hola, {$clientName}! 👋\n\n" .
+                        "¡Excelentes noticias! ✨ Tu cita en *{$clinicName}* para el cuidado de *{$petName}* ha sido *CONFIRMADA*.\n\n" .
+                        $detailsMessage .
+                        "Aquí están los detalles de tu cita:\n" .
+                        "🗓️ *Fecha:* {$appointmentDate}\n" .
+                        "⏰ *Hora:* {$appointmentTime}\n\n" .
+                        "Estamos muy contentos de que confíes en nosotros para el bienestar de *{$petName}*. ¡Nos vemos pronto!\n\n" .
+                        "Atentamente,\nEl equipo de *{$clinicName}* 🐾";
+
+
+
+            if($clientPhone && $servidor && $sessionId)
+            {
+                WhatsappJob::dispatch($servidor, $sessionId, '+591'.$clientPhone, $message, 'Confirmación de Cita');
+            }
+
+
 
             $appointment = Appointment::with(['service', 'animal', 'race'])->findOrFail($id);
 
@@ -248,15 +245,11 @@ class AppointmentController extends Controller
             "Haz clic para contactar al cliente: https://wa.me/591{$appointment->phoneClient}";
 
 
-            $servidor = setting('whatsapp.servidores');
-            $sessionId = setting('whatsapp.session');
-
-            if ($servidor && $sessionId) {
-                Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
-                    'phone' => '+591' . $worker->phone,
-                    'text' => $message,
-                ]);
+            if($worker->phone && $servidor && $sessionId)
+            {
+                WhatsappJob::dispatch($servidor, $sessionId, '+591'.$worker->phone, $message, 'Reenvio de Cita');
             }
+
 
             DB::commit();
             return redirect()->back()->with(['message' => 'Trabajador asignado y cliente notificado exitosamente.', 'alert-type' => 'success']);

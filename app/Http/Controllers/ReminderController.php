@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\WhatsappJob;
 use App\Models\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,12 +64,6 @@ class ReminderController extends Controller
                 return response()->json(['success' => false, 'message' => 'La configuración para enviar WhatsApp no está completa en los ajustes del sistema.']);
             }
 
-            // Limpiar y formatear el número de teléfono (asumiendo código de Bolivia 591)
-            $phone = preg_replace('/[^0-9]/', '', $owner->phone);
-            if (strlen($phone) == 8) {
-                $phone = '591' . $phone;
-            }
-
             // Construir el mensaje detallado
             $ownerName = ucwords(strtolower($owner->first_name.' '.$owner->paternal_surname));
             $petName = ucwords(strtolower($reminder->pet->name));
@@ -83,11 +78,10 @@ class ReminderController extends Controller
                        "¡Los esperamos con mucho cariño para seguir cuidando de tu mascota!\n\n" .
                        "Atentamente,\n*El equipo de {$clinicName}* 🐾";
 
-            // Enviar la petición a la API
-            Http::post($servidor . '/send?id=' . $sessionId . '&token=' . null, [
-                'phone' => '+' . $phone,
-                'text' => $message,
-            ]);
+            if($owner->phone && $servidor && $sessionId)
+            {
+                WhatsappJob::dispatch($servidor, $sessionId, '+591'.$owner->phone, $message, 'Envio de Recordatorio');
+            }
 
             return response()->json(['success' => true, 'message' => 'Recordatorio enviado por WhatsApp exitosamente.']);
         } catch (\Exception $e) {
